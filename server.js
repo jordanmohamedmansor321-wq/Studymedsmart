@@ -275,46 +275,6 @@ app.get("/api/courses/:slug", async (req, res) => {
 });
 
 /* =========================================================
-   COURSE PROGRESS
-========================================================= */
-
-app.get("/api/courses/:slug/progress", auth, async (req, res) => {
-  try {
-    const c = await db(`SELECT id,title FROM courses WHERE slug=$1 AND is_published=true`, [req.params.slug]);
-    if (!c.rows[0]) return res.status(404).json({ error: "الكورس غير موجود" });
-
-    const r = await db(`
-      SELECT l.id,l.title,
-             COALESCE(lp.completed,false) AS completed,
-             lp.score,lp.last_attempt_at
-      FROM lessons l
-      LEFT JOIN lesson_progress lp
-        ON lp.lesson_id=l.id AND lp.user_id=$1
-      WHERE l.course_id=$2 AND l.is_published=true
-      ORDER BY l.sort_order,l.id
-    `, [req.user.id, c.rows[0].id]);
-
-    const lessons = r.rows;
-    const completed = lessons.filter(x => x.completed).length;
-    const scores = lessons.filter(x => x.score !== null).map(x => Number(x.score));
-    const averageScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
-    const percent = lessons.length ? Math.round(completed/lessons.length*100) : 0;
-
-    res.json({
-      course: c.rows[0],
-      totalLessons: lessons.length,
-      completedLessons: completed,
-      percent,
-      averageScore,
-      lessons
-    });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "تعذر تحميل تقدم الكورس" });
-  }
-});
-
-/* =========================================================
    AUTH
 ========================================================= */
 
@@ -649,14 +609,15 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
     const r = await db(`
       UPDATE site_settings SET
         site_name=$1,tagline=$2,subscription_price=$3,
-        hero_title=$4,hero_text=$5,updated_at=NOW()
+        hero_title=$4,hero_text=$5,hero_image=$6,updated_at=NOW()
       WHERE id=1 RETURNING *
     `, [
       b.site_name ?? "StudyMedSmart",
       b.tagline ?? "منصة تعليمية طبية",
       Number(b.subscription_price) || 0,
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
-      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد."
+      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
+      String(b.hero_image ?? "")
     ]);
     res.json(r.rows[0]);
   } catch(e) {
@@ -905,6 +866,3 @@ async function start() {
 }
 
 start();
-
-// Express 5 frontend fallback
-app.get("/{*splat}", (req,res)=>res.sendFile(path.join(process.cwd(),"index.html")));
