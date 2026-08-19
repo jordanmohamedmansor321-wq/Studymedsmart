@@ -86,7 +86,6 @@ async function initDatabase() {
       subscription_price NUMERIC(12,2) NOT NULL DEFAULT 100,
       hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة',
       hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.',
-      hero_image TEXT NOT NULL DEFAULT '',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
@@ -511,7 +510,7 @@ app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
     await db(`
       INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at)
       VALUES($1,$2,true,NULL,0,NOW())
-      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, last_attempt_at=NOW()
+      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, updated_at=NOW()
     `, [req.user.id, lessonId]);
     res.json({ ok:true, completed:true });
   } catch(e) {
@@ -650,15 +649,14 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
     const r = await db(`
       UPDATE site_settings SET
         site_name=$1,tagline=$2,subscription_price=$3,
-        hero_title=$4,hero_text=$5,hero_image=$6,updated_at=NOW()
+        hero_title=$4,hero_text=$5,updated_at=NOW()
       WHERE id=1 RETURNING *
     `, [
       b.site_name ?? "StudyMedSmart",
       b.tagline ?? "منصة تعليمية طبية",
-      Number.isFinite(Number(b.subscription_price)) ? Number(b.subscription_price) : 100,
+      Number(b.subscription_price) || 0,
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
-      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
-      b.hero_image ?? ""
+      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد."
     ]);
     res.json(r.rows[0]);
   } catch(e) {
@@ -702,8 +700,7 @@ app.post("/api/admin/users/:id/credit", auth, adminOnly, async (req,res) => {
     `,[req.params.id,amount,req.body.note || "إضافة رصيد من الإدارة"]);
 
     await client.query("COMMIT");
-    const bal = await client.query('SELECT wallet_balance FROM users WHERE id=$1',[req.params.id]);
-    res.json({ok:true,balance:Number(bal.rows[0]?.wallet_balance||0)});
+    res.json({ok:true});
   } catch(e) {
     try { await client.query("ROLLBACK"); } catch {}
     console.error(e);
