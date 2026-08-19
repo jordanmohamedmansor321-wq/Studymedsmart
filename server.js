@@ -2,6 +2,8 @@ import express from "express";
 import pg from "pg";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const { Pool } = pg;
 const app = express();
@@ -769,10 +771,15 @@ app.use("/api", (req,res) => {
    Exactly two HTML files in the repository.
 ========================================================= */
 
-app.get("/", (req,res) => res.sendFile(new URL("./index.html", import.meta.url)));
-app.get("/index.html", (req,res) => res.sendFile(new URL("./index.html", import.meta.url)));
-app.get("/admin", (req,res) => res.sendFile(new URL("./admin.html", import.meta.url)));
-app.get("/admin.html", (req,res) => res.sendFile(new URL("./admin.html", import.meta.url)));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const INDEX_FILE = path.join(__dirname, "index.html");
+const ADMIN_FILE = path.join(__dirname, "admin.html");
+
+app.get("/", (req,res) => res.sendFile(INDEX_FILE));
+app.get("/index.html", (req,res) => res.sendFile(INDEX_FILE));
+app.get("/admin", (req,res) => res.sendFile(ADMIN_FILE));
+app.get("/admin.html", (req,res) => res.sendFile(ADMIN_FILE));
 
 app.use((req,res) => {
   res.status(404).send("Page not found");
