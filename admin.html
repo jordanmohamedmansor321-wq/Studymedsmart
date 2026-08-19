@@ -5,13 +5,50 @@
 :root{--p:#2563eb;--p2:#06b6d4;--navy:#102a43;--bg:#f3f7fb;--card:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--danger:#dc2626;--purple:#7c3aed;--shadow:0 12px 34px rgba(16,42,67,.08)}*{box-sizing:border-box}body{margin:0;font-family:Cairo,Tahoma,Arial;background:var(--bg);color:var(--text)}button,input,textarea,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.side{background:#0e2f4f;color:#fff;padding:20px 14px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:10px;align-items:center;padding:10px}.brandIcon{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:grid;place-items:center}.brand b{font-size:18px}.brand small{display:block;color:#b9d4e9}.sideNav{margin-top:25px;display:grid;gap:7px}.sideNav button{border:0;background:transparent;color:#dcecf8;text-align:right;padding:12px 14px;border-radius:12px;font-weight:800}.sideNav button.active,.sideNav button:hover{background:rgba(255,255,255,.1);color:#fff}.sideFoot{position:absolute;bottom:18px;left:14px;right:14px}.back{display:block;text-align:center;padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:11px;margin-bottom:8px}.logout{width:100%;border:0;background:#fff0f1;color:#991b1b;padding:10px;border-radius:11px;font-weight:900}.main{min-width:0}.top{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.top h1{font-size:20px;margin:0}.user{display:flex;align-items:center;gap:10px}.pill{background:#eff6ff;color:#1d4ed8;border-radius:12px;padding:8px 12px;font-weight:800}.content{padding:26px;max-width:1400px;margin:auto}.section{display:none}.section.active{display:block}.heroAdmin{background:linear-gradient(135deg,#123f68,#126e92);color:#fff;border-radius:24px;padding:25px;box-shadow:var(--shadow);margin-bottom:20px}.heroAdmin h2{margin:0 0 5px;font-size:27px}.muted{color:var(--muted)}.heroAdmin .muted{color:#d7edf8}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.stat span{color:var(--muted);font-size:13px}.stat b{display:block;font-size:27px;margin-top:3px}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-top:18px}.panelHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.btn{border:0;border-radius:11px;padding:10px 14px;background:var(--p);color:#fff;font-weight:800}.btn.secondary{background:#0f172a}.btn.green{background:var(--ok)}.btn.red{background:var(--danger)}.btn.light{background:#fff;color:var(--p);border:1px solid #bfdbfe}.btn.small{padding:7px 10px;font-size:12px}.formGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-weight:800;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.field textarea{min-height:90px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}th{background:#f8fafc;color:#475569}.badge{padding:5px 8px;border-radius:8px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:800}.badge.green{background:#ecfdf5;color:#166534}.badge.orange{background:#fff7ed;color:#9a3412}.courseCard{border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0;background:#fbfdff}.courseHead{display:flex;justify-content:space-between;gap:12px;align-items:center}.lessonRow{padding:12px;border:1px solid var(--line);border-radius:13px;margin-top:8px;background:#fff}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal.hidden{display:none}.modalCard{width:min(820px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:24px;position:relative}.close{position:absolute;left:13px;top:8px;border:0;background:transparent;font-size:28px}.toast{position:fixed;left:20px;bottom:20px;background:#102a43;color:#fff;padding:12px 17px;border-radius:12px;z-index:300;box-shadow:var(--shadow)}.loginPage{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#eef6ff,#e9fbfb)}.loginCard{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;padding:30px;box-shadow:var(--shadow)}.loginLogo{text-align:center;font-size:48px}.dangerText{color:#b91c1c}.successText{color:#166534}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.side{position:fixed;inset:0 auto 0 0;width:260px;transform:translateX(-105%);z-index:50;transition:.2s}.side.open{transform:translateX(0)}.mobileMenu{display:block!important}.stats{grid-template-columns:repeat(2,1fr)}.content{padding:17px}.top{padding:0 17px}.formGrid{grid-template-columns:1fr}}@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.top h1{font-size:16px}}
 .mobileMenu{display:none;border:0;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:8px 11px}
+
+/* Premium administration styling */
+.settingsHero{display:grid;grid-template-columns:1.2fr .8fr;gap:15px;margin-bottom:16px}
+.settingsCard{border:1px solid var(--line);border-radius:20px;padding:18px;background:linear-gradient(135deg,#eff6ff,#f0fdfa)}
+.settingsCard h3{margin:0 0 5px}
+.saveBar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:#f8fafc;border:1px dashed #cbd5e1;margin-top:14px}
+.saveStatus{font-weight:800;color:#166534}
+.quickAction{border:1px solid #dbeafe;background:#fff;border-radius:14px;padding:14px;cursor:pointer;transition:.2s}
+.quickAction:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+@media(max-width:800px){.settingsHero{grid-template-columns:1fr}}
 </style></head><body>
 <div id="loginPage" class="loginPage"><div class="loginCard"><div class="loginLogo">🩺</div><h2 style="text-align:center;margin:5px 0">StudyMedSmart</h2><p class="muted" style="text-align:center">دخول لوحة الإدارة</p><div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" autocomplete="username"></div><div class="field"><label>كلمة المرور</label><input id="loginPassword" type="password" autocomplete="current-password"></div><button class="btn" style="width:100%" onclick="adminLogin()">دخول الإدارة</button><div id="loginMsg"></div><a href="/" style="display:block;text-align:center;margin-top:15px;color:#2563eb">← العودة للموقع</a></div></div>
 <div id="app" class="layout" style="display:none"><aside class="side" id="side"><div class="brand"><span class="brandIcon">🩺</span><span><b>StudyMedSmart</b><small>لوحة الإدارة</small></span></div><div class="sideNav"><button class="active" data-section="overview">📊 الرئيسية</button><button data-section="settings">⚙️ إعدادات الموقع</button><button data-section="users">👥 الطلاب والمحفظة</button><button data-section="courses">📚 الكورسات والدروس</button></div><div class="sideFoot"><a class="back" href="/">↩ الموقع</a><button class="logout" onclick="logout()">تسجيل الخروج</button></div></aside>
 <main class="main"><header class="top"><div style="display:flex;gap:10px;align-items:center"><button class="mobileMenu" onclick="toggleSide()">☰</button><h1 id="pageTitle">لوحة التحكم</h1></div><div class="user"><span class="pill">👤 <span id="adminName">الإدارة</span></span></div></header><div class="content">
 <section id="overview" class="section active"><div class="heroAdmin"><h2>مرحبًا بك في لوحة StudyMedSmart</h2><div class="muted">من هنا تتحكم في الاشتراك، الطلاب، الرصيد، الكورسات والدروس والاختبارات.</div></div><div class="stats"><div class="stat"><span>الطلاب</span><b id="sUsers">0</b></div><div class="stat"><span>الكورسات</span><b id="sCourses">0</b></div><div class="stat"><span>الدروس</span><b id="sLessons">0</b></div><div class="stat"><span>المشتركين</span><b id="sSubs">0</b></div></div><div class="panel"><div class="panelHead"><div><h3 style="margin:0">اشتراك جميع الكورسات</h3><span class="muted">السعر الحالي للطالب</span></div><b style="font-size:25px;color:#7c3aed"><span id="overviewPrice">100</span> جنيه</b></div><div class="muted">اشتراك واحد يفتح الكورسات الستة بالكامل.</div></div></section>
-<section id="settings" class="section"><div class="panel"><div class="panelHead"><h2>⚙️ إعدادات الموقع</h2></div><div class="formGrid"><div class="field"><label>اسم الموقع</label><input id="siteName"></div><div class="field"><label>الوصف المختصر</label><input id="tagline"></div><div class="field"><label>سعر الاشتراك — جنيه</label><input id="subPrice" type="number" min="0" step="0.01"></div><div class="field"><label>Hero Title</label><input id="heroTitle"></div><div class="field full"><label>Hero Text</label><textarea id="heroText"></textarea></div></div><div class="actions"><button class="btn" onclick="saveSettings()">حفظ الإعدادات</button></div></div></section>
-<section id="users" class="section"><div class="panel"><div class="panelHead"><h2>👥 الطلاب والمحفظة</h2><button class="btn light" onclick="loadUsers()">تحديث</button></div><div class="tableWrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الرصيد</th><th>الاشتراك</th><th>إجراء</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
+<section id="settings" class="section">
+<div class="heroAdmin"><h2>⚙️ إدارة الموقع</h2><div class="muted">تحكم في هوية الصفحة الرئيسية والمحتوى الظاهر للطلاب.</div></div>
+<div class="panel">
+  <div class="formGrid">
+    <div class="field"><label>اسم الموقع</label><input id="siteName" placeholder="StudyMedSmart"></div>
+    <div class="field"><label>الوصف المختصر</label><input id="tagline" placeholder="منصة تعليمية طبية"></div>
+    <div class="field"><label>عنوان الواجهة الرئيسية</label><input id="heroTitle" placeholder="ابدأ رحلتك الطبية بثقة"></div>
+    <div class="field"><label>رابط صورة الواجهة الرئيسية</label><input id="heroImage" placeholder="https://..."></div>
+    <div class="field full"><label>النص الرئيسي</label><textarea id="heroText" placeholder="وصف الواجهة الرئيسية"></textarea></div>
+  </div>
+  <div class="saveBar"><span id="settingsStatus" class="muted">جاهز للتعديل.</span><button class="btn" onclick="saveSettings()">💾 حفظ إعدادات الموقع</button></div>
+</div>
+</section>
+<section id="wallet" class="section">
+<div class="heroAdmin"><h2>💰 الاشتراكات والمحفظة</h2><div class="muted">كل العمليات المالية والاشتراك العام في واجهة واحدة.</div></div>
+<div class="panel">
+  <div class="panelHead"><div><h3 style="margin:0">⭐ الاشتراك العام</h3><div class="muted">هذا الاشتراك يفتح الكورسات الستة.</div></div></div>
+  <div class="formGrid">
+    <div class="field"><label>سعر الاشتراك — جنيه</label><input id="walletSubPrice" type="number" min="0" step="0.01" placeholder="100"></div>
+  </div>
+  <div class="saveBar"><span id="walletPriceStatus" class="muted">—</span><button class="btn" onclick="saveWalletPrice()">💾 حفظ سعر الاشتراك</button></div>
+</div>
+<div class="panel">
+  <div class="panelHead"><div><h3 style="margin:0">👤 البحث عن طالب</h3><div class="muted">ابحث بالبريد الإلكتروني لتجنب تشابه الأسماء.</div></div></div>
+  <div class="searchRow"><input id="walletEmail" placeholder="student@example.com" type="email"><button class="btn" onclick="findWalletStudent()">🔎 بحث</button></div>
+  <div id="walletStudent" class="hidden"></div>
+</div>
+</section>
+<section id="users" class="section"><div class="panel"><div class="panelHead"><h2>👥 الطلاب والمحفظة</h2><button class="btn light" onclick="loadUsers()">تحديث</button></div><div class="tableWrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الرصيد</th><th>الدور</th><th>الاشتراك</th><th>إجراء</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
 <section id="courses" class="section"><div class="panel"><div class="panelHead"><div><h2>📚 الكورسات الستة</h2><div class="muted">يمكنك إدارة الدروس والاختبارات لكل كورس.</div></div><button class="btn" onclick="openCourseForm()">+ إضافة كورس</button></div><div id="coursesList"></div></div></section>
 </div></main></div>
 <div id="modal" class="modal hidden"><div class="modalCard"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div><div id="toast" class="toast" style="display:none"></div>
@@ -25,9 +62,24 @@ document.querySelectorAll('.sideNav button').forEach(b=>b.onclick=()=>nav(b.data
 async function adminLogin(){try{const d=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:$('#loginEmail').value,password:$('#loginPassword').value})});if(d.user.role!=='admin')throw Error('هذا الحساب ليس حساب إدارة.');token=d.token;localStorage.setItem('sms_admin_token',token);await boot()}catch(e){$('#loginMsg').innerHTML=`<div class="panel dangerText">${esc(e.message)}</div>`}}
 function logout(){token='';me=null;localStorage.removeItem('sms_admin_token');location.reload()}
 async function boot(){try{me=await api('/api/me');if(me.role!=='admin')throw Error('غير مصرح بالوصول');$('#loginPage').style.display='none';$('#app').style.display='grid';$('#adminName').textContent=me.name||me.email;await Promise.all([loadSettings(),loadUsers(),loadCourses()]);}catch(e){localStorage.removeItem('sms_admin_token');token='';$('#loginMsg').innerHTML=`<div class="panel dangerText">${esc(e.message)}</div>`;$('#loginPage').style.display='grid';$('#app').style.display='none'}}
-async function loadSettings(){const s=await api('/api/admin/settings');$('#siteName').value=s.site_name||'';$('#tagline').value=s.tagline||'';$('#subPrice').value=Number(s.subscription_price||0);$('#heroTitle').value=s.hero_title||'';$('#heroText').value=s.hero_text||'';$('#overviewPrice').textContent=Number(s.subscription_price||0).toFixed(2)}
-async function saveSettings(){try{await api('/api/admin/settings',{method:'PUT',body:JSON.stringify({site_name:$('#siteName').value.trim(),tagline:$('#tagline').value.trim(),subscription_price:Number($('#subPrice').value)||0,hero_title:$('#heroTitle').value.trim(),hero_text:$('#heroText').value.trim()})});toast('تم حفظ إعدادات الموقع.')}catch(e){toast(e.message)}}
-async function loadUsers(){users=await api('/api/admin/users');const students=users.filter(x=>x.role!=='admin');$('#usersTable').innerHTML=students.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td><b>${Number(u.wallet_balance||0).toFixed(2)}</b> جنيه</td><td>${u.subscribed?'<span class="badge green">مشترك</span>':'<span class="badge orange">غير مشترك</span>'}</td><td><button class="btn small" onclick="wallet(${u.id})">💰 إدارة الرصيد</button></td></tr>`).join('')||'<tr><td colspan="5">لا يوجد طلاب.</td></tr>';$('#sUsers').textContent=students.length;$('#sSubs').textContent=students.filter(x=>x.subscribed).length}
+async function loadSettings(){try{const s=await api('/api/admin/settings');$('#siteName').value=s.site_name||'';$('#tagline').value=s.tagline||'';$('#subPrice').value=Number(s.subscription_price||0);$('#heroTitle').value=s.hero_title||'';$('#heroText').value=s.hero_text||'';$('#overviewPrice').textContent=Number(s.subscription_price||0).toFixed(2);$('#settingsStatus').textContent='تم تحميل الإعدادات الحالية ✓';$('#settingsStatus').className='saveStatus';}catch(e){$('#settingsStatus').textContent=e.message;$('#settingsStatus').className='dangerText';}}
+async function saveSettings(){
+  try{
+    const price=Number($('#subPrice').value);
+    if(!Number.isFinite(price)||price<0) throw Error('أدخل سعر اشتراك صحيح بالجنيه.');
+    const payload={site_name:$('#siteName').value.trim()||'StudyMedSmart',tagline:$('#tagline').value.trim()||'منصة تعليمية طبية',subscription_price:price,hero_title:$('#heroTitle').value.trim()||'ابدأ رحلتك الطبية بثقة',hero_text:$('#heroText').value.trim()||'تعلم أساسيات المجال الطبي في مكان واحد.'};
+    const saved=await api('/api/admin/settings',{method:'PUT',body:JSON.stringify(payload)});
+    $('#overviewPrice').textContent=Number(saved.subscription_price||0).toFixed(2);
+    $('#settingsStatus').textContent='تم حفظ التعديلات وتطبيقها بنجاح ✓';
+    $('#settingsStatus').className='saveStatus';
+    toast('تم حفظ إعدادات الموقع بنجاح.');
+  }catch(e){
+    $('#settingsStatus').textContent=e.message;
+    $('#settingsStatus').className='dangerText';
+    toast(e.message);
+  }
+}
+async function loadUsers(){users=await api('/api/admin/users');const students=users;$('#usersTable').innerHTML=students.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td><b>${Number(u.wallet_balance||0).toFixed(2)}</b> جنيه</td><td>${u.role==='admin'?'<span class="badge">مدير</span>':'<span class="badge">طالب</span>'}</td><td>${u.subscribed?'<span class="badge green">مشترك</span>':'<span class="badge orange">غير مشترك</span>'}</td><td><button class="btn small" onclick="wallet(${u.id})">💰 إدارة الرصيد</button></td></tr>`).join('')||'<tr><td colspan="6">لا يوجد طلاب.</td></tr>';$('#sUsers').textContent=students.length;$('#sSubs').textContent=students.filter(x=>x.subscribed).length}
 async function wallet(id){const u=users.find(x=>Number(x.id)===Number(id));openModal(`<h2>💰 محفظة الطالب</h2><p><b>${esc(u.name)}</b><br>${esc(u.email)}<br>الرصيد الحالي: <b>${Number(u.wallet_balance||0).toFixed(2)} جنيه</b></p><div class="field"><label>المبلغ بالجنيه</label><input id="creditAmount" type="number" min="1" step="0.01"></div><div class="field"><label>ملاحظة</label><input id="creditNote" value="إضافة رصيد من الإدارة"></div><button class="btn green" onclick="credit(${id})">➕ إضافة الرصيد</button>`)}
 async function credit(id){try{const a=Number($('#creditAmount').value);if(!a||a<=0)throw Error('أدخل مبلغًا صحيحًا.');await api('/api/admin/users/'+id+'/credit',{method:'POST',body:JSON.stringify({amount:a,note:$('#creditNote').value})});closeModal();await loadUsers();toast('تم إضافة الرصيد بنجاح.')}catch(e){toast(e.message)}}
 async function loadCourses(){courses=await api('/api/admin/courses');$('#sCourses').textContent=courses.filter(c=>['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)).length;$('#coursesList').innerHTML=courses.filter(c=>['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)).map((c,i)=>`<div class="courseCard"><div class="courseHead"><div><b>0${i+1}. ${esc(c.title)}</b><div class="muted">${esc(c.description||'')}</div></div><div class="actions"><button class="btn small" onclick="openCourseForm(${c.id})">تعديل</button><button class="btn secondary small" onclick="manageLessons(${c.id})">الدروس والاختبارات</button></div></div><div id="lessons-${c.id}"></div></div>`).join('');let total=0;for(const c of courses){if(['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)){try{const l=await api('/api/admin/courses/'+c.id+'/lessons');total+=l.length}catch{}}}$('#sLessons').textContent=total}
@@ -44,4 +96,54 @@ function addQuestion(){const c=$('#questions');c.insertAdjacentHTML('beforeend',
 async function saveQuiz(lessonId){try{const questions=[...document.querySelectorAll('#questions .question')].map(x=>({question:x.querySelector('.qText').value.trim(),option_a:x.querySelector('.qA').value.trim(),option_b:x.querySelector('.qB').value.trim(),option_c:x.querySelector('.qC').value.trim(),option_d:x.querySelector('.qD').value.trim(),correct_option:x.querySelector('.qCorrect').value,explanation:x.querySelector('.qExp').value.trim()}));if(!questions.length)throw Error('أضف سؤالًا واحدًا على الأقل.');for(const q of questions)if(!q.question||!q.option_a||!q.option_b||!q.option_c||!q.option_d)throw Error('أكمل بيانات كل سؤال والاختيارات الأربعة.');await api('/api/admin/quizzes',{method:'POST',body:JSON.stringify({lesson_id:lessonId,passing_score:Number($('#passScore').value)||50,questions})});closeModal();toast('تم حفظ الاختبار بنجاح.')}catch(e){toast(e.message)}}
 async function deleteQuiz(lessonId){if(!confirm('حذف اختبار هذا الدرس؟'))return;try{await api('/api/admin/lessons/'+lessonId+'/quiz',{method:'DELETE'});closeModal();toast('تم حذف الاختبار.')}catch(e){toast(e.message)}}
 (async()=>{if(token)await boot()})();
-</script></body></html>
+
+async function loadWalletPanel(){
+  try{
+    const s=await api('/api/admin/settings');
+    const price=Number(s.subscription_price||0);
+    if($('#walletSubPrice')) $('#walletSubPrice').value=price;
+  }catch(e){}
+}
+async function saveWalletPrice(){
+  try{
+    const price=Number($('#walletSubPrice').value);
+    if(!Number.isFinite(price)||price<0) throw Error('أدخل سعرًا صحيحًا بالجنيه.');
+    const s=await api('/api/admin/settings');
+    await api('/api/admin/settings',{method:'PUT',body:JSON.stringify({
+      site_name:s.site_name||'StudyMedSmart', tagline:s.tagline||'منصة تعليمية طبية',
+      subscription_price:price, hero_title:s.hero_title||'ابدأ رحلتك الطبية بثقة',
+      hero_text:s.hero_text||'تعلم أساسيات المجال الطبي في مكان واحد.',
+      hero_image:s.hero_image||''
+    })});
+    $('#walletPriceStatus').textContent='تم حفظ السعر بنجاح ✓';
+    toast('تم تحديث سعر الاشتراك.');
+  }catch(e){$('#walletPriceStatus').textContent=e.message;toast(e.message);}
+}
+async function findWalletStudent(){
+  const email=($('#walletEmail').value||'').trim();
+  if(!email) return toast('اكتب البريد الإلكتروني للطالب.');
+  try{
+    const users=await api('/api/admin/users');
+    const u=users.find(x=>String(x.email||'').toLowerCase()===email.toLowerCase());
+    if(!u) return toast('لم يتم العثور على طالب بهذا البريد.');
+    const box=$('#walletStudent'); box.classList.remove('hidden');
+    box.innerHTML=`<div class="studentCard">
+      <div><b>${esc(u.name||'بدون اسم')}</b><div class="muted">${esc(u.email)}</div></div>
+      <div class="walletStats"><span>الرصيد الحالي</span><strong>${Number(u.wallet_balance||0).toFixed(2)} جنيه</strong></div>
+      <div class="walletStats"><span>الحالة</span><strong>${u.subscribed?'مشترك ✓':'غير مشترك'}</strong></div>
+      <div class="formGrid"><div class="field"><label>مبلغ الإضافة — جنيه</label><input id="walletAmount" type="number" min="0" step="0.01" placeholder="50"></div></div>
+      <button class="btn green" onclick="addWallet(${u.id})">➕ إضافة الرصيد</button>
+    </div>`;
+  }catch(e){toast(e.message);}
+}
+async function addWallet(id){
+  const amount=Number($('#walletAmount').value);
+  if(!Number.isFinite(amount)||amount<=0) return toast('أدخل مبلغًا أكبر من صفر.');
+  try{
+    const r=await api('/api/admin/users/'+id+'/wallet',{method:'POST',body:JSON.stringify({amount})});
+    toast('تمت إضافة الرصيد بنجاح.');
+    $('#walletStudent').querySelector('.walletStats strong').textContent=Number(r.balance||0).toFixed(2)+' جنيه';
+    $('#walletAmount').value='';
+  }catch(e){toast(e.message);}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[onclick*="nav(\'wallet\')"]');if(b)setTimeout(loadWalletPanel,50)});</script></body></html>

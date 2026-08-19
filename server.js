@@ -275,6 +275,46 @@ app.get("/api/courses/:slug", async (req, res) => {
 });
 
 /* =========================================================
+   COURSE PROGRESS
+========================================================= */
+
+app.get("/api/courses/:slug/progress", auth, async (req, res) => {
+  try {
+    const c = await db(`SELECT id,title FROM courses WHERE slug=$1 AND is_published=true`, [req.params.slug]);
+    if (!c.rows[0]) return res.status(404).json({ error: "الكورس غير موجود" });
+
+    const r = await db(`
+      SELECT l.id,l.title,
+             COALESCE(lp.completed,false) AS completed,
+             lp.score,lp.last_attempt_at
+      FROM lessons l
+      LEFT JOIN lesson_progress lp
+        ON lp.lesson_id=l.id AND lp.user_id=$1
+      WHERE l.course_id=$2 AND l.is_published=true
+      ORDER BY l.sort_order,l.id
+    `, [req.user.id, c.rows[0].id]);
+
+    const lessons = r.rows;
+    const completed = lessons.filter(x => x.completed).length;
+    const scores = lessons.filter(x => x.score !== null).map(x => Number(x.score));
+    const averageScore = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+    const percent = lessons.length ? Math.round(completed/lessons.length*100) : 0;
+
+    res.json({
+      course: c.rows[0],
+      totalLessons: lessons.length,
+      completedLessons: completed,
+      percent,
+      averageScore,
+      lessons
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "تعذر تحميل تقدم الكورس" });
+  }
+});
+
+/* =========================================================
    AUTH
 ========================================================= */
 
@@ -865,3 +905,6 @@ async function start() {
 }
 
 start();
+
+// Express 5 frontend fallback
+app.get("/{*splat}", (req,res)=>res.sendFile(path.join(process.cwd(),"index.html")));
