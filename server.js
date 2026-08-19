@@ -510,7 +510,7 @@ app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
     await db(`
       INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at)
       VALUES($1,$2,true,NULL,0,NOW())
-      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, updated_at=NOW()
+      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, last_attempt_at=NOW()
     `, [req.user.id, lessonId]);
     res.json({ ok:true, completed:true });
   } catch(e) {
@@ -700,7 +700,8 @@ app.post("/api/admin/users/:id/credit", auth, adminOnly, async (req,res) => {
     `,[req.params.id,amount,req.body.note || "إضافة رصيد من الإدارة"]);
 
     await client.query("COMMIT");
-    res.json({ok:true});
+    const bal = await client.query('SELECT wallet_balance FROM users WHERE id=$1',[req.params.id]);
+    res.json({ok:true,balance:Number(bal.rows[0]?.wallet_balance||0)});
   } catch(e) {
     try { await client.query("ROLLBACK"); } catch {}
     console.error(e);
