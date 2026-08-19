@@ -1,61 +1,3530 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>StudyMedSmart</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-:root{--primary:#2563eb;--primary2:#06b6d4;--navy:#102a43;--bg:#f4f8fc;--card:#fff;--text:#132238;--muted:#64748b;--line:#e5edf5;--ok:#16a34a;--warn:#f59e0b;--danger:#dc2626;--purple:#7c3aed;--shadow:0 14px 40px rgba(16,42,67,.09);--r:22px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Cairo,Tahoma,Arial,sans-serif;background:linear-gradient(180deg,#f8fbff 0,#f4f8fc 100%);color:var(--text);line-height:1.75}button,input,textarea,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.container{width:min(1160px,92%);margin:auto}.hidden{display:none!important}
-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}.nav{min-height:74px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:10px}.brandIcon{width:45px;height:45px;border-radius:15px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 8px 22px rgba(37,99,235,.25)}.brandName{font-weight:900;font-size:21px;color:var(--navy)}.brandSub{display:block;color:var(--muted);font-size:10px;margin-top:-5px}.navActions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.navBtn{border:1px solid var(--line);background:#fff;color:var(--navy);padding:9px 13px;border-radius:12px;font-weight:700}.navBtn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}.userPill{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:14px;background:#eff6ff;color:#1d4ed8;font-weight:800}.logout{border:0;background:#fff0f1;color:#b91c1c;padding:9px 12px;border-radius:12px;font-weight:800}
-.hero{margin-top:28px;border-radius:30px;overflow:hidden;padding:50px 46px;background:linear-gradient(135deg,#0f3b66 0%,#145da0 55%,#0ea5b7 100%);color:#fff;position:relative;box-shadow:var(--shadow)}.hero:after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.08);left:-100px;bottom:-170px}.heroGrid{display:grid;grid-template-columns:1.35fr .65fr;gap:35px;align-items:center;position:relative;z-index:1}.hero .eyebrow{color:#bfe9ff;font-weight:800}.hero h1{font-size:clamp(31px,5vw,57px);line-height:1.2;margin:12px 0}.hero p{font-size:18px;color:#e3f4ff;max-width:680px}.heroVisual{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:28px;padding:30px;text-align:center}.heroIcon{font-size:78px}.btn{border:0;border-radius:13px;padding:11px 17px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--primary);color:#fff;transition:.2s}.btn:hover{transform:translateY(-1px);filter:brightness(.97)}.btn.light{background:#fff;color:var(--navy)}.btn.green{background:var(--ok)}.btn.outline{background:#fff;color:var(--primary);border:1px solid #bfdbfe}.btn.danger{background:var(--danger)}
-.accountBar{margin:24px 0;display:grid;grid-template-columns:1fr 1.35fr;gap:16px}.wallet,.subscription{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:16px}.wallet{background:linear-gradient(135deg,#ffffff,#eef8ff)}.subscription{background:linear-gradient(135deg,#fff,#f5f3ff)}.boxLabel{font-size:13px;color:var(--muted);font-weight:700}.boxValue{font-size:26px;font-weight:900;color:var(--navy)}.subText strong{color:var(--purple)}
-.section{padding:38px 0}.sectionHead{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:20px}.eyebrow{color:var(--primary);font-weight:900;font-size:13px}.section h2{font-size:30px;margin:5px 0}.price{background:#eff6ff;color:#1d4ed8;padding:9px 13px;border-radius:13px;font-weight:800}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.course{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);transition:.25s}.course:hover{transform:translateY(-4px)}.courseTop{height:150px;padding:20px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#eaf4ff,#e8fbfa)}.course:nth-child(2) .courseTop{background:linear-gradient(135deg,#fff4df,#fff0f6)}.course:nth-child(3) .courseTop{background:linear-gradient(135deg,#edf7ed,#eaf7ff)}.course:nth-child(4) .courseTop{background:linear-gradient(135deg,#f3edff,#eaf3ff)}.course:nth-child(5) .courseTop{background:linear-gradient(135deg,#fff7e8,#edf9ff)}.course:nth-child(6) .courseTop{background:linear-gradient(135deg,#eaf8f8,#f2edff)}.courseIcon{font-size:54px}.courseNo{font-size:13px;font-weight:900;color:#64748b;background:#fff;padding:7px 10px;border-radius:10px}.courseBody{padding:20px}.course h3{font-size:19px;line-height:1.55;margin:0 0 8px}.muted{color:var(--muted)}.courseDesc{min-height:74px}.courseFooter{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px}.lockedTag{color:#92400e;background:#fff7ed;padding:6px 9px;border-radius:9px;font-size:12px;font-weight:800}.openTag{color:#166534;background:#ecfdf5;padding:6px 9px;border-radius:9px;font-size:12px;font-weight:800}
-.courseView,.dashboard{background:#fff;border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow);margin-top:20px}.lesson{border:1px solid var(--line);border-radius:16px;padding:16px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:15px;background:#fbfdff}.lessonTitle{font-weight:900}.lessonMeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}.tag{font-size:11px;padding:4px 8px;border-radius:8px;background:#eef2ff;color:#4338ca;font-weight:800}.lockedLesson{opacity:.82}.progressBar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.progressBar span{height:100%;display:block;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:20px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#f8fbff;border:1px solid var(--line);border-radius:16px;padding:16px}.stat b{font-size:25px;display:block}.courseProgress{padding:14px;border:1px solid var(--line);border-radius:15px;margin-top:10px}.courseProgressHead{display:flex;justify-content:space-between;gap:10px}.last{background:#f8fafc;padding:14px;border-radius:14px;margin-top:14px}
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.62);display:flex;align-items:center;justify-content:center;padding:16px;z-index:200}.modalCard{width:min(650px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:24px;padding:26px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.2)}.close{position:absolute;left:15px;top:10px;border:0;background:transparent;font-size:28px}.field{margin:13px 0}.field label{display:block;font-weight:800;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 3px #dbeafe}.notice{padding:12px 14px;border-radius:12px;background:#f1f5f9;margin:12px 0}.notice.danger{background:#fff1f2;color:#b91c1c}.notice.success{background:#ecfdf5;color:#166534}.quizQ{padding:16px;border:1px solid var(--line);border-radius:16px;margin:12px 0}.option{display:flex;gap:8px;padding:8px;border-radius:9px}.resultGood{color:#166534;background:#ecfdf5;padding:10px;border-radius:10px}.resultBad{color:#991b1b;background:#fff1f2;padding:10px;border-radius:10px}.footer{padding:35px 0;color:var(--muted);text-align:center}
-@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.heroGrid{grid-template-columns:1fr}.accountBar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.nav{min-height:66px}.brandSub{display:none}.navLinks{display:none}.navBtn{padding:8px 10px;font-size:12px}.userPill{max-width:130px;overflow:hidden}.hero{padding:35px 22px}.hero h1{font-size:32px}.grid{grid-template-columns:1fr}.courseDesc{min-height:auto}.sectionHead{align-items:flex-start;flex-direction:column}.wallet,.subscription{align-items:flex-start;flex-direction:column}.lesson{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:1fr 1fr}}
-.heroVisual{height:340px;padding:0;overflow:hidden;display:grid;place-items:center}.heroVisual img{width:100%;height:100%;object-fit:cover}.courseHeader{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:1px solid var(--line);padding-bottom:14px}.siteMini{color:var(--p);font-weight:900;font-size:14px}.courseProgress{margin:16px 0;padding:18px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 10px 30px #0f172a0a}.progressLine{height:10px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin:12px 0}.progressFill{height:100%;background:linear-gradient(90deg,#2563eb,#06b6d4);border-radius:99px}.studyLayout{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}.lessonSide{position:sticky;top:88px}.lessonItem{border:1px solid var(--line);border-radius:14px;padding:13px;margin:9px 0;background:#fff;cursor:pointer}.lessonItem.active{border-color:#93c5fd;background:#eff6ff}.lessonItem small{display:block;color:var(--muted);margin-top:4px}.lessonContent{min-height:520px}.videoBox{background:#0b1220;border-radius:18px;overflow:hidden;aspect-ratio:16/9;display:grid;place-items:center;color:#fff}.videoBox iframe,.videoBox video{width:100%;height:100%;border:0}.resource{margin-top:14px;border:1px solid var(--line);border-radius:15px;padding:14px}.quizArea{margin-top:18px}@media(max-width:850px){.studyLayout{grid-template-columns:1fr}.lessonSide{position:static}.heroVisual{height:260px}}</style>
-</head>
-<body>
-<header><div class="container nav">
-<a class="brand" href="/"><span class="brandIcon">🩺</span><span><span class="brandName">StudyMedSmart</span><span class="brandSub">منصتك الذكية لبداية الطب</span></span></a>
-<div class="navActions" id="navActions"><button class="navBtn" id="loginBtn">تسجيل الدخول</button><button class="navBtn primary" id="registerBtn">إنشاء حساب</button></div>
-</div></header>
-<main class="container">
-<section class="hero"><div class="heroGrid"><div><span class="eyebrow">منصة تعليمية طبية</span><h1 id="heroTitle">ابدأ رحلتك الطبية بثقة</h1><p id="heroText">كورسات تأسيسية، مهارات مهمة، فيديوهات، ملفات PDF واختبارات في مكان واحد.</p><button class="btn light" onclick="document.getElementById('courses').scrollIntoView()">استكشف الكورسات</button></div><div class="heroVisual"><div class="heroIcon">🧠</div><h3>تعلّم • اختبر • طوّر نفسك</h3><p>تابع تقدمك الدراسي وراجع نتائج اختباراتك بسهولة.</p></div></div></section>
-<div class="accountBar"><div class="wallet"><div><div class="boxLabel">محفظتك</div><div class="boxValue"><span id="wallet">0.00</span> جنيه</div></div><span style="font-size:35px">💰</span></div><div class="subscription"><div class="subText"><div class="boxLabel">اشتراك StudyMedSmart</div><div class="boxValue"><span id="subPrice">100.00</span> جنيه</div><div class="muted" id="subState">اشتراك واحد يفتح الكورسات الستة</div></div><button class="btn" id="subscribeBtn">⭐ اشترك في جميع الكورسات</button></div></div>
-<section id="courses" class="section"><div class="sectionHead"><div><span class="eyebrow">المحتوى الأساسي</span><h2>الكورسات الستة</h2><div class="muted">كل الكورسات تحت اشتراك واحد فقط.</div></div><div class="price">⭐ الاشتراك الشامل: <b id="price">100</b> جنيه</div></div><div id="coursesGrid" class="grid"></div></section>
-<section id="courseView" class="courseView hidden"></section>
-<section id="dashboard" class="section"><div class="sectionHead"><div><span class="eyebrow">لوحة الطالب</span><h2>متابعة تقدمك</h2></div></div><div id="dashboardBox" class="dashboard">سجّل الدخول لعرض تقدمك الدراسي.</div></section>
-</main><footer class="footer">StudyMedSmart — تعلّم اليوم لتصنع مستقبلك الطبي.</footer>
-<div id="modal" class="modal hidden"><div class="modalCard"><button class="close" id="closeModal">×</button><div id="modalBody"></div></div></div>
-<script>
-const $=s=>document.querySelector(s);let token=localStorage.getItem('sms_token')||'',me=null,settings={};
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const attr=s=>encodeURIComponent(String(s??''));
-async function api(url,opt={}){const h={'Content-Type':'application/json',...(opt.headers||{})};if(token)h.Authorization='Bearer '+token;const r=await fetch(url,{...opt,headers:h});const d=await r.json().catch(()=>({}));if(!r.ok){if(r.status===401&&token){token='';localStorage.removeItem('sms_token');me=null;renderAuth()}throw Error(d.error||d.message||'حدث خطأ غير متوقع');}return d}
-function openModal(html){$('#modalBody').innerHTML=html;$('#modal').classList.remove('hidden')}function closeModal(){$('#modal').classList.add('hidden')}$('#closeModal').onclick=closeModal;$('#modal').onclick=e=>{if(e.target.id==='modal')closeModal()};
-function authLogin(){openModal(`<h2>تسجيل الدخول</h2><p class="muted">ادخل إلى حسابك للوصول إلى المحفظة والكورسات والاختبارات.</p><div class="field"><label>البريد الإلكتروني</label><input id="authEmail" type="email" autocomplete="email"></div><div class="field"><label>كلمة المرور</label><input id="authPassword" type="password" autocomplete="current-password"></div><button class="btn" onclick="login()">دخول</button><button class="btn outline" style="margin-right:8px" onclick="authRegister()">إنشاء حساب</button><div id="authMsg"></div>`)}
-function authRegister(){openModal(`<h2>إنشاء حساب طالب</h2><p class="muted">ابدأ حسابك مجانًا ثم اشحن المحفظة عند الحاجة.</p><div class="field"><label>الاسم</label><input id="regName" autocomplete="name"></div><div class="field"><label>البريد الإلكتروني</label><input id="regEmail" type="email" autocomplete="email"></div><div class="field"><label>كلمة المرور</label><input id="regPassword" type="password" autocomplete="new-password"></div><button class="btn" onclick="register()">إنشاء الحساب</button><div id="authMsg"></div>`)}
-async function login(){try{const d=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:$('#authEmail').value,password:$('#authPassword').value})});token=d.token;localStorage.setItem('sms_token',token);me=d.user;closeModal();renderAuth();loadAccount();loadDashboard()}catch(e){$('#authMsg').innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
-async function register(){try{const d=await api('/api/auth/register',{method:'POST',body:JSON.stringify({name:$('#regName').value,email:$('#regEmail').value,password:$('#regPassword').value})});token=d.token;localStorage.setItem('sms_token',token);me=d.user;closeModal();renderAuth();loadAccount();loadDashboard()}catch(e){$('#authMsg').innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
-function logout(){token='';me=null;localStorage.removeItem('sms_token');renderAuth();loadAccount();loadDashboard();closeCourse()}
-function renderAuth(){const n=$('#navActions');if(!me){n.innerHTML='<button class="navBtn" onclick="authLogin()">تسجيل الدخول</button><button class="navBtn primary" onclick="authRegister()">إنشاء حساب</button>'}else{n.innerHTML=`<span class="userPill">👤 ${esc(me.name)}</span><a class="navBtn" href="/admin" ${me.role==='admin'?'':'style="display:none"'}>الإدارة</a><button class="logout" onclick="logout()">تسجيل الخروج</button>`}}
-$('#loginBtn')?.addEventListener('click',authLogin);$('#registerBtn')?.addEventListener('click',authRegister);
-async function loadSettings(){try{settings=await api('/api/settings');$('#heroTitle').textContent=settings.hero_title||'ابدأ رحلتك الطبية بثقة';$('#heroText').textContent=settings.hero_text||'';const p=Number(settings.subscription_price||100).toFixed(2);$('#price').textContent=p;$('#subPrice').textContent=p;document.title=settings.site_name||'StudyMedSmart';}catch(e){console.error(e)}}
-async function loadAccount(){if(!token){$('#wallet').textContent='0.00';$('#subState').textContent='سجّل الدخول لاستخدام الاشتراك';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=authLogin;return}try{me=await api('/api/me');$('#wallet').textContent=Number(me.wallet_balance||0).toFixed(2);if(me.subscribed){$('#subState').innerHTML='<span class="openTag">✓ أنت مشترك — الكورسات الستة مفتوحة</span>';$('#subscribeBtn').textContent='✓ مشترك في جميع الكورسات';$('#subscribeBtn').disabled=true;$('#subscribeBtn').style.opacity='.7'}else{$('#subState').textContent='اشتراك واحد يفتح الكورسات الستة';$('#subscribeBtn').disabled=false;$('#subscribeBtn').style.opacity='1';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=subscribe}renderAuth()}catch(e){console.error(e)}}
-async function subscribe(){if(!me)return authLogin();if(me.subscribed)return;try{if(!confirm(`سيتم خصم ${Number(settings.subscription_price||0).toFixed(2)} جنيه من محفظتك وفتح الكورسات الستة. متابعة؟`))return;const d=await api('/api/subscribe',{method:'POST',body:'{}'});me.subscribed=true;me.wallet_balance=d.wallet_balance;await loadAccount();await loadCourses();if(window.currentSlug)openCourse(window.currentSlug);alert('تم الاشتراك بنجاح 🎉 الكورسات الستة أصبحت متاحة لك.')}catch(e){alert(e.message)}}
-async function loadCourses(){const box=$('#coursesGrid');box.innerHTML='<div class="notice">جاري تحميل الكورسات...</div>';try{const cs=await api('/api/courses');box.innerHTML=cs.map((c,i)=>`<article class="course"><div class="courseTop"><span class="courseIcon">${esc(c.image_url||'🩺')}</span><span class="courseNo">0${i+1}</span></div><div class="courseBody"><h3>${esc(c.title)}</h3><p class="muted courseDesc">${esc(c.description)}</p><div class="courseFooter"><span class="${me?.subscribed?'openTag':'lockedTag'}">${me?.subscribed?'✓ متاح':'🔒 بعد الاشتراك'}</span><button class="btn" onclick="openCourse('${attr(c.slug)}')">عرض الكورس</button></div></div></article>`).join('')||'<div class="notice">لا توجد كورسات منشورة.</div>'}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
-window.currentSlug='';async function openCourse(encoded){const slug=decodeURIComponent(encoded);window.currentSlug=slug;try{const c=await api('/api/courses/'+encodeURIComponent(slug));$('#courseView').classList.remove('hidden');$('#courseView').innerHTML=`<div class="sectionHead"><div><span class="eyebrow">صفحة الكورس</span><h2>${esc(c.title)}</h2><p class="muted">${esc(c.description)}</p></div><button class="btn ${me?.subscribed?'green':''}" onclick="${me?.subscribed?'':'subscribe()'}">${me?.subscribed?'✓ مشترك':'⭐ اشترك الآن'}</button></div><div>${c.lessons.map((l,i)=>`<div class="lesson ${me?.subscribed?'':'lockedLesson'}"><div><div class="lessonTitle">الدرس ${String(i+1).padStart(2,'0')} — ${esc(l.title)}</div><div class="muted">${esc(l.description||'')}</div><div class="lessonMeta">${l.has_video?'<span class="tag">🎥 فيديو</span>':''}${l.has_pdf?'<span class="tag">📄 PDF</span>':''}${l.quiz_id?'<span class="tag">📝 Quiz</span>':''}</div></div><div>${me?.subscribed?`<button class="btn" onclick="openLesson('${attr(c.slug)}',${l.id})">فتح الدرس</button>`:'<button class="btn outline" onclick="subscribe()">🔒 مغلق</button>'}</div></div>`).join('')||'<div class="notice">لا توجد دروس في هذا الكورس حتى الآن.</div>'}</div>`;$('#courseView').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){alert(e.message)}}
-function closeCourse(){window.currentSlug='';$('#courseView').classList.add('hidden');$('#courseView').innerHTML=''}
-async function openLesson(slug,id,quizId){document.querySelectorAll('.lessonItem').forEach(x=>x.classList.remove('active'));$("#lesson-"+id)?.classList.add('active');const box=$("#lessonContent");box.innerHTML='<div class="notice">جاري تحميل الدرس...</div>';if(!me){box.innerHTML='<div class="notice">🔒 يجب عليك تسجيل الدخول والاشتراك للوصول إلى محتوى هذا الدرس.</div>';return}try{const l=await api(`/api/courses/${encodeURIComponent(slug)}/lessons/${id}`);const video=processVideo(l.video_url);box.innerHTML=`<h2>${escapeHtml(l.title)}</h2><p class="muted">${escapeHtml(l.description||"")}</p><div class="videoBox">${video||'<span>لا يوجد فيديو لهذا الدرس.</span>'}</div>${l.pdf_url?`<div class="resource">📄 <b>ملف PDF</b><br><a class="btn" target="_blank" href="${escapeAttr(l.pdf_url)}">فتح الملف</a></div>`:""}<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px"><button class="outline" onclick="completeLesson(${l.id})">✓ تحديد الدرس كمكتمل</button>${l.quiz_id?`<button class="btn" onclick="loadQuiz(${l.id})">📝 الاختبار</button>`:""}</div><div id="quizArea" class="quizArea"></div>`;await updateCourseProgress(l.course_title)}catch(e){box.innerHTML=`<div class="notice danger">${escapeHtml(e.message)}</div>`}}
-function processVideo(url){if(!url)return"";try{const u=new URL(url);let id="";if(u.hostname.includes('youtu.be'))id=u.pathname.slice(1);else if(u.hostname.includes('youtube.com'))id=u.searchParams.get('v')||((u.pathname.match(/\/embed\/([^/]+)/)||[])[1]);if(id)return `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(id)}" allowfullscreen></iframe>`;if(/\.(mp4|webm|ogg)(\?|$)/i.test(u.pathname))return `<video controls src="${escapeAttr(url)}"></video>`;return `<a href="${escapeAttr(url)}" target="_blank">فتح الفيديو</a>`}catch{return""}}
-async function completeLesson(id){try{await api(`/api/lessons/${id}/complete`,{method:'POST'});alert('تم حفظ تقدم الدرس ✓');await loadDashboard();const t=$(".courseHeader h2")?.textContent;if(t)await updateCourseProgress(t)}catch(e){alert(e.message)}}
-async function loadQuiz(id){const a=$("#quizArea");a.innerHTML='<div class="notice">جاري تحميل الاختبار...</div>';try{const q=await api(`/api/lessons/${id}/quiz`);a.innerHTML=`<div class="panel"><h3>📝 اختبار الدرس</h3>${(q.questions||[]).map((x,i)=>`<div class="quizQ"><b>${i+1}. ${escapeHtml(x.question)}</b>${['A','B','C','D'].map(k=>`<label class="option"><input type="radio" name="q${x.id}" value="${k}"> ${k}) ${escapeHtml(x['option_'+k.toLowerCase()]||'')}</label>`).join('')}</div>`).join('')}<button class="btn" onclick="submitQuiz(${id})">إرسال الاختبار</button><div id="quizResult"></div></div>`}catch(e){a.innerHTML=`<div class="notice danger">${escapeHtml(e.message)}</div>`}}
-async function submitQuiz(id){const answers={};document.querySelectorAll('#quizArea input[type=radio]:checked').forEach(x=>answers[x.name.slice(1)]=x.value);try{const r=await api(`/api/lessons/${id}/quiz/submit`,{method:'POST',body:JSON.stringify({answers})});$("#quizResult").innerHTML=`<div class="notice ${r.passed?'success':'danger'}"><b>${r.passed?'✅ ناجح':'❌ لم تنجح بعد'} — ${r.score}%</b><p>درجة النجاح: ${r.passing_score}%</p>${r.results.map((x,i)=>`<div style="margin-top:10px"><b>${x.correct?'✅':'❌'} السؤال ${i+1}</b><br>الإجابة الصحيحة: ${escapeHtml(x.correct_option)}<br>${escapeHtml(x.explanation||'')}</div>`).join('')}</div>`;await loadDashboard();const t=$(".courseHeader h2")?.textContent;if(t)await updateCourseProgress(t)}catch(e){alert(e.message)}}
 
-async function loadDashboard(){const box=$('#dashboardBox');if(!token){box.textContent='سجّل الدخول لعرض تقدمك الدراسي.';return}try{const d=await api('/api/dashboard');me=d.user;const p=d.progress;box.innerHTML=`<div class="stats"><div class="stat"><span class="muted">نسبة الإنجاز</span><b>${p.percent}%</b></div><div class="stat"><span class="muted">الدروس المكتملة</span><b>${p.completedLessons}/${p.totalLessons}</b></div><div class="stat"><span class="muted">متوسط الاختبارات</span><b>${p.averageScore}%</b></div><div class="stat"><span class="muted">الاشتراك</span><b style="font-size:18px">${d.user.subscribed?'✓ مشترك':'غير مشترك'}</b></div></div><h3 style="margin-top:24px">تقدم كل كورس</h3>${p.courses.map(c=>`<div class="courseProgress"><div class="courseProgressHead"><b>${esc(c.title)}</b><b>${c.percent}%</b></div><div class="progressBar"><span style="width:${c.percent}%"></span></div><small class="muted">${c.completed} من ${c.total} دروس</small></div>`).join('')||'<div class="notice">ابدأ أول درس ليظهر تقدمك.</div>'}${p.lastLesson?`<div class="last">📌 آخر درس مكتمل: <b>${esc(p.lastLesson.title)}</b> — ${esc(p.lastLesson.course_title)}</div>`:''}`;renderAuth();loadAccount()}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
-(async function(){await loadSettings();try{if(token)me=await api('/api/me')}catch{token='';localStorage.removeItem('sms_token');me=null}renderAuth();await loadAccount();await loadCourses();await loadDashboard()})();
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#2563eb;
+  --primary2:#06b6d4;
+  --navy:#102a43;
+  --bg:#f4f8fc;
+  --card:#fff;
+  --text:#132238;
+  --muted:#64748b;
+  --line:#e5edf5;
+  --ok:#16a34a;
+  --warn:#f59e0b;
+  --danger:#dc2626;
+  --purple:#7c3aed;
+  --shadow:0 14px 40px rgba(16,42,67,.09);
+  --r:22px;
+}
+
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:Cairo,Tahoma,Arial,sans-serif;
+  background:linear-gradient(180deg,#f8fbff 0,#f4f8fc 100%);
+  color:var(--text);
+  line-height:1.75;
+}
+
+body.courseMode{
+  background:#f4f8fc;
+}
+
+button,input,textarea,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.container{
+  width:min(1160px,92%);
+  margin:auto;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* ================= HEADER ================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+
+.nav{
+  min-height:74px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brandIcon{
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--primary2));
+  box-shadow:0 8px 22px rgba(37,99,235,.25);
+}
+
+.brandName{
+  font-weight:900;
+  font-size:21px;
+  color:var(--navy);
+}
+
+.brandSub{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:-5px;
+}
+
+.navActions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.navBtn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--navy);
+  padding:9px 13px;
+  border-radius:12px;
+  font-weight:700;
+}
+
+.navBtn.primary{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+}
+
+.userPill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 11px;
+  border-radius:14px;
+  background:#eff6ff;
+  color:#1d4ed8;
+  font-weight:800;
+}
+
+.logout{
+  border:0;
+  background:#fff0f1;
+  color:#b91c1c;
+  padding:9px 12px;
+  border-radius:12px;
+  font-weight:800;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+  margin-top:28px;
+  border-radius:30px;
+  overflow:hidden;
+  padding:42px;
+  background:linear-gradient(135deg,#0f3b66 0%,#145da0 55%,#0ea5b7 100%);
+  color:#fff;
+  position:relative;
+  box-shadow:var(--shadow);
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+  left:-100px;
+  bottom:-170px;
+}
+
+.heroGrid{
+  display:grid;
+  grid-template-columns:1.15fr .85fr;
+  gap:35px;
+  align-items:center;
+  position:relative;
+  z-index:1;
+}
+
+.hero .eyebrow{
+  color:#bfe9ff;
+  font-weight:800;
+}
+
+.hero h1{
+  font-size:clamp(31px,5vw,57px);
+  line-height:1.2;
+  margin:12px 0;
+}
+
+.hero p{
+  font-size:18px;
+  color:#e3f4ff;
+  max-width:680px;
+}
+
+/* الصورة المستقلة على يسار الـHero */
+
+.heroImageSlot{
+  width:100%;
+  min-height:280px;
+  border-radius:28px;
+  overflow:hidden;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 20px 50px rgba(0,0,0,.15);
+}
+
+.heroImageSlot img{
+  width:100%;
+  height:100%;
+  min-height:280px;
+  object-fit:cover;
+  display:block;
+}
+
+.heroImagePlaceholder{
+  width:100%;
+  min-height:280px;
+  display:grid;
+  place-items:center;
+  font-size:80px;
+  color:#fff;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn{
+  border:0;
+  border-radius:13px;
+  padding:11px 17px;
+  font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  background:var(--primary);
+  color:#fff;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+  filter:brightness(.97);
+}
+
+.btn.light{
+  background:#fff;
+  color:var(--navy);
+}
+
+.btn.green{
+  background:var(--ok);
+}
+
+.btn.outline{
+  background:#fff;
+  color:var(--primary);
+  border:1px solid #bfdbfe;
+}
+
+.btn.danger{
+  background:var(--danger);
+}
+
+/* ================= ACCOUNT ================= */
+
+.accountBar{
+  margin:24px 0;
+  display:grid;
+  grid-template-columns:1fr 1.35fr;
+  gap:16px;
+}
+
+.wallet,
+.subscription{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.wallet{
+  background:linear-gradient(135deg,#fff,#eef8ff);
+}
+
+.subscription{
+  background:linear-gradient(135deg,#fff,#f5f3ff);
+}
+
+.boxLabel{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.boxValue{
+  font-size:26px;
+  font-weight:900;
+  color:var(--navy);
+}
+
+/* ================= SECTIONS ================= */
+
+.section{
+  padding:38px 0;
+}
+
+.sectionHead{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.eyebrow{
+  color:var(--primary);
+  font-weight:900;
+  font-size:13px;
+}
+
+.section h2{
+  font-size:30px;
+  margin:5px 0;
+}
+
+.price{
+  background:#eff6ff;
+  color:#1d4ed8;
+  padding:9px 13px;
+  border-radius:13px;
+  font-weight:800;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+/* ================= COURSE CARDS ================= */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.course{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  transition:.25s;
+}
+
+.course:hover{
+  transform:translateY(-5px);
+  box-shadow:0 22px 50px rgba(16,42,67,.13);
+}
+
+.courseTop{
+  height:190px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#eaf4ff,#e8fbfa);
+}
+
+.courseTop img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.courseFallback{
+  font-size:65px;
+}
+
+.courseNo{
+  position:absolute;
+  top:12px;
+  right:12px;
+  font-size:13px;
+  font-weight:900;
+  color:#64748b;
+  background:rgba(255,255,255,.92);
+  padding:7px 10px;
+  border-radius:10px;
+}
+
+.courseBody{
+  padding:20px;
+}
+
+.course h3{
+  font-size:19px;
+  line-height:1.55;
+  margin:0 0 8px;
+}
+
+.courseDesc{
+  min-height:74px;
+}
+
+.courseFooter{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:14px;
+}
+
+.lockedTag{
+  color:#92400e;
+  background:#fff7ed;
+  padding:6px 9px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.openTag{
+  color:#166534;
+  background:#ecfdf5;
+  padding:6px 9px;
+  border-radius:9px;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:24px;
+  box-shadow:var(--shadow);
+  margin-top:20px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.stat{
+  background:#f8fbff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+}
+
+.stat b{
+  font-size:25px;
+  display:block;
+}
+
+.courseProgress{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  margin-top:10px;
+}
+
+.courseProgressHead{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.progressBar{
+  height:10px;
+  background:#e8eef5;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.progressBar span{
+  height:100%;
+  display:block;
+  background:linear-gradient(90deg,var(--primary),var(--primary2));
+  border-radius:20px;
+}
+
+.last{
+  background:#f8fafc;
+  padding:14px;
+  border-radius:14px;
+  margin-top:14px;
+}
+
+/* =========================================================
+   COURSE PAGE — مستقلة فعليًا عن الصفحة الرئيسية
+========================================================= */
+
+.coursePage{
+  position:fixed;
+  inset:0;
+  z-index:150;
+  background:#f4f8fc;
+  overflow:auto;
+}
+
+.coursePageHeader{
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+
+.coursePageNav{
+  min-height:72px;
+  width:min(1250px,94%);
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.coursePageBrand{
+  display:flex;
+  flex-direction:column;
+}
+
+.coursePageBrand small{
+  color:var(--primary);
+  font-weight:900;
+}
+
+.coursePageBrand strong{
+  font-size:22px;
+  color:var(--navy);
+}
+
+.coursePageBody{
+  width:min(1250px,94%);
+  margin:22px auto 50px;
+}
+
+/* تقدم الكورس فوق */
+
+.courseProgressPanel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
+}
+
+.progressTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.progressTop strong{
+  font-size:16px;
+}
+
+.progressTop span{
+  color:var(--primary);
+  font-weight:900;
+}
+
+.progressTrack{
+  height:11px;
+  background:#e7edf5;
+  border-radius:50px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.progressFill{
+  height:100%;
+  border-radius:50px;
+  background:linear-gradient(90deg,var(--primary),var(--primary2));
+  transition:width .35s ease;
+}
+
+.progressMeta{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* الدروس يمين والمحتوى يسار */
+
+.courseWorkspace{
+  display:grid;
+  grid-template-columns:340px minmax(0,1fr);
+  gap:20px;
+  direction:rtl;
+}
+
+.lessonsPanel{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  height:max-content;
+  position:sticky;
+  top:92px;
+}
+
+.lessonsPanelTitle{
+  font-size:19px;
+  font-weight:900;
+  margin-bottom:12px;
+}
+
+.lessonItem{
+  width:100%;
+  border:1px solid var(--line);
+  background:#f8fbff;
+  border-radius:15px;
+  padding:13px;
+  text-align:right;
+  margin-bottom:9px;
+  transition:.2s;
+}
+
+.lessonItem:hover{
+  border-color:#93c5fd;
+  transform:translateX(-2px);
+}
+
+.lessonItem.active{
+  background:#eff6ff;
+  border-color:#60a5fa;
+  box-shadow:0 5px 16px rgba(37,99,235,.08);
+}
+
+.lessonItemTitle{
+  font-weight:900;
+  color:var(--navy);
+  font-size:14px;
+}
+
+.lessonItemMeta{
+  display:flex;
+  gap:5px;
+  flex-wrap:wrap;
+  margin-top:6px;
+}
+
+.lessonItemMeta span{
+  background:#fff;
+  color:#64748b;
+  padding:3px 6px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:800;
+}
+
+.lessonItem.done .lessonItemTitle:after{
+  content:" ✓";
+  color:var(--ok);
+}
+
+/* المحتوى */
+
+.lessonContent{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:22px;
+  box-shadow:var(--shadow);
+  min-width:0;
+}
+
+.lessonContentHeader{
+  margin-bottom:18px;
+}
+
+.lessonContentHeader small{
+  color:var(--primary);
+  font-weight:900;
+}
+
+.lessonContentHeader h2{
+  margin:5px 0;
+  font-size:27px;
+}
+
+.videoBox{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#0b1220;
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:16px;
+}
+
+.videoBox iframe,
+.videoBox video{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+
+.contentActions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin:15px 0;
+}
+
+.contentCard{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:17px;
+  background:#fbfdff;
+  margin-top:14px;
+}
+
+.contentCard h3{
+  margin:0 0 8px;
+}
+
+.completeBox{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:18px;
+  padding:16px;
+  border-radius:17px;
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.62);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:300;
+}
+
+.modalCard{
+  width:min(700px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:24px;
+  padding:26px;
+  position:relative;
+  box-shadow:0 30px 80px rgba(0,0,0,.2);
+}
+
+.close{
+  position:absolute;
+  left:15px;
+  top:10px;
+  border:0;
+  background:transparent;
+  font-size:28px;
+}
+
+.field{
+  margin:13px 0;
+}
+
+.field label{
+  display:block;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.field input,
+.field select,
+.field textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  outline:none;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 3px #dbeafe;
+}
+
+.notice{
+  padding:12px 14px;
+  border-radius:12px;
+  background:#f1f5f9;
+  margin:12px 0;
+}
+
+.notice.danger{
+  background:#fff1f2;
+  color:#b91c1c;
+}
+
+.notice.success{
+  background:#ecfdf5;
+  color:#166534;
+}
+
+.quizQ{
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  margin:12px 0;
+}
+
+.option{
+  display:flex;
+  gap:8px;
+  padding:8px;
+  border-radius:9px;
+}
+
+.resultGood{
+  color:#166534;
+  background:#ecfdf5;
+  padding:10px;
+  border-radius:10px;
+}
+
+.resultBad{
+  color:#991b1b;
+  background:#fff1f2;
+  padding:10px;
+  border-radius:10px;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+  padding:35px 0;
+  color:var(--muted);
+  text-align:center;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:950px){
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .heroGrid{
+    grid-template-columns:1fr;
+  }
+
+  .accountBar{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .courseWorkspace{
+    grid-template-columns:280px minmax(0,1fr);
+  }
+}
+
+@media(max-width:720px){
+
+  .nav{
+    min-height:66px;
+  }
+
+  .brandSub{
+    display:none;
+  }
+
+  .navBtn{
+    padding:8px 10px;
+    font-size:12px;
+  }
+
+  .hero{
+    padding:30px 22px;
+  }
+
+  .hero h1{
+    font-size:32px;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .sectionHead{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .wallet,
+  .subscription{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .courseWorkspace{
+    grid-template-columns:1fr;
+  }
+
+  .lessonsPanel{
+    position:static;
+    order:1;
+  }
+
+  .lessonContent{
+    order:2;
+  }
+
+  .coursePageNav{
+    min-height:66px;
+  }
+
+  .coursePageBrand strong{
+    font-size:18px;
+  }
+
+  .progressMeta{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+
+@media(max-width:480px){
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .heroImageSlot,
+  .heroImageSlot img,
+  .heroImagePlaceholder{
+    min-height:210px;
+  }
+
+  .coursePageBody{
+    width:94%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header id="mainHeader">
+  <div class="container nav">
+
+    <a class="brand" href="/" onclick="return goHome(event)">
+      <span class="brandIcon">🩺</span>
+
+      <span>
+        <span class="brandName">StudyMedSmart</span>
+        <span class="brandSub">منصتك الذكية لبداية الطب</span>
+      </span>
+    </a>
+
+    <div class="navActions" id="navActions">
+
+      <button class="navBtn" id="loginBtn">
+        تسجيل الدخول
+      </button>
+
+      <button class="navBtn primary" id="registerBtn">
+        إنشاء حساب
+      </button>
+
+    </div>
+
+  </div>
+</header>
+
+
+<!-- ================= MAIN HOME ================= -->
+
+<main id="homePage" class="container">
+
+  <!-- HERO -->
+
+  <section class="hero">
+
+    <div class="heroGrid">
+
+      <div>
+
+        <span class="eyebrow">
+          منصة تعليمية طبية
+        </span>
+
+        <h1 id="heroTitle">
+          ابدأ رحلتك الطبية بثقة
+        </h1>
+
+        <p id="heroText">
+          كورسات تأسيسية، مهارات مهمة، فيديوهات، ملفات PDF واختبارات في مكان واحد.
+        </p>
+
+        <button
+          class="btn light"
+          onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})"
+        >
+          استكشف الكورسات
+        </button>
+
+      </div>
+
+      <!-- الصورة التي يضعها الأدمن -->
+
+      <div
+        id="heroImageSlot"
+        class="heroImageSlot"
+      >
+
+        <div class="heroImagePlaceholder">
+          🧠
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ================= ACCOUNT ================= -->
+
+  <div class="accountBar">
+
+    <div class="wallet">
+
+      <div>
+
+        <div class="boxLabel">
+          محفظتك
+        </div>
+
+        <div class="boxValue">
+          <span id="wallet">0.00</span>
+          جنيه
+        </div>
+
+      </div>
+
+      <span style="font-size:35px">
+        💰
+      </span>
+
+    </div>
+
+
+    <div class="subscription">
+
+      <div class="subText">
+
+        <div class="boxLabel">
+          اشتراك StudyMedSmart
+        </div>
+
+        <div class="boxValue">
+          <span id="subPrice">100.00</span>
+          جنيه
+        </div>
+
+        <div
+          class="muted"
+          id="subState"
+        >
+          اشتراك واحد يفتح الكورسات الستة
+        </div>
+
+      </div>
+
+      <button
+        class="btn"
+        id="subscribeBtn"
+      >
+        ⭐ اشترك في جميع الكورسات
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================= COURSES ================= -->
+
+  <section
+    id="courses"
+    class="section"
+  >
+
+    <div class="sectionHead">
+
+      <div>
+
+        <span class="eyebrow">
+          المحتوى الأساسي
+        </span>
+
+        <h2>
+          الكورسات الستة
+        </h2>
+
+        <div class="muted">
+          كل الكورسات تحت اشتراك واحد فقط.
+        </div>
+
+      </div>
+
+      <div class="price">
+        ⭐ الاشتراك الشامل:
+        <b id="price">100</b>
+        جنيه
+      </div>
+
+    </div>
+
+
+    <div
+      id="coursesGrid"
+      class="grid"
+    >
+    </div>
+
+  </section>
+
+
+  <!-- Dashboard -->
+
+  <section
+    id="dashboard"
+    class="section"
+  >
+
+    <div class="sectionHead">
+
+      <div>
+
+        <span class="eyebrow">
+          لوحة الطالب
+        </span>
+
+        <h2>
+          متابعة تقدمك
+        </h2>
+
+      </div>
+
+    </div>
+
+    <div
+      id="dashboardBox"
+      class="dashboard"
+    >
+      سجّل الدخول لعرض تقدمك الدراسي.
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- ======================================================
+     COURSE PAGE
+     هذه ليست Section تحت الصفحة الرئيسية.
+     هي صفحة مستقلة Full Screen.
+====================================================== -->
+
+<section
+  id="coursePage"
+  class="coursePage hidden"
+>
+
+  <!-- Course Header -->
+
+  <header class="coursePageHeader">
+
+    <div class="coursePageNav">
+
+      <div class="coursePageBrand">
+
+        <small>
+          StudyMedSmart
+        </small>
+
+        <strong id="coursePageTitle">
+          اسم الكورس
+        </strong>
+
+      </div>
+
+
+      <button
+        class="btn outline"
+        onclick="closeCourse()"
+      >
+        ← الرجوع للكورسات
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- Course Body -->
+
+  <div class="coursePageBody">
+
+    <!-- Progress -->
+
+    <div
+      id="courseProgressPanel"
+      class="courseProgressPanel"
+    >
+
+      <div class="progressTop">
+
+        <strong>
+          📈 تقدمك في هذا الكورس
+        </strong>
+
+        <span id="courseProgressPercent">
+          0%
+        </span>
+
+      </div>
+
+      <div class="progressTrack">
+
+        <div
+          id="courseProgressBar"
+          class="progressFill"
+          style="width:0%"
+        ></div>
+
+      </div>
+
+      <div class="progressMeta">
+
+        <span id="courseProgressLessons">
+          0 / 0 درس مكتمل
+        </span>
+
+        <span id="courseProgressAvg">
+          متوسط الاختبارات: —
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- Workspace -->
+
+    <div class="courseWorkspace">
+
+      <!-- RIGHT: LESSONS -->
+
+      <aside class="lessonsPanel">
+
+        <div class="lessonsPanelTitle">
+          📚 دروس الكورس
+        </div>
+
+        <div id="lessonsList">
+          جاري تحميل الدروس...
+        </div>
+
+      </aside>
+
+
+      <!-- LEFT: CONTENT -->
+
+      <section
+        id="lessonContent"
+        class="lessonContent"
+      >
+
+        <div class="notice">
+          اختر درسًا من القائمة لبدء التعلم.
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer
+  id="mainFooter"
+  class="footer"
+>
+  StudyMedSmart — تعلّم اليوم لتصنع مستقبلك الطبي.
+</footer>
+
+
+<!-- ================= MODAL ================= -->
+
+<div
+  id="modal"
+  class="modal hidden"
+>
+
+  <div class="modalCard">
+
+    <button
+      class="close"
+      id="closeModal"
+    >
+      ×
+    </button>
+
+    <div id="modalBody"></div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   BASIC
+========================================================= */
+
+const $ = s => document.querySelector(s);
+
+let token =
+  localStorage.getItem("sms_token") || "";
+
+let me = null;
+
+let settings = {};
+
+let currentCourse = null;
+
+let currentLessons = [];
+
+let currentLessonId = null;
+
+let quizQuestions = [];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const esc = s =>
+  String(s ?? "")
+    .replace(/[&<>'"]/g,c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      "'":"&#39;",
+      '"':"&quot;"
+    }[c]));
+
+const attr = s =>
+  encodeURIComponent(String(s ?? ""));
+
+
+function youtubeEmbed(url){
+
+  if(!url) return "";
+
+  try{
+
+    const u = new URL(url);
+
+    let id = "";
+
+    if(
+      u.hostname.includes("youtube.com")
+    ){
+
+      id = u.searchParams.get("v") || "";
+
+      if(
+        u.pathname.startsWith("/embed/")
+      ){
+        id =
+          u.pathname.split("/embed/")[1];
+      }
+
+    }
+
+    if(
+      u.hostname === "youtu.be"
+    ){
+      id =
+        u.pathname.substring(1);
+    }
+
+    if(!id)
+      return url;
+
+    return "https://www.youtube.com/embed/" + id;
+
+  }catch{
+
+    return url;
+
+  }
+
+}
+
+
+/* =========================================================
+   API
+========================================================= */
+
+async function api(url,opt={}){
+
+  const headers = {
+    "Content-Type":"application/json",
+    ...(opt.headers || {})
+  };
+
+  if(token){
+    headers.Authorization =
+      "Bearer " + token;
+  }
+
+  const response =
+    await fetch(
+      url,
+      {
+        ...opt,
+        headers
+      }
+    );
+
+  const data =
+    await response
+      .json()
+      .catch(() => ({}));
+
+  if(!response.ok){
+
+    if(
+      response.status === 401 &&
+      token
+    ){
+
+      token = "";
+
+      localStorage.removeItem(
+        "sms_token"
+      );
+
+      me = null;
+
+      renderAuth();
+
+    }
+
+    throw Error(
+      data.error ||
+      data.message ||
+      "حدث خطأ غير متوقع"
+    );
+
+  }
+
+  return data;
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(html){
+
+  $("#modalBody").innerHTML =
+    html;
+
+  $("#modal")
+    .classList
+    .remove("hidden");
+
+}
+
+
+function closeModal(){
+
+  $("#modal")
+    .classList
+    .add("hidden");
+
+}
+
+
+$("#closeModal").onclick =
+  closeModal;
+
+
+$("#modal").onclick = e => {
+
+  if(
+    e.target.id === "modal"
+  ){
+    closeModal();
+  }
+
+};
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+function authLogin(){
+
+  openModal(`
+
+    <h2>تسجيل الدخول</h2>
+
+    <p class="muted">
+      ادخل إلى حسابك للوصول إلى المحفظة والكورسات والاختبارات.
+    </p>
+
+    <div class="field">
+
+      <label>
+        البريد الإلكتروني
+      </label>
+
+      <input
+        id="authEmail"
+        type="email"
+        autocomplete="email"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        كلمة المرور
+      </label>
+
+      <input
+        id="authPassword"
+        type="password"
+        autocomplete="current-password"
+      >
+
+    </div>
+
+    <button
+      class="btn"
+      onclick="login()"
+    >
+      دخول
+    </button>
+
+    <button
+      class="btn outline"
+      style="margin-right:8px"
+      onclick="authRegister()"
+    >
+      إنشاء حساب
+    </button>
+
+    <div id="authMsg"></div>
+
+  `);
+
+}
+
+
+function authRegister(){
+
+  openModal(`
+
+    <h2>إنشاء حساب طالب</h2>
+
+    <p class="muted">
+      ابدأ حسابك مجانًا ثم اشحن المحفظة عند الحاجة.
+    </p>
+
+    <div class="field">
+
+      <label>
+        الاسم
+      </label>
+
+      <input
+        id="regName"
+        autocomplete="name"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        البريد الإلكتروني
+      </label>
+
+      <input
+        id="regEmail"
+        type="email"
+        autocomplete="email"
+      >
+
+    </div>
+
+    <div class="field">
+
+      <label>
+        كلمة المرور
+      </label>
+
+      <input
+        id="regPassword"
+        type="password"
+        autocomplete="new-password"
+      >
+
+    </div>
+
+    <button
+      class="btn"
+      onclick="register()"
+    >
+      إنشاء الحساب
+    </button>
+
+    <div id="authMsg"></div>
+
+  `);
+
+}
+
+
+async function login(){
+
+  const msg =
+    $("#authMsg");
+
+  try{
+
+    const d =
+      await api(
+        "/api/auth/login",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            email:
+              $("#authEmail").value,
+            password:
+              $("#authPassword").value
+          })
+        }
+      );
+
+    token =
+      d.token;
+
+    localStorage.setItem(
+      "sms_token",
+      token
+    );
+
+    me =
+      d.user;
+
+    closeModal();
+
+    renderAuth();
+
+    await loadAccount();
+
+    await loadDashboard();
+
+    await loadCourses();
+
+  }catch(e){
+
+    if(msg){
+
+      msg.innerHTML =
+        `<div class="notice danger">
+          ${esc(e.message)}
+        </div>`;
+
+    }
+
+  }
+
+}
+
+
+async function register(){
+
+  const msg =
+    $("#authMsg");
+
+  try{
+
+    const d =
+      await api(
+        "/api/auth/register",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            name:
+              $("#regName").value,
+            email:
+              $("#regEmail").value,
+            password:
+              $("#regPassword").value
+          })
+        }
+      );
+
+    token =
+      d.token;
+
+    localStorage.setItem(
+      "sms_token",
+      token
+    );
+
+    me =
+      d.user;
+
+    closeModal();
+
+    renderAuth();
+
+    await loadAccount();
+
+    await loadDashboard();
+
+    await loadCourses();
+
+  }catch(e){
+
+    if(msg){
+
+      msg.innerHTML =
+        `<div class="notice danger">
+          ${esc(e.message)}
+        </div>`;
+
+    }
+
+  }
+
+}
+
+
+function logout(){
+
+  token = "";
+
+  me = null;
+
+  localStorage.removeItem(
+    "sms_token"
+  );
+
+  renderAuth();
+
+  loadAccount();
+
+  loadDashboard();
+
+  closeCourse();
+
+}
+
+
+/* =========================================================
+   AUTH NAV
+========================================================= */
+
+function renderAuth(){
+
+  const nav =
+    $("#navActions");
+
+  if(!nav)
+    return;
+
+  if(!me){
+
+    nav.innerHTML = `
+
+      <button
+        class="navBtn"
+        onclick="authLogin()"
+      >
+        تسجيل الدخول
+      </button>
+
+      <button
+        class="navBtn primary"
+        onclick="authRegister()"
+      >
+        إنشاء حساب
+      </button>
+
+    `;
+
+    return;
+
+  }
+
+  nav.innerHTML = `
+
+    <span class="userPill">
+      👤 ${esc(me.name)}
+    </span>
+
+    ${
+      me.role === "admin"
+      ?
+      `
+      <a
+        class="navBtn"
+        href="/admin"
+      >
+        الإدارة
+      </a>
+      `
+      :
+      ""
+    }
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      تسجيل الخروج
+    </button>
+
+  `;
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+async function loadSettings(){
+
+  try{
+
+    settings =
+      await api("/api/settings");
+
+    $("#heroTitle").textContent =
+      settings.hero_title ||
+      "ابدأ رحلتك الطبية بثقة";
+
+    $("#heroText").textContent =
+      settings.hero_text ||
+      "كورسات تأسيسية، مهارات مهمة، فيديوهات، ملفات PDF واختبارات في مكان واحد.";
+
+    const price =
+      Number(
+        settings.subscription_price || 100
+      ).toFixed(2);
+
+    $("#price").textContent =
+      price;
+
+    $("#subPrice").textContent =
+      price;
+
+    document.title =
+      settings.site_name ||
+      "StudyMedSmart";
+
+
+    /* صورة الـHero */
+
+    const heroSlot =
+      $("#heroImageSlot");
+
+    if(
+      heroSlot &&
+      settings.hero_image
+    ){
+
+      heroSlot.innerHTML = `
+
+        <img
+          src="${esc(settings.hero_image)}"
+          alt="StudyMedSmart"
+          onerror="
+            this.parentElement.innerHTML =
+            '<div class=&quot;heroImagePlaceholder&quot;>🧠</div>'
+          "
+        >
+
+      `;
+
+    }
+
+  }catch(e){
+
+    console.error(
+      "Settings:",
+      e
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   ACCOUNT
+========================================================= */
+
+async function loadAccount(){
+
+  if(!token){
+
+    $("#wallet").textContent =
+      "0.00";
+
+    $("#subState").textContent =
+      "سجّل الدخول لاستخدام الاشتراك";
+
+    $("#subscribeBtn").textContent =
+      "⭐ اشترك في جميع الكورسات";
+
+    $("#subscribeBtn").onclick =
+      authLogin;
+
+    return;
+
+  }
+
+
+  try{
+
+    me =
+      await api("/api/me");
+
+    $("#wallet").textContent =
+      Number(
+        me.wallet_balance || 0
+      ).toFixed(2);
+
+
+    if(me.subscribed){
+
+      $("#subState").innerHTML =
+        `
+        <span class="openTag">
+          ✓ أنت مشترك — الكورسات الستة مفتوحة
+        </span>
+        `;
+
+      $("#subscribeBtn").textContent =
+        "✓ مشترك في جميع الكورسات";
+
+      $("#subscribeBtn").disabled =
+        true;
+
+      $("#subscribeBtn").style.opacity =
+        ".7";
+
+    }else{
+
+      $("#subState").textContent =
+        "اشتراك واحد يفتح الكورسات الستة";
+
+      $("#subscribeBtn").disabled =
+        false;
+
+      $("#subscribeBtn").style.opacity =
+        "1";
+
+      $("#subscribeBtn").textContent =
+        "⭐ اشترك في جميع الكورسات";
+
+      $("#subscribeBtn").onclick =
+        subscribe;
+
+    }
+
+    renderAuth();
+
+  }catch(e){
+
+    console.error(
+      "Account:",
+      e
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SUBSCRIBE
+========================================================= */
+
+async function subscribe(){
+
+  if(!me){
+
+    authLogin();
+
+    return;
+
+  }
+
+  if(me.subscribed)
+    return;
+
+
+  try{
+
+    const price =
+      Number(
+        settings.subscription_price || 0
+      ).toFixed(2);
+
+    if(
+      !confirm(
+        `سيتم خصم ${price} جنيه من محفظتك وفتح الكورسات الستة. متابعة؟`
+      )
+    ){
+
+      return;
+
+    }
+
+
+    const result =
+      await api(
+        "/api/subscribe",
+        {
+          method:"POST",
+          body:"{}"
+        }
+      );
+
+
+    me.subscribed =
+      true;
+
+    me.wallet_balance =
+      result.wallet_balance;
+
+
+    await loadAccount();
+
+    await loadCourses();
+
+    alert(
+      "تم الاشتراك بنجاح 🎉 الكورسات الستة أصبحت متاحة لك."
+    );
+
+  }catch(e){
+
+    alert(
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   COURSES CARDS
+========================================================= */
+
+async function loadCourses(){
+
+  const box =
+    $("#coursesGrid");
+
+  if(!box)
+    return;
+
+  box.innerHTML =
+    `<div class="notice">
+      جاري تحميل الكورسات...
+    </div>`;
+
+
+  try{
+
+    const courses =
+      await api("/api/courses");
+
+
+    if(!courses.length){
+
+      box.innerHTML =
+        `<div class="notice">
+          لا توجد كورسات منشورة.
+        </div>`;
+
+      return;
+
+    }
+
+
+    box.innerHTML =
+      courses.map(
+        (course,index) => {
+
+          const image =
+            String(
+              course.image_url || ""
+            ).trim();
+
+
+          return `
+
+          <article
+            class="course"
+            onclick="openCourse('${attr(course.slug)}')"
+            style="cursor:pointer"
+          >
+
+            <div class="courseTop">
+
+              ${
+                image
+                ?
+                `
+                <img
+                  src="${esc(image)}"
+                  alt="${esc(course.title)}"
+                  onerror="
+                    this.style.display='none';
+                    this.nextElementSibling.style.display='block'
+                  "
+                >
+                `
+                :
+                ""
+              }
+
+              <span
+                class="courseFallback"
+                style="${image ? "display:none" : ""}"
+              >
+                🩺
+              </span>
+
+              <span class="courseNo">
+                ${String(index+1).padStart(2,"0")}
+              </span>
+
+            </div>
+
+
+            <div class="courseBody">
+
+              <h3>
+                ${esc(course.title)}
+              </h3>
+
+              <p class="muted courseDesc">
+                ${esc(course.description || "")}
+              </p>
+
+
+              <div class="courseFooter">
+
+                <span
+                  class="${
+                    me?.subscribed
+                    ?
+                    "openTag"
+                    :
+                    "lockedTag"
+                  }"
+                >
+                  ${
+                    me?.subscribed
+                    ?
+                    "✓ متاح"
+                    :
+                    "🔒 بعد الاشتراك"
+                  }
+                </span>
+
+
+                <button
+                  class="btn"
+                  onclick="
+                    event.stopPropagation();
+                    openCourse('${attr(course.slug)}')
+                  "
+                >
+                  دخول الكورس
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+
+          `;
+
+        }
+      ).join("");
+
+
+  }catch(e){
+
+    box.innerHTML =
+      `
+      <div class="notice danger">
+        ${esc(e.message)}
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================================
+   OPEN COURSE
+   مهم:
+   هنا لا نستخدم scrollIntoView.
+   يتم إخفاء الصفحة الرئيسية وفتح صفحة مستقلة.
+========================================================= */
+
+async function openCourse(encodedSlug){
+
+  const slug =
+    decodeURIComponent(encodedSlug);
+
+
+  try{
+
+    const course =
+      await api(
+        "/api/courses/" +
+        encodeURIComponent(slug)
+      );
+
+
+    currentCourse =
+      course;
+
+    currentLessons =
+      course.lessons || [];
+
+
+    /* إخفاء الموقع الرئيسي */
+
+    $("#homePage")
+      .classList
+      .add("hidden");
+
+    $("#mainHeader")
+      .classList
+      .add("hidden");
+
+    $("#mainFooter")
+      .classList
+      .add("hidden");
+
+
+    /* إظهار صفحة الكورس */
+
+    $("#coursePage")
+      .classList
+      .remove("hidden");
+
+
+    document.body
+      .classList
+      .add("courseMode");
+
+    document.body.style.overflow =
+      "hidden";
+
+
+    $("#coursePageTitle").textContent =
+      course.title;
+
+
+    renderLessonsList();
+
+
+    await loadCourseProgress(
+      slug
+    );
+
+
+    if(currentLessons.length){
+
+      await selectLesson(
+        currentLessons[0].id
+      );
+
+    }else{
+
+      $("#lessonContent").innerHTML =
+        `
+        <div class="notice">
+          لا توجد دروس في هذا الكورس حتى الآن.
+        </div>
+        `;
+
+    }
+
+  }catch(e){
+
+    alert(
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLOSE COURSE
+========================================================= */
+
+function closeCourse(){
+
+  currentCourse =
+    null;
+
+  currentLessons =
+    [];
+
+  currentLessonId =
+    null;
+
+
+  $("#coursePage")
+    .classList
+    .add("hidden");
+
+
+  $("#homePage")
+    .classList
+    .remove("hidden");
+
+
+  $("#mainHeader")
+    .classList
+    .remove("hidden");
+
+
+  $("#mainFooter")
+    .classList
+    .remove("hidden");
+
+
+  document.body
+    .classList
+    .remove("courseMode");
+
+  document.body.style.overflow =
+    "";
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+function goHome(event){
+
+  if(event)
+    event.preventDefault();
+
+  closeCourse();
+
+  return false;
+
+}
+
+
+/* =========================================================
+   LESSON LIST
+========================================================= */
+
+function renderLessonsList(){
+
+  const box =
+    $("#lessonsList");
+
+  if(!box)
+    return;
+
+
+  if(!currentLessons.length){
+
+    box.innerHTML =
+      `
+      <div class="notice">
+        لا توجد دروس.
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  box.innerHTML =
+    currentLessons
+      .map(
+        (lesson,index) => {
+
+          const active =
+            Number(
+              currentLessonId
+            ) ===
+            Number(
+              lesson.id
+            );
+
+
+          return `
+
+          <button
+            class="
+              lessonItem
+              ${active ? "active" : ""}
+            "
+            onclick="
+              selectLesson(${lesson.id})
+            "
+          >
+
+            <div class="lessonItemTitle">
+
+              الدرس
+              ${String(index+1).padStart(2,"0")}
+
+              —
+              ${esc(lesson.title)}
+
+            </div>
+
+
+            <div class="lessonItemMeta">
+
+              ${
+                lesson.has_video
+                ?
+                "<span>🎥 فيديو</span>"
+                :
+                ""
+              }
+
+              ${
+                lesson.has_pdf
+                ?
+                "<span>📄 PDF</span>"
+                :
+                ""
+              }
+
+              ${
+                lesson.quiz_id
+                ?
+                "<span>📝 Quiz</span>"
+                :
+                ""
+              }
+
+            </div>
+
+          </button>
+
+          `;
+
+        }
+      )
+      .join("");
+
+}
+
+
+/* =========================================================
+   SELECT LESSON
+========================================================= */
+
+async function selectLesson(id){
+
+  currentLessonId =
+    id;
+
+  renderLessonsList();
+
+
+  const content =
+    $("#lessonContent");
+
+
+  content.innerHTML =
+    `
+    <div class="notice">
+      جاري تحميل الدرس...
+    </div>
+    `;
+
+
+  try{
+
+    const lesson =
+      await api(
+        "/api/courses/" +
+        encodeURIComponent(
+          currentCourse.slug
+        ) +
+        "/lessons/" +
+        id
+      );
+
+
+    renderLessonContent(
+      lesson
+    );
+
+
+  }catch(e){
+
+    if(
+      e.message.includes(
+        "الاشتراك"
+      )
+    ){
+
+      content.innerHTML =
+        `
+        <div class="notice danger">
+
+          🔒 يجب عليك الاشتراك في
+          StudyMedSmart
+          للوصول إلى محتوى هذا الكورس.
+
+          <br><br>
+
+          <button
+            class="btn"
+            onclick="closeCourse();subscribe()"
+          >
+            ⭐ اشترك الآن
+          </button>
+
+        </div>
+        `;
+
+      return;
+
+    }
+
+
+    content.innerHTML =
+      `
+      <div class="notice danger">
+        ${esc(e.message)}
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER LESSON
+========================================================= */
+
+function renderLessonContent(
+  lesson
+){
+
+  const content =
+    $("#lessonContent");
+
+
+  const video =
+    youtubeEmbed(
+      lesson.video_url
+    );
+
+
+  content.innerHTML = `
+
+    <div class="lessonContentHeader">
+
+      <small>
+        StudyMedSmart •
+        ${esc(currentCourse.title)}
+      </small>
+
+      <h2>
+        ${esc(lesson.title)}
+      </h2>
+
+      ${
+        lesson.description
+        ?
+        `
+        <p class="muted">
+          ${esc(lesson.description)}
+        </p>
+        `
+        :
+        ""
+      }
+
+    </div>
+
+
+    ${
+      video
+      ?
+      `
+      <div class="videoBox">
+
+        <iframe
+          src="${esc(video)}"
+          title="${esc(lesson.title)}"
+          allow="
+            accelerometer;
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+            web-share
+          "
+          allowfullscreen
+        ></iframe>
+
+      </div>
+      `
+      :
+      `
+      <div class="notice">
+        لا يوجد فيديو مضاف لهذا الدرس حاليًا.
+      </div>
+      `
+    }
+
+
+    <div class="contentActions">
+
+      ${
+        lesson.pdf_url
+        ?
+        `
+        <a
+          class="btn outline"
+          href="${esc(lesson.pdf_url)}"
+          target="_blank"
+          rel="noopener"
+        >
+          📄 فتح ملف PDF
+        </a>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        lesson.quiz_id
+        ?
+        `
+        <button
+          class="btn"
+          onclick="openQuiz(${lesson.id})"
+        >
+          📝 اختبار الدرس
+        </button>
+        `
+        :
+        ""
+      }
+
+    </div>
+
+
+    <div class="completeBox">
+
+      <div>
+
+        <strong>
+          هل أنهيت هذا الدرس؟
+        </strong>
+
+        <div class="muted">
+          يمكنك الانتقال لأي درس آخر مباشرة.
+        </div>
+
+      </div>
+
+
+      <button
+        class="btn green"
+        onclick="markComplete(${lesson.id})"
+      >
+        ✓ تحديد كمكتمل
+      </button>
+
+    </div>
+
+
+    <div id="lessonMsg"></div>
+
+  `;
+
+}
+
+
+/* =========================================================
+   MARK COMPLETE
+========================================================= */
+
+async function markComplete(id){
+
+  try{
+
+    await api(
+      "/api/lessons/" +
+      id +
+      "/complete",
+      {
+        method:"POST",
+        body:"{}"
+      }
+    );
+
+
+    $("#lessonMsg").innerHTML =
+      `
+      <div class="notice success">
+        تم حفظ الدرس كمكتمل ✓
+      </div>
+      `;
+
+
+    renderLessonsList();
+
+    await loadCourseProgress(
+      currentCourse.slug
+    );
+
+    await loadDashboard();
+
+
+  }catch(e){
+
+    $("#lessonMsg").innerHTML =
+      `
+      <div class="notice danger">
+        ${esc(e.message)}
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================================
+   COURSE PROGRESS
+========================================================= */
+
+async function loadCourseProgress(
+  slug
+){
+
+  try{
+
+    const data =
+      await api(
+        "/api/courses/" +
+        encodeURIComponent(slug) +
+        "/progress"
+      );
+
+
+    const percent =
+      Number(
+        data.progress_percent ||
+        data.percentage ||
+        0
+      );
+
+
+    $("#courseProgressPercent")
+      .textContent =
+      Math.round(percent) +
+      "%";
+
+
+    $("#courseProgressBar")
+      .style.width =
+      Math.max(
+        0,
+        Math.min(
+          100,
+          percent
+        )
+      ) +
+      "%";
+
+
+    $("#courseProgressLessons")
+      .textContent =
+      `${Number(data.completed_lessons || 0)}
+       / ${Number(data.total_lessons || 0)}
+       درس مكتمل`;
+
+
+    $("#courseProgressAvg")
+      .textContent =
+      `متوسط الاختبارات:
+       ${
+         data.average_quiz_score == null
+         ?
+         "—"
+         :
+         Math.round(
+           Number(
+             data.average_quiz_score
+           )
+         ) + "%"
+       }`;
+
+
+  }catch(e){
+
+    console.error(
+      "Course progress:",
+      e
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   QUIZ
+========================================================= */
+
+async function openQuiz(
+  lessonId
+){
+
+  try{
+
+    const quiz =
+      await api(
+        "/api/lessons/" +
+        lessonId +
+        "/quiz"
+      );
+
+
+    quizQuestions =
+      quiz.questions || [];
+
+
+    let html = `
+
+      <h2>
+        📝 اختبار الدرس
+      </h2>
+
+      <p class="muted">
+        نسبة النجاح:
+        ${quiz.passing_score}%
+      </p>
+
+      <form id="quizForm">
+
+    `;
+
+
+    quizQuestions.forEach(
+      (question,index) => {
+
+        html += `
+
+          <div class="quizQ">
+
+            <b>
+              ${index+1}.
+              ${esc(question.question)}
+            </b>
+
+            ${[
+              ["A",question.option_a],
+              ["B",question.option_b],
+              ["C",question.option_c],
+              ["D",question.option_d]
+            ]
+            .map(
+              ([key,value]) => `
+
+                <label class="option">
+
+                  <input
+                    type="radio"
+                    name="q${question.id}"
+                    value="${key}"
+                  >
+
+                  <span>
+                    ${key})
+                    ${esc(value)}
+                  </span>
+
+                </label>
+
+              `
+            )
+            .join("")}
+
+          </div>
+
+        `;
+
+      }
+    );
+
+
+    html += `
+
+      </form>
+
+      <button
+        class="btn"
+        onclick="submitQuiz(${lessonId})"
+      >
+        إرسال الاختبار
+      </button>
+
+      <div id="quizResult"></div>
+
+    `;
+
+
+    openModal(
+      html
+    );
+
+
+  }catch(e){
+
+    alert(
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SUBMIT QUIZ
+========================================================= */
+
+async function submitQuiz(
+  lessonId
+){
+
+  const answers = {};
+
+
+  quizQuestions.forEach(
+    question => {
+
+      const selected =
+        document.querySelector(
+          `input[name="q${question.id}"]:checked`
+        );
+
+
+      if(selected){
+
+        answers[
+          question.id
+        ] =
+          selected.value;
+
+      }
+
+    }
+  );
+
+
+  try{
+
+    const result =
+      await api(
+        "/api/lessons/" +
+        lessonId +
+        "/quiz/submit",
+        {
+          method:"POST",
+          body:JSON.stringify({
+            answers
+          })
+        }
+      );
+
+
+    let html = `
+
+      <div
+        class="
+          notice
+          ${
+            result.passed
+            ?
+            "success"
+            :
+            "danger"
+          }
+        "
+      >
+
+        <b>
+          ${
+            result.passed
+            ?
+            "✅ ناجح"
+            :
+            "❌ لم تصل لنسبة النجاح بعد"
+          }
+        </b>
+
+        <br>
+
+        درجتك:
+        ${result.score}%
+
+        —
+
+        الصحيح:
+        ${result.correct}/${result.total}
+
+        <br>
+
+        نسبة النجاح:
+        ${result.passing_score}%
+
+      </div>
+
+    `;
+
+
+    (result.results || [])
+      .forEach(
+        (item,index) => {
+
+          const question =
+            quizQuestions.find(
+              q =>
+                Number(q.id) ===
+                Number(item.id)
+            );
+
+
+          const selectedText =
+            question &&
+            item.selected
+            ?
+            question[
+              "option_" +
+              String(
+                item.selected
+              ).toLowerCase()
+            ]
+            :
+            "لم يتم اختيار إجابة";
+
+
+          const correctText =
+            question &&
+            item.correct_option
+            ?
+            question[
+              "option_" +
+              String(
+                item.correct_option
+              ).toLowerCase()
+            ]
+            :
+            "";
+
+
+          html += `
+
+            <div
+              class="
+                ${
+                  item.correct
+                  ?
+                  "resultGood"
+                  :
+                  "resultBad"
+                }
+              "
+              style="margin:8px 0"
+            >
+
+              <b>
+                ${
+                  item.correct
+                  ?
+                  "✅ إجابة صحيحة"
+                  :
+                  "❌ إجابة خاطئة"
+                }
+
+                —
+                السؤال ${index+1}
+              </b>
+
+              <br>
+
+              إجابتك:
+              ${esc(selectedText)}
+
+              <br>
+
+              الإجابة الصحيحة:
+              ${esc(correctText)}
+
+              <br>
+
+              <span>
+                الشرح:
+                ${esc(
+                  item.explanation ||
+                  "لا يوجد شرح مضاف."
+                )}
+              </span>
+
+            </div>
+
+          `;
+
+        }
+      );
+
+
+    $("#quizResult").innerHTML =
+      html;
+
+
+    await loadCourseProgress(
+      currentCourse.slug
+    );
+
+    await loadDashboard();
+
+
+  }catch(e){
+
+    alert(
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   STUDENT DASHBOARD
+========================================================= */
+
+async function loadDashboard(){
+
+  const box =
+    $("#dashboardBox");
+
+
+  if(!token){
+
+    box.textContent =
+      "سجّل الدخول لعرض تقدمك الدراسي.";
+
+    return;
+
+  }
+
+
+  try{
+
+    const data =
+      await api(
+        "/api/dashboard"
+      );
+
+
+    me =
+      data.user;
+
+
+    const progress =
+      data.progress;
+
+
+    const courses =
+      Array.isArray(
+        progress?.courses
+      )
+      ?
+      progress.courses
+      :
+      [];
+
+
+    box.innerHTML = `
+
+      <div class="stats">
+
+        <div class="stat">
+
+          <span class="muted">
+            نسبة الإنجاز
+          </span>
+
+          <b>
+            ${progress.percent || 0}%
+          </b>
+
+        </div>
+
+
+        <div class="stat">
+
+          <span class="muted">
+            الدروس المكتملة
+          </span>
+
+          <b>
+            ${progress.completedLessons || 0}
+            /
+            ${progress.totalLessons || 0}
+          </b>
+
+        </div>
+
+
+        <div class="stat">
+
+          <span class="muted">
+            متوسط الاختبارات
+          </span>
+
+          <b>
+            ${progress.averageScore || 0}%
+          </b>
+
+        </div>
+
+
+        <div class="stat">
+
+          <span class="muted">
+            الاشتراك
+          </span>
+
+          <b style="font-size:18px">
+
+            ${
+              data.user?.subscribed
+              ?
+              "✓ مشترك"
+              :
+              "غير مشترك"
+            }
+
+          </b>
+
+        </div>
+
+      </div>
+
+
+      <h3 style="margin-top:24px">
+        تقدم كل كورس
+      </h3>
+
+
+      ${
+        courses.length
+        ?
+        courses
+          .map(
+            course => `
+
+              <div class="courseProgress">
+
+                <div class="courseProgressHead">
+
+                  <b>
+                    ${esc(course.title)}
+                  </b>
+
+                  <b>
+                    ${course.percent || 0}%
+                  </b>
+
+                </div>
+
+
+                <div class="progressBar">
+
+                  <span
+                    style="
+                      width:${Math.max(
+                        0,
+                        Math.min(
+                          100,
+                          Number(
+                            course.percent || 0
+                          )
+                        )
+                      )}%
+                    "
+                  ></span>
+
+                </div>
+
+
+                <small class="muted">
+
+                  ${course.completed || 0}
+                  من
+                  ${course.total || 0}
+                  دروس
+
+                </small>
+
+              </div>
+
+            `
+          )
+          .join("")
+        :
+        `
+          <div class="notice">
+            ابدأ أول درس ليظهر تقدمك.
+          </div>
+        `
+      }
+
+
+      ${
+        progress.lastLesson
+        ?
+        `
+          <div class="last">
+
+            📌 آخر درس مكتمل:
+
+            <b>
+              ${esc(
+                progress.lastLesson.title
+              )}
+            </b>
+
+            —
+
+            ${esc(
+              progress.lastLesson.course_title
+            )}
+
+          </div>
+        `
+        :
+        ""
+      }
+
+    `;
+
+
+    renderAuth();
+
+    await loadAccount();
+
+
+  }catch(e){
+
+    box.innerHTML =
+      `
+      <div class="notice danger">
+        ${esc(e.message)}
+      </div>
+      `;
+
+  }
+
+}
+
+
+/* =========================================================
+   INIT
+========================================================= */
+
+(async function(){
+
+  await loadSettings();
+
+
+  try{
+
+    if(token){
+
+      me =
+        await api(
+          "/api/me"
+        );
+
+    }
+
+  }catch{
+
+    token = "";
+
+    localStorage.removeItem(
+      "sms_token"
+    );
+
+    me = null;
+
+  }
+
+
+  renderAuth();
+
+  await loadAccount();
+
+  await loadCourses();
+
+  await loadDashboard();
+
+})();
+
 </script>
-</body></html>
+
+</body>
+  </html>
