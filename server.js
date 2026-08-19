@@ -8,11 +8,17 @@ import fs from 'fs';
 
 const { Pool } = pg;
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 const PORT = process.env.PORT || 10000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
+
+if (!process.env.DATABASE_URL) {
+  console.warn('WARNING: DATABASE_URL is missing');
+}
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -22,16 +28,31 @@ const pool = new Pool({
       : false
 });
 
-app.use(express.json({ limit: '1mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '2mb' }));
 
-app.use(express.static(path.join(__dirname, 'public')));
+/*
+|--------------------------------------------------------------------------
+| Static files
+|--------------------------------------------------------------------------
+| المشروع الحالي يحتوي على index.html و style.css و app.js في الجذر.
+*/
+app.use(express.static(__dirname));
 
+/*
+|--------------------------------------------------------------------------
+| Database helper
+|--------------------------------------------------------------------------
+*/
 async function db(sql, params = []) {
   return pool.query(sql, params);
 }
 
-function token(user) {
+/*
+|--------------------------------------------------------------------------
+| JWT
+|--------------------------------------------------------------------------
+*/
+function createToken(user) {
   return jwt.sign(
     {
       id: user.id,
@@ -44,6 +65,11 @@ function token(user) {
   );
 }
 
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
 function auth(req, res, next) {
   try {
     const header = req.headers.authorization || '';
@@ -54,32 +80,38 @@ function auth(req, res, next) {
       });
     }
 
-    const accessToken = header.slice(7);
+    const token = header.slice(7);
 
-    req.user = jwt.verify(accessToken, JWT_SECRET);
+    req.user = jwt.verify(token, JWT_SECRET);
 
     next();
-  } catch {
+  } catch (error) {
     return res.status(401).json({
       error: 'جلسة الدخول غير صالحة'
     });
   }
 }
 
+/*
+|--------------------------------------------------------------------------
+| Admin middleware
+|--------------------------------------------------------------------------
+*/
 function admin(req, res, next) {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({
-      error: 'غير مصرح'
+      error: 'غير مصرح لك بالدخول'
     });
   }
 
   next();
 }
 
-/* =========================================================
-   HEALTH
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Health
+|--------------------------------------------------------------------------
+*/
 app.get('/healthz', (req, res) => {
   res.json({
     ok: true,
@@ -87,10 +119,11 @@ app.get('/healthz', (req, res) => {
   });
 });
 
-/* =========================================================
-   SETTINGS
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Site Settings
+|--------------------------------------------------------------------------
+*/
 app.get('/api/settings', async (req, res) => {
   try {
     const result = await db(
@@ -102,15 +135,16 @@ app.get('/api/settings', async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تحميل إعدادات الموقع'
     });
   }
 });
 
-/* =========================================================
-   COURSES
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Courses
+|--------------------------------------------------------------------------
+*/
 app.get('/api/courses', async (req, res) => {
   try {
     const result = await db(`
@@ -125,11 +159,16 @@ app.get('/api/courses', async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تحميل الكورسات'
     });
   }
 });
 
+/*
+|--------------------------------------------------------------------------
+| Course Details
+|--------------------------------------------------------------------------
+*/
 app.get('/api/courses/:slug', async (req, res) => {
   try {
     const courseResult = await db(
@@ -142,13 +181,13 @@ app.get('/api/courses/:slug', async (req, res) => {
       [req.params.slug]
     );
 
-    if (!courseResult.rows[0]) {
+    const course = courseResult.rows[0];
+
+    if (!course) {
       return res.status(404).json({
         error: 'الكورس غير موجود'
       });
     }
-
-    const course = courseResult.rows[0];
 
     const lessonsResult = await db(
       `
@@ -174,15 +213,16 @@ app.get('/api/courses/:slug', async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تحميل بيانات الكورس'
     });
   }
 });
 
-/* =========================================================
-   AUTH - REGISTER
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Register
+|--------------------------------------------------------------------------
+*/
 app.post('/api/auth/register', async (req, res) => {
   try {
     const {
@@ -193,7 +233,7 @@ app.post('/api/auth/register', async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({
-        error: 'أدخل الاسم والبريد وكلمة المرور'
+        error: 'جميع البيانات مطلوبة'
       });
     }
 
@@ -205,7 +245,7 @@ app.post('/api/auth/register', async (req, res) => {
 
     const normalizedEmail = email.trim().toLowerCase();
 
-    const hash = await bcrypt.hash(password, 10);
+    const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await db(
       `
@@ -228,7 +268,7 @@ app.post('/api/auth/register', async (req, res) => {
       [
         name.trim(),
         normalizedEmail,
-        hash
+        passwordHash
       ]
     );
 
@@ -236,26 +276,28 @@ app.post('/api/auth/register', async (req, res) => {
 
     res.json({
       user,
-      token: token(user)
+      token: createToken(user)
     });
   } catch (error) {
     console.error(error);
 
-    res.status(
-      error.code === '23505' ? 409 : 500
-    ).json({
-      error:
-        error.code === '23505'
-          ? 'البريد مستخدم بالفعل'
-          : error.message
+    if (error.code === '23505') {
+      return res.status(409).json({
+        error: 'البريد الإلكتروني مستخدم بالفعل'
+      });
+    }
+
+    res.status(500).json({
+      error: 'تعذر إنشاء الحساب'
     });
   }
 });
 
-/* =========================================================
-   AUTH - LOGIN
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Login
+|--------------------------------------------------------------------------
+*/
 app.post('/api/auth/login', async (req, res) => {
   try {
     const {
@@ -265,7 +307,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        error: 'أدخل البريد وكلمة المرور'
+        error: 'البريد الإلكتروني وكلمة المرور مطلوبان'
       });
     }
 
@@ -284,40 +326,40 @@ app.post('/api/auth/login', async (req, res) => {
 
     if (
       !user ||
-      !(await bcrypt.compare(
-        password,
-        user.password_hash
-      ))
+      !(await bcrypt.compare(password, user.password_hash))
     ) {
       return res.status(401).json({
-        error: 'البريد أو كلمة المرور غير صحيحة'
+        error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
       });
     }
 
+    const safeUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      wallet_balance: user.wallet_balance,
+      subscribed: user.subscribed
+    };
+
     res.json({
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        wallet_balance: user.wallet_balance,
-        subscribed: user.subscribed
-      },
-      token: token(user)
+      user: safeUser,
+      token: createToken(user)
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تسجيل الدخول'
     });
   }
 });
 
-/* =========================================================
-   CURRENT USER
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Current User
+|--------------------------------------------------------------------------
+*/
 app.get('/api/me', auth, async (req, res) => {
   try {
     const result = await db(
@@ -346,15 +388,16 @@ app.get('/api/me', auth, async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تحميل بيانات المستخدم'
     });
   }
 });
 
-/* =========================================================
-   LESSON
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Lesson Details
+|--------------------------------------------------------------------------
+*/
 app.get(
   '/api/courses/:slug/lessons/:lessonId',
   auth,
@@ -392,16 +435,17 @@ app.get(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر تحميل الدرس'
       });
     }
   }
 );
 
-/* =========================================================
-   QUIZ
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Get Quiz
+|--------------------------------------------------------------------------
+*/
 app.get(
   '/api/lessons/:lessonId/quiz',
   auth,
@@ -416,13 +460,13 @@ app.get(
         [req.params.lessonId]
       );
 
-      if (!quizResult.rows[0]) {
+      const quiz = quizResult.rows[0];
+
+      if (!quiz) {
         return res.status(404).json({
-          error: 'لا يوجد اختبار'
+          error: 'لا يوجد اختبار لهذا الدرس'
         });
       }
-
-      const quiz = quizResult.rows[0];
 
       const questionsResult = await db(
         `
@@ -449,16 +493,17 @@ app.get(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر تحميل الاختبار'
       });
     }
   }
 );
 
-/* =========================================================
-   SUBMIT QUIZ
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Submit Quiz
+|--------------------------------------------------------------------------
+*/
 app.post(
   '/api/lessons/:lessonId/quiz/submit',
   auth,
@@ -477,13 +522,13 @@ app.post(
         [req.params.lessonId]
       );
 
-      if (!quizResult.rows[0]) {
+      const quiz = quizResult.rows[0];
+
+      if (!quiz) {
         return res.status(404).json({
-          error: 'لا يوجد اختبار'
+          error: 'لا يوجد اختبار لهذا الدرس'
         });
       }
-
-      const quiz = quizResult.rows[0];
 
       const questionsResult = await db(
         `
@@ -504,12 +549,8 @@ app.post(
           answers[question.id] || ''
         ).toUpperCase();
 
-        const correctOption = String(
-          question.correct_option
-        ).toUpperCase();
-
         const isCorrect =
-          selected === correctOption;
+          selected === question.correct_option;
 
         if (isCorrect) {
           correct++;
@@ -518,7 +559,7 @@ app.post(
         return {
           id: question.id,
           selected,
-          correct_option: correctOption,
+          correct_option: question.correct_option,
           explanation: question.explanation,
           correct: isCorrect
         };
@@ -526,12 +567,13 @@ app.post(
 
       const total = questions.length;
 
-      const score = total
-        ? Math.round((correct / total) * 100)
-        : 0;
+      const score =
+        total > 0
+          ? Math.round((correct / total) * 100)
+          : 0;
 
       const passed =
-        score >= Number(quiz.passing_score);
+        score >= quiz.passing_score;
 
       await db(
         `
@@ -545,12 +587,15 @@ app.post(
           last_attempt_at
         )
         VALUES
-        ($1, $2, $3, $4, 1, NOW())
-        ON CONFLICT
         (
-          user_id,
-          lesson_id
+          $1,
+          $2,
+          $3,
+          $4,
+          1,
+          NOW()
         )
+        ON CONFLICT(user_id, lesson_id)
         DO UPDATE SET
           completed = EXCLUDED.completed,
           score = EXCLUDED.score,
@@ -577,16 +622,17 @@ app.post(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر تصحيح الاختبار'
       });
     }
   }
 );
 
-/* =========================================================
-   DASHBOARD
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Student Dashboard
+|--------------------------------------------------------------------------
+*/
 app.get('/api/dashboard', auth, async (req, res) => {
   try {
     const userResult = await db(
@@ -605,18 +651,14 @@ app.get('/api/dashboard', auth, async (req, res) => {
 
     const user = userResult.rows[0];
 
-    if (!user) {
-      return res.status(404).json({
-        error: 'المستخدم غير موجود'
-      });
-    }
-
     const progressResult = await db(
       `
       SELECT
         l.id,
         l.title,
         c.title AS course_title,
+        c.sort_order AS course_sort_order,
+        l.sort_order AS lesson_sort_order,
         lp.completed,
         lp.score,
         lp.last_attempt_at
@@ -641,29 +683,16 @@ app.get('/api/dashboard', auth, async (req, res) => {
     const completedLessons =
       lessons.filter(
         lesson => lesson.completed
-      );
+      ).length;
 
-    const scores = lessons
-      .filter(
-        lesson => lesson.score !== null
-      )
-      .map(
-        lesson => Number(lesson.score)
-      );
-
-    const completedCount =
-      completedLessons.length;
-
-    const totalLessons =
-      lessons.length;
-
-    const percent =
-      totalLessons > 0
-        ? Math.round(
-            (completedCount / totalLessons) *
-              100
-          )
-        : 0;
+    const scores =
+      lessons
+        .filter(
+          lesson => lesson.score !== null
+        )
+        .map(
+          lesson => Number(lesson.score)
+        );
 
     const averageScore =
       scores.length > 0
@@ -675,21 +704,29 @@ app.get('/api/dashboard', auth, async (req, res) => {
           )
         : 0;
 
-    const lastLesson =
-      completedLessons.length
-        ? completedLessons[
-            completedLessons.length - 1
-          ]
-        : null;
+    const lastCompletedLesson =
+      [...lessons]
+        .reverse()
+        .find(
+          lesson => lesson.completed
+        ) || null;
 
     res.json({
       user,
       progress: {
-        totalLessons,
-        completedLessons: completedCount,
-        percent,
+        totalLessons: lessons.length,
+        completedLessons,
+        percent:
+          lessons.length > 0
+            ? Math.round(
+                (completedLessons /
+                  lessons.length) *
+                  100
+              )
+            : 0,
         averageScore,
-        lastLesson,
+        lastLesson:
+          lastCompletedLesson,
         lessons
       }
     });
@@ -697,55 +734,44 @@ app.get('/api/dashboard', auth, async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تحميل لوحة الطالب'
     });
   }
 });
 
-/* =========================================================
-   SUBSCRIBE
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Subscribe
+|--------------------------------------------------------------------------
+| اشتراك واحد يفتح جميع الكورسات.
+*/
 app.post('/api/subscribe', auth, async (req, res) => {
   const client = await pool.connect();
 
   try {
     await client.query('BEGIN');
 
-    const settingsResult =
-      await client.query(
-        `
-        SELECT subscription_price
-        FROM site_settings
-        WHERE id = 1
-        `
-      );
-
-    if (!settingsResult.rows[0]) {
-      await client.query('ROLLBACK');
-
-      return res.status(500).json({
-        error: 'إعدادات الاشتراك غير موجودة'
-      });
-    }
-
-    const price = Number(
-      settingsResult.rows[0]
-        .subscription_price
+    const settingsResult = await client.query(
+      `
+      SELECT subscription_price
+      FROM site_settings
+      WHERE id = 1
+      `
     );
 
-    const userResult =
-      await client.query(
-        `
-        SELECT
-          wallet_balance,
-          subscribed
-        FROM users
-        WHERE id = $1
-        FOR UPDATE
-        `,
-        [req.user.id]
-      );
+    const price = Number(
+      settingsResult.rows[0]?.subscription_price || 0
+    );
+
+    const userResult = await client.query(
+      `
+      SELECT wallet_balance, subscribed
+      FROM users
+      WHERE id = $1
+      FOR UPDATE
+      `,
+      [req.user.id]
+    );
 
     const user = userResult.rows[0];
 
@@ -758,7 +784,7 @@ app.post('/api/subscribe', auth, async (req, res) => {
     }
 
     if (user.subscribed) {
-      await client.query('COMMIT');
+      await client.query('ROLLBACK');
 
       return res.json({
         subscribed: true
@@ -777,8 +803,7 @@ app.post('/api/subscribe', auth, async (req, res) => {
       `
       UPDATE users
       SET
-        wallet_balance =
-          wallet_balance - $1,
+        wallet_balance = wallet_balance - $1,
         subscribed = true
       WHERE id = $2
       `,
@@ -798,7 +823,12 @@ app.post('/api/subscribe', auth, async (req, res) => {
         note
       )
       VALUES
-      ($1, $2, 'subscription', $3)
+      (
+        $1,
+        $2,
+        'subscription',
+        $3
+      )
       `,
       [
         req.user.id,
@@ -820,24 +850,26 @@ app.post('/api/subscribe', auth, async (req, res) => {
     console.error(error);
 
     res.status(500).json({
-      error: error.message
+      error: 'تعذر تنفيذ الاشتراك'
     });
   } finally {
     client.release();
   }
 });
 
-/* =========================================================
-   ADMIN - USERS
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Users
+|--------------------------------------------------------------------------
+*/
 app.get(
   '/api/admin/users',
   auth,
   admin,
   async (req, res) => {
     try {
-      const result = await db(`
+      const result = await db(
+        `
         SELECT
           id,
           name,
@@ -848,47 +880,40 @@ app.get(
           created_at
         FROM users
         ORDER BY id DESC
-      `);
+        `
+      );
 
       res.json(result.rows);
     } catch (error) {
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر تحميل المستخدمين'
       });
     }
   }
 );
 
-/* =========================================================
-   ADMIN - CREDIT WALLET
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Add Wallet Balance
+|--------------------------------------------------------------------------
+*/
 app.post(
   '/api/admin/users/:id/credit',
   auth,
   admin,
   async (req, res) => {
-    const client = await pool.connect();
-
     try {
-      const amount = Number(
-        req.body.amount
-      );
+      const amount = Number(req.body.amount);
 
-      if (
-        !Number.isFinite(amount) ||
-        amount <= 0
-      ) {
+      if (!Number.isFinite(amount) || amount <= 0) {
         return res.status(400).json({
-          error: 'قيمة غير صحيحة'
+          error: 'قيمة الرصيد غير صحيحة'
         });
       }
 
-      await client.query('BEGIN');
-
-      await client.query(
+      await db(
         `
         UPDATE users
         SET wallet_balance =
@@ -901,7 +926,7 @@ app.post(
         ]
       );
 
-      await client.query(
+      await db(
         `
         INSERT INTO wallet_transactions
         (
@@ -911,7 +936,12 @@ app.post(
           note
         )
         VALUES
-        ($1, $2, 'credit', $3)
+        (
+          $1,
+          $2,
+          'credit',
+          $3
+        )
         `,
         [
           req.params.id,
@@ -921,31 +951,24 @@ app.post(
         ]
       );
 
-      await client.query('COMMIT');
-
       res.json({
         ok: true
       });
     } catch (error) {
-      try {
-        await client.query('ROLLBACK');
-      } catch {}
-
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر إضافة الرصيد'
       });
-    } finally {
-      client.release();
     }
   }
 );
 
-/* =========================================================
-   ADMIN - SETTINGS
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Site Settings
+|--------------------------------------------------------------------------
+*/
 app.put(
   '/api/admin/settings',
   auth,
@@ -975,7 +998,7 @@ app.put(
         [
           site_name,
           tagline,
-          subscription_price,
+          Number(subscription_price || 0),
           hero_title,
           hero_text
         ]
@@ -986,16 +1009,17 @@ app.put(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر حفظ إعدادات الموقع'
       });
     }
   }
 );
 
-/* =========================================================
-   ADMIN - COURSES
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Courses
+|--------------------------------------------------------------------------
+*/
 app.post(
   '/api/admin/courses',
   auth,
@@ -1009,12 +1033,6 @@ app.post(
         image_url,
         sort_order = 0
       } = req.body;
-
-      if (!title || !slug) {
-        return res.status(400).json({
-          error: 'اسم الكورس وSlug مطلوبان'
-        });
-      }
 
       const result = await db(
         `
@@ -1035,7 +1053,7 @@ app.post(
           slug,
           description || '',
           image_url || '',
-          sort_order
+          Number(sort_order || 0)
         ]
       );
 
@@ -1044,16 +1062,17 @@ app.post(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر إضافة الكورس'
       });
     }
   }
 );
 
-/* =========================================================
-   ADMIN - LESSONS
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Lessons
+|--------------------------------------------------------------------------
+*/
 app.post(
   '/api/admin/lessons',
   auth,
@@ -1068,12 +1087,6 @@ app.post(
         pdf_url,
         sort_order = 0
       } = req.body;
-
-      if (!course_id || !title) {
-        return res.status(400).json({
-          error: 'الكورس واسم الدرس مطلوبان'
-        });
-      }
 
       const result = await db(
         `
@@ -1096,7 +1109,7 @@ app.post(
           description || '',
           video_url || '',
           pdf_url || '',
-          sort_order
+          Number(sort_order || 0)
         ]
       );
 
@@ -1105,16 +1118,17 @@ app.post(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر إضافة الدرس'
       });
     }
   }
 );
 
-/* =========================================================
-   ADMIN - QUIZZES
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| ADMIN - Quiz
+|--------------------------------------------------------------------------
+*/
 app.post(
   '/api/admin/quizzes',
   auth,
@@ -1129,35 +1143,28 @@ app.post(
         questions = []
       } = req.body;
 
-      if (!lesson_id) {
-        return res.status(400).json({
-          error: 'lesson_id مطلوب'
-        });
-      }
-
       await client.query('BEGIN');
 
-      const quizResult =
-        await client.query(
-          `
-          INSERT INTO quizzes
-          (
-            lesson_id,
-            passing_score
-          )
-          VALUES
-          ($1, $2)
-          ON CONFLICT(lesson_id)
-          DO UPDATE SET
-            passing_score =
-              EXCLUDED.passing_score
-          RETURNING id
-          `,
-          [
-            lesson_id,
-            passing_score
-          ]
-        );
+      const quizResult = await client.query(
+        `
+        INSERT INTO quizzes
+        (
+          lesson_id,
+          passing_score
+        )
+        VALUES
+        ($1, $2)
+        ON CONFLICT(lesson_id)
+        DO UPDATE SET
+          passing_score =
+            EXCLUDED.passing_score
+        RETURNING id
+        `,
+        [
+          lesson_id,
+          Number(passing_score)
+        ]
+      );
 
       const quizId =
         quizResult.rows[0].id;
@@ -1175,8 +1182,7 @@ app.post(
         i < questions.length;
         i++
       ) {
-        const question =
-          questions[i];
+        const question = questions[i];
 
         await client.query(
           `
@@ -1212,7 +1218,9 @@ app.post(
             question.option_b,
             question.option_c,
             question.option_d,
-            question.correct_option,
+            String(
+              question.correct_option
+            ).toUpperCase(),
             question.explanation || '',
             i
           ]
@@ -1233,7 +1241,7 @@ app.post(
       console.error(error);
 
       res.status(500).json({
-        error: error.message
+        error: 'تعذر حفظ الاختبار'
       });
     } finally {
       client.release();
@@ -1241,46 +1249,57 @@ app.post(
   }
 );
 
-/* =========================================================
-   DATABASE INITIALIZATION
-========================================================= */
-
+/*
+|--------------------------------------------------------------------------
+| Database Initialization
+|--------------------------------------------------------------------------
+*/
 async function initDatabase() {
-  if (!process.env.DATABASE_URL) {
-    console.warn(
-      'WARNING: DATABASE_URL is missing'
-    );
-
-    return;
-  }
-
   try {
+    if (!process.env.DATABASE_URL) {
+      console.warn(
+        'DATABASE_URL is missing. Database initialization skipped.'
+      );
+      return;
+    }
+
+    /*
+     * schema.sql موجود في جذر المشروع
+     */
     const schemaPath = path.join(
       __dirname,
-      'db',
       'schema.sql'
     );
 
-    if (fs.existsSync(schemaPath)) {
-      const schema = fs.readFileSync(
-        schemaPath,
-        'utf8'
-      );
-
-      const statements = schema
-        .split(';')
-        .map(statement => statement.trim())
-        .filter(Boolean);
-
-      for (const statement of statements) {
-        await db(statement);
-      }
-    } else {
-      console.warn(
-        'db/schema.sql was not found'
+    if (!fs.existsSync(schemaPath)) {
+      throw new Error(
+        'schema.sql غير موجود في جذر المشروع'
       );
     }
 
+    const schema = fs.readFileSync(
+      schemaPath,
+      'utf8'
+    );
+
+    /*
+     * تشغيل أوامر SQL.
+     * schema الحالي لا يحتوي على Functions أو DO blocks،
+     * لذلك التقسيم على ; مناسب له.
+     */
+    const statements = schema
+      .split(';')
+      .map(statement => statement.trim())
+      .filter(Boolean);
+
+    for (const statement of statements) {
+      await db(statement);
+    }
+
+    /*
+     * إنشاء حساب الإدارة تلقائيًا
+     * من Environment Variables
+     */
     const adminEmail =
       process.env.ADMIN_EMAIL;
 
@@ -1291,7 +1310,7 @@ async function initDatabase() {
       adminEmail &&
       adminPassword
     ) {
-      const hash =
+      const passwordHash =
         await bcrypt.hash(
           adminPassword,
           10
@@ -1315,65 +1334,104 @@ async function initDatabase() {
         )
         ON CONFLICT(email)
         DO UPDATE SET
-          role = 'admin'
+          role = 'admin',
+          password_hash = EXCLUDED.password_hash
         `,
         [
           adminEmail
             .trim()
             .toLowerCase(),
-          hash
+          passwordHash
         ]
+      );
+
+      console.log(
+        'Admin account ready.'
       );
     }
 
     console.log(
-      'Database initialization completed'
+      'Database initialization completed.'
     );
   } catch (error) {
     console.error(
-      'DB initialization failed:',
+      'Database initialization failed:',
       error
     );
   }
 }
 
-/* =========================================================
-   FRONTEND FALLBACK
-   IMPORTANT:
-   Express 5 does not accept app.get('*')
-========================================================= */
+/*
+|--------------------------------------------------------------------------
+| Frontend fallback
+|--------------------------------------------------------------------------
+| مهم:
+| لا نستخدم app.get('*') لأن Express 5
+| يتعامل معها كـ invalid path.
+*/
+app.use((req, res, next) => {
+  if (
+    req.path.startsWith('/api/') ||
+    req.path === '/healthz'
+  ) {
+    return next();
+  }
 
-app.get('/{*splat}', (req, res) => {
-  res.sendFile(
-    path.join(
-      __dirname,
-      'public',
-      'index.html'
-    )
+  const acceptsHtml =
+    req.headers.accept &&
+    req.headers.accept.includes('text/html');
+
+  if (!acceptsHtml) {
+    return next();
+  }
+
+  const indexPath = path.join(
+    __dirname,
+    'index.html'
   );
+
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+
+  next();
 });
 
-/* =========================================================
-   START SERVER
-========================================================= */
+/*
+|--------------------------------------------------------------------------
+| 404 API
+|--------------------------------------------------------------------------
+*/
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    error: 'API endpoint not found'
+  });
+});
 
-async function startServer() {
-  try {
-    await initDatabase();
+/*
+|--------------------------------------------------------------------------
+| Start Server
+|--------------------------------------------------------------------------
+*/
+async function start() {
+  await initDatabase();
 
-    app.listen(PORT, '0.0.0.0', () => {
+  app.listen(
+    PORT,
+    '0.0.0.0',
+    () => {
       console.log(
-        `StudyMedSmart listening on port ${PORT}`
+        `StudyMedSmart running on port ${PORT}`
       );
-    });
-  } catch (error) {
-    console.error(
-      'Failed to start server:',
-      error
-    );
-
-    process.exit(1);
-  }
+    }
+  );
 }
 
-startServer();
+start().catch(error => {
+  console.error(
+    'Server startup failed:',
+    error
+  );
+
+  process.exit(1);
+});
