@@ -2,8 +2,7 @@ import express from "express";
 import pg from "pg";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
 
 const { Pool } = pg;
 const app = express();
@@ -84,19 +83,11 @@ async function initDatabase() {
       id INTEGER PRIMARY KEY DEFAULT 1,
       site_name TEXT NOT NULL DEFAULT 'StudyMedSmart',
       tagline TEXT NOT NULL DEFAULT 'منصة تعليمية طبية',
-      subscription_price NUMERIC(12,2) NOT NULL DEFAULT 0,
+      subscription_price NUMERIC(12,2) NOT NULL DEFAULT 100,
       hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة',
       hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
-
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_image TEXT NOT NULL DEFAULT '';
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_name TEXT NOT NULL DEFAULT 'StudyMedSmart';
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS tagline TEXT NOT NULL DEFAULT 'منصة تعليمية طبية';
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS subscription_price NUMERIC(12,2) NOT NULL DEFAULT 0;
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة';
-    ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.';
 
     CREATE TABLE IF NOT EXISTS users (
       id BIGSERIAL PRIMARY KEY,
@@ -176,6 +167,20 @@ async function initDatabase() {
     ON CONFLICT (id) DO NOTHING;
   `);
 
+  await db(`UPDATE site_settings SET subscription_price=100 WHERE id=1 AND COALESCE(subscription_price,0)=0`);
+
+  const defaultCourses = [
+    ["المصطلحات الطبية والمهارات الأساسية","medical-terminology","Medical Terminology والمهارات الطبية الأساسية والمفاهيم التي يحتاجها الطالب في بداية دراسة الطب.","🩺",1],
+    ["أساسيات أجهزة الجسم","body-systems","أساسيات أجهزة جسم الإنسان: الدوري والتنفسـي والهضمي والعصبي وغيرها.","🫀",2],
+    ["دورة الإسعافات الأولية","first-aid","أساسيات الإسعافات الأولية والتعامل الأولي الآمن مع الحالات المختلفة.","⛑️",3],
+    ["التأسيس في المواد الطبية","medical-foundations","مدخل مبسط إلى Anatomy وPhysiology وHistology وBiochemistry وImmunology وGenetics.","🔬",4],
+    ["نصائح المذاكرة","study-skills","تنظيم المذاكرة وإدارة الوقت والتعامل مع المواد الطبية وبناء طريقة دراسة مناسبة.","📚",5],
+    ["التخطيط المستقبلي في الكليات الطبية","medical-future","التخطيط للمستقبل وفهم طبيعة الدراسة الطبية واختيار المسار والاستعداد للحياة الأكاديمية والمهنية.","🎓",6]
+  ];
+  for (const [title,slug,description,image_url,sort_order] of defaultCourses) {
+    await db(`INSERT INTO courses(title,slug,description,image_url,sort_order,is_published) VALUES($1,$2,$3,$4,$5,true) ON CONFLICT(slug) DO UPDATE SET title=EXCLUDED.title,description=EXCLUDED.description,image_url=EXCLUDED.image_url,sort_order=EXCLUDED.sort_order`, [title,slug,description,image_url,sort_order]);
+  }
+
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
 
@@ -228,6 +233,7 @@ app.get("/api/courses", async (req, res) => {
     const r = await db(`
       SELECT * FROM courses
       WHERE is_published=true
+        AND slug IN ('medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future')
       ORDER BY sort_order ASC, id ASC
     `);
     res.json(r.rows);
@@ -250,7 +256,9 @@ app.get("/api/courses/:slug", async (req, res) => {
 
     const l = await db(`
       SELECT
-        l.id, l.course_id, l.title, l.description, l.video_url, l.pdf_url,
+        l.id, l.course_id, l.title, l.description,
+        (l.video_url <> '') AS has_video,
+        (l.pdf_url <> '') AS has_pdf,
         l.sort_order, l.is_published,
         q.id AS quiz_id, q.passing_score
       FROM lessons l
@@ -351,6 +359,17 @@ app.get("/api/courses/:slug/lessons/:lessonId", auth, async (req, res) => {
     `, [req.params.slug, req.params.lessonId]);
 
     if (!r.rows[0]) return res.status(404).json({ error: "الدرس غير موجود" });
+
+    const user = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
+    const subscribed = !!user.rows[0]?.subscribed;
+    if (!subscribed) {
+      return res.status(402).json({
+        subscribed: false,
+        locked: true,
+        message: "يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس."
+      });
+    }
+
     res.json(r.rows[0]);
   } catch (e) {
     console.error(e);
@@ -360,6 +379,10 @@ app.get("/api/courses/:slug/lessons/:lessonId", auth, async (req, res) => {
 
 app.get("/api/lessons/:lessonId/quiz", auth, async (req, res) => {
   try {
+    const user = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
+    if (!user.rows[0]?.subscribed) {
+      return res.status(402).json({ locked: true, subscribed: false, message: "يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار." });
+    }
     const qr = await db("SELECT * FROM quizzes WHERE lesson_id=$1", [req.params.lessonId]);
     if (!qr.rows[0]) return res.status(404).json({ error: "لا يوجد اختبار لهذا الدرس" });
 
@@ -380,6 +403,10 @@ app.get("/api/lessons/:lessonId/quiz", auth, async (req, res) => {
 app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req, res) => {
   try {
     const answers = req.body.answers || {};
+    const user = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
+    if (!user.rows[0]?.subscribed) {
+      return res.status(402).json({ locked: true, subscribed: false, message: "يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار." });
+    }
     const qr = await db("SELECT * FROM quizzes WHERE lesson_id=$1", [req.params.lessonId]);
     if (!qr.rows[0]) return res.status(404).json({ error: "لا يوجد اختبار لهذا الدرس" });
 
@@ -428,6 +455,31 @@ app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req, res) => {
 });
 
 /* =========================================================
+   LESSON COMPLETION
+========================================================= */
+
+app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
+  try {
+    const lessonId = Number(req.params.lessonId);
+    if (!Number.isInteger(lessonId) || lessonId <= 0) return res.status(400).json({ error: "معرف الدرس غير صحيح" });
+    const u = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
+    if (!u.rows[0]) return res.status(404).json({ error: "المستخدم غير موجود" });
+    if (!u.rows[0].subscribed) return res.status(402).json({ locked:true, subscribed:false, message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس." });
+    const lesson = await db("SELECT id FROM lessons WHERE id=$1 AND is_published=true", [lessonId]);
+    if (!lesson.rows[0]) return res.status(404).json({ error:"الدرس غير موجود" });
+    await db(`
+      INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at)
+      VALUES($1,$2,true,NULL,0,NOW())
+      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, updated_at=NOW()
+    `, [req.user.id, lessonId]);
+    res.json({ ok:true, completed:true });
+  } catch(e) {
+    console.error(e);
+    res.status(500).json({ error:"تعذر حفظ تقدم الدرس" });
+  }
+});
+
+/* =========================================================
    DASHBOARD
 ========================================================= */
 
@@ -455,6 +507,14 @@ app.get("/api/dashboard", auth, async (req, res) => {
     const completed = lessons.filter(x => x.completed);
     const scores = lessons.filter(x => x.score !== null).map(x => Number(x.score));
     const average = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+    const courses = {};
+    for (const row of lessons) {
+      const key = row.course_title;
+      if (!courses[key]) courses[key] = { title:key, total:0, completed:0, percent:0 };
+      courses[key].total++;
+      if (row.completed) courses[key].completed++;
+    }
+    Object.values(courses).forEach(c => { c.percent = c.total ? Math.round(c.completed / c.total * 100) : 0; });
 
     res.json({
       user: publicUser(u.rows[0]),
@@ -463,8 +523,9 @@ app.get("/api/dashboard", auth, async (req, res) => {
         completedLessons: completed.length,
         percent: lessons.length ? Math.round(completed.length / lessons.length * 100) : 0,
         averageScore: average,
-        lastLesson: completed.at(-1) || null,
-        lessons
+        lastLesson: completed.length ? completed[completed.length - 1] : null,
+        lessons,
+        courses: Object.values(courses)
       }
     });
   } catch (e) {
@@ -553,10 +614,10 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
     `, [
       b.site_name ?? "StudyMedSmart",
       b.tagline ?? "منصة تعليمية طبية",
-      Number.isFinite(Number(b.subscription_price)) ? Number(b.subscription_price) : 0,
+      Number(b.subscription_price) || 0,
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
       b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
-      String(b.hero_image ?? "").trim()
+      String(b.hero_image ?? "")
     ]);
     res.json(r.rows[0]);
   } catch(e) {
@@ -780,15 +841,10 @@ app.use("/api", (req,res) => {
    Exactly two HTML files in the repository.
 ========================================================= */
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const INDEX_FILE = path.join(__dirname, "index.html");
-const ADMIN_FILE = path.join(__dirname, "admin.html");
-
-app.get("/", (req,res) => res.sendFile(INDEX_FILE));
-app.get("/index.html", (req,res) => res.sendFile(INDEX_FILE));
-app.get("/admin", (req,res) => res.sendFile(ADMIN_FILE));
-app.get("/admin.html", (req,res) => res.sendFile(ADMIN_FILE));
+app.get("/", (req,res) => res.sendFile(path.resolve("index.html")));
+app.get("/index.html", (req,res) => res.sendFile(path.resolve("index.html")));
+app.get("/admin", (req,res) => res.sendFile(path.resolve("admin.html")));
+app.get("/admin.html", (req,res) => res.sendFile(path.resolve("admin.html")));
 
 app.use((req,res) => {
   res.status(404).send("Page not found");
