@@ -86,6 +86,7 @@ async function initDatabase() {
       subscription_price NUMERIC(12,2) NOT NULL DEFAULT 100,
       hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة',
       hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.',
+      hero_image TEXT NOT NULL DEFAULT '',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
@@ -649,14 +650,15 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
     const r = await db(`
       UPDATE site_settings SET
         site_name=$1,tagline=$2,subscription_price=$3,
-        hero_title=$4,hero_text=$5,updated_at=NOW()
+        hero_title=$4,hero_text=$5,hero_image=$6,updated_at=NOW()
       WHERE id=1 RETURNING *
     `, [
       b.site_name ?? "StudyMedSmart",
       b.tagline ?? "منصة تعليمية طبية",
-      Number(b.subscription_price) || 0,
+      Number.isFinite(Number(b.subscription_price)) ? Number(b.subscription_price) : 100,
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
-      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد."
+      b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
+      b.hero_image ?? ""
     ]);
     res.json(r.rows[0]);
   } catch(e) {

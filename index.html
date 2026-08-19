@@ -92,6 +92,9 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdr
 .courseProgressBar span{height:100%;display:block;border-radius:20px;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width .35s ease}
 .courseProgressStats{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}
 .courseMiniStat{padding:6px 10px;border-radius:10px;background:#f8fafc;border:1px solid #e5e7eb;font-size:12px;font-weight:800}
+
+/* Course-only learning screen */
+body.course-mode{background:#f3f7fb}body.course-mode>header,body.course-mode .hero,body.course-mode .accountBar,body.course-mode #courses,body.course-mode #dashboard,body.course-mode>footer{display:none!important}body.course-mode main.container{max-width:1400px;padding-top:18px}body.course-mode #courseScreen{margin-top:0;min-height:calc(100vh - 36px)}body.course-mode .courseScreenTop{position:sticky;top:12px;z-index:10;backdrop-filter:blur(10px)}
 </style>
 </head>
 <body>
@@ -100,7 +103,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdr
 <div class="navActions" id="navActions"><button class="navBtn" id="loginBtn">تسجيل الدخول</button><button class="navBtn primary" id="registerBtn">إنشاء حساب</button></div>
 </div></header>
 <main class="container">
-<section class="hero"><div class="heroGrid"><div><span class="eyebrow">منصة تعليمية طبية</span><h1 id="heroTitle">ابدأ رحلتك الطبية بثقة</h1><p id="heroText">كورسات تأسيسية، مهارات مهمة، فيديوهات، ملفات PDF واختبارات في مكان واحد.</p><button class="btn light" onclick="document.getElementById('courses').scrollIntoView()">استكشف الكورسات</button></div><div class="heroVisual"><div class="heroIcon">🧠</div><h3>تعلّم • اختبر • طوّر نفسك</h3><p>تابع تقدمك الدراسي وراجع نتائج اختباراتك بسهولة.</p></div></div></section>
+<section class="hero"><div class="heroGrid"><div><span class="eyebrow">منصة تعليمية طبية</span><h1 id="heroTitle">ابدأ رحلتك الطبية بثقة</h1><p id="heroText">كورسات تأسيسية، مهارات مهمة، فيديوهات، ملفات PDF واختبارات في مكان واحد.</p><button class="btn light" onclick="document.getElementById('courses').scrollIntoView()">استكشف الكورسات</button></div><div class="heroVisual" id="heroVisual"><div class="heroIcon">🧠</div><h3>تعلّم • اختبر • طوّر نفسك</h3><p>تابع تقدمك الدراسي وراجع نتائج اختباراتك بسهولة.</p></div></div></section>
 <div class="accountBar"><div class="wallet"><div><div class="boxLabel">محفظتك</div><div class="boxValue"><span id="wallet">0.00</span> جنيه</div></div><span style="font-size:35px">💰</span></div><div class="subscription"><div class="subText"><div class="boxLabel">اشتراك StudyMedSmart</div><div class="boxValue"><span id="subPrice">100.00</span> جنيه</div><div class="muted" id="subState">اشتراك واحد يفتح الكورسات الستة</div></div><button class="btn" id="subscribeBtn">⭐ اشترك في جميع الكورسات</button></div></div>
 <section id="courses" class="section"><div class="sectionHead"><div><span class="eyebrow">المحتوى الأساسي</span><h2>الكورسات الستة</h2><div class="muted">كل الكورسات تحت اشتراك واحد فقط.</div></div><div class="price">⭐ الاشتراك الشامل: <b id="price">100</b> جنيه</div></div><div id="coursesGrid" class="grid"></div></section>
 <section id="courseView" class="courseView hidden"></section>
@@ -134,7 +137,7 @@ async function register(){try{const d=await api('/api/auth/register',{method:'PO
 function logout(){token='';me=null;localStorage.removeItem('sms_token');renderAuth();loadAccount();loadDashboard();closeCourse()}
 function renderAuth(){const n=$('#navActions');if(!me){n.innerHTML='<button class="navBtn" onclick="authLogin()">تسجيل الدخول</button><button class="navBtn primary" onclick="authRegister()">إنشاء حساب</button>'}else{n.innerHTML=`<span class="userPill">👤 ${esc(me.name)}</span><a class="navBtn" href="/admin" ${me.role==='admin'?'':'style="display:none"'}>الإدارة</a><button class="logout" onclick="logout()">تسجيل الخروج</button>`}}
 $('#loginBtn')?.addEventListener('click',authLogin);$('#registerBtn')?.addEventListener('click',authRegister);
-async function loadSettings(){try{settings=await api('/api/settings');$('#heroTitle').textContent=settings.hero_title||'ابدأ رحلتك الطبية بثقة';$('#heroText').textContent=settings.hero_text||'';const p=Number(settings.subscription_price||100).toFixed(2);$('#price').textContent=p;$('#subPrice').textContent=p;document.title=settings.site_name||'StudyMedSmart';}catch(e){console.error(e)}}
+async function loadSettings(){try{settings=await api('/api/settings');$('#heroTitle').textContent=settings.hero_title||'ابدأ رحلتك الطبية بثقة';$('#heroText').textContent=settings.hero_text||'';const heroImage=String(settings.hero_image||'').trim();if(heroImage){$('#heroVisual').style.backgroundImage='linear-gradient(rgba(15,59,102,.25),rgba(15,59,102,.25)),url('+JSON.stringify(heroImage)+')';$('#heroVisual').style.backgroundSize='cover';$('#heroVisual').style.backgroundPosition='center';$('#heroVisual').querySelector('.heroIcon').style.opacity='.15';}const p=Number(settings.subscription_price||100).toFixed(2);$('#price').textContent=p;$('#subPrice').textContent=p;document.title=settings.site_name||'StudyMedSmart';}catch(e){console.error(e)}}
 async function loadAccount(){if(!token){$('#wallet').textContent='0.00';$('#subState').textContent='سجّل الدخول لاستخدام الاشتراك';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=authLogin;return}try{me=await api('/api/me');$('#wallet').textContent=Number(me.wallet_balance||0).toFixed(2);if(me.subscribed){$('#subState').innerHTML='<span class="openTag">✓ أنت مشترك — الكورسات الستة مفتوحة</span>';$('#subscribeBtn').textContent='✓ مشترك في جميع الكورسات';$('#subscribeBtn').disabled=true;$('#subscribeBtn').style.opacity='.7'}else{$('#subState').textContent='اشتراك واحد يفتح الكورسات الستة';$('#subscribeBtn').disabled=false;$('#subscribeBtn').style.opacity='1';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=subscribe}renderAuth()}catch(e){console.error(e)}}
 async function subscribe(){if(!me)return authLogin();if(me.subscribed)return;try{if(!confirm(`سيتم خصم ${Number(settings.subscription_price||0).toFixed(2)} جنيه من محفظتك وفتح الكورسات الستة. متابعة؟`))return;const d=await api('/api/subscribe',{method:'POST',body:'{}'});me.subscribed=true;me.wallet_balance=d.wallet_balance;await loadAccount();await loadCourses();if(window.currentSlug)openCourse(window.currentSlug);alert('تم الاشتراك بنجاح 🎉 الكورسات الستة أصبحت متاحة لك.')}catch(e){alert(e.message)}}
 async function loadCourses(){const box=$('#coursesGrid');box.innerHTML='<div class="notice">جاري تحميل الكورسات...</div>';try{const cs=await api('/api/courses');box.innerHTML=cs.map((c,i)=>`<article class="course" tabindex="0" onclick="openCourse('${attr(c.slug)}')" onkeydown="if(event.key==='Enter'||event.key===' ')openCourse('${attr(c.slug)}')"><div class="courseTop"><span class="courseGlow"></span><span class="courseIcon">${esc(c.image_url||'🩺')}</span><span class="courseNo">0${i+1}</span></div><div class="courseBody"><h3>${esc(c.title)}</h3><p class="muted courseDesc">${esc(c.description)}</p><div class="courseFooter"><span class="${me?.subscribed?'openTag':'lockedTag'}">${me?.subscribed?'✓ متاح لك':'🔒 بعد الاشتراك'}</span><span class="btn">دخول الكورس ←</span></div></div></article>`).join('')||'<div class="notice">لا توجد كورسات منشورة.</div>'}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
@@ -144,26 +147,24 @@ async function openCourse(slug){
     window.currentSlug=slug;
     const c=await api('/api/courses/'+encodeURIComponent(slug));
     const lessons=c.lessons||[];
+    document.body.classList.add('course-mode');
     $('#courseScreen').classList.remove('hidden');
     $('#courseScreenTitle').textContent=c.title||'الكورس';
     $('#courseScreenDesc').textContent=c.description||'';
-    $('#courseScreen').scrollIntoView({behavior:'smooth',block:'start'});
-
-    // تحميل تقدم هذا الكورس للمستخدم المسجل فقط.
     if(token){
       try{
         const p=await api('/api/courses/'+encodeURIComponent(slug)+'/progress');
         $('#courseProgressBox').classList.remove('hidden');
         $('#courseProgressBox').innerHTML=`<div class="courseProgressTop"><b>📈 تقدمك في هذا الكورس</b><strong>${p.percent}%</strong></div><div class="courseProgressBar"><span style="width:${p.percent}%"></span></div><div class="courseProgressStats"><span class="courseMiniStat">✓ ${p.completedLessons}/${p.totalLessons} دروس مكتملة</span><span class="courseMiniStat">📝 متوسط الاختبارات: ${p.averageScore}%</span></div>`;
-      }catch(e){ $('#courseProgressBox').classList.add('hidden'); }
+      }catch(e){$('#courseProgressBox').classList.add('hidden');}
     }else $('#courseProgressBox').classList.add('hidden');
-
-    $('#lessonList').innerHTML=lessons.map((l,i)=>`<button class="lessonItem" id="lessonItem-${l.id}" onclick="selectLesson('${attr(slug)}',${l.id})"><span class="num">${String(i+1).padStart(2,'0')}</span><b>${esc(l.title)}</b><div class="muted" style="margin-top:6px">${me?.subscribed?'متاح للمشاهدة':'🔒 المحتوى مقفول حتى الاشتراك'}</div></button>`).join('');
+    $('#lessonList').innerHTML=lessons.map((l,i)=>`<button class="lessonItem" id="lessonItem-${l.id}" onclick="selectLesson('${attr(slug)}',${l.id})"><span class="num">${String(i+1).padStart(2,'0')}</span><b>${esc(l.title)}</b><div class="muted" style="margin-top:6px">${me?.subscribed?'متاح للمشاهدة':'🔒 المحتوى مقفول حتى الاشتراك'}</div></button>`).join('')||'<div class="notice">لا توجد دروس بعد.</div>';
+    $('#courseScreen').scrollIntoView({behavior:'smooth',block:'start'});
     if(lessons.length) await selectLesson(slug,lessons[0].id);
     else $('#lessonContentPane').innerHTML='<div class="emptyLesson"><div class="bigIcon">📚</div><h3>لا توجد دروس بعد</h3><p class="muted">سيتم إضافة الدروس من لوحة الإدارة.</p></div>';
   }catch(e){alert(e.message);}
 }
-function closeCourse(){window.currentSlug='';$('#courseView').classList.add('hidden');$('#courseView').innerHTML=''}
+function closeCourse(){window.currentSlug='';document.body.classList.remove('course-mode');$('#courseScreen').classList.add('hidden');$('#courseView').classList.add('hidden');$('#courseView').innerHTML='';}
 function youtubeEmbed(url){
   try{
     const u=new URL(url);
@@ -305,13 +306,15 @@ function videoHtml(url){
 }
 async function selectLesson(slug,id){
  try{
-  const l=await api('/api/courses/'+encodeURIComponent(slug)+'/lessons/'+id);
   document.querySelectorAll('.lessonItem').forEach(x=>x.classList.remove('active'));
   const active=$('#lessonItem-'+id); if(active) active.classList.add('active');
+  const item=[...document.querySelectorAll('.lessonItem')].find(x=>x.id==='lessonItem-'+id);
+  const title=item?.querySelector('b')?.textContent||'الدرس';
   if(!me?.subscribed){
-    $('#lessonContentPane').innerHTML=`<div class="emptyLesson"><div class="bigIcon">🔒</div><h3>${esc(l.title)}</h3><p class="muted">يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الدرس.</p><button class="btn" onclick="subscribe()">⭐ اشترك في جميع الكورسات</button></div>`;
+    $('#lessonContentPane').innerHTML=`<div class="emptyLesson"><div class="bigIcon">🔒</div><h3>${esc(title)}</h3><p class="muted">يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الدرس.</p><button class="btn" onclick="subscribe()">⭐ اشترك في جميع الكورسات</button></div>`;
     return;
   }
+  const l=await api('/api/courses/'+encodeURIComponent(slug)+'/lessons/'+id);
   $('#lessonContentPane').innerHTML=`
    <div class="lessonPaneHead"><div class="eyebrow">درس من ${esc(l.course_title||'StudyMedSmart')}</div><h3>${esc(l.title)}</h3><p style="margin:0;color:#dbeafe">${esc(l.description||'')}</p></div>
    <div class="lessonPaneBody">
@@ -322,9 +325,6 @@ async function selectLesson(slug,id){
    </div>`;
  }catch(e){alert(e.message);}
 }
-function backToHome(){
- $('#courseScreen').classList.add('hidden');
- window.scrollTo({top:0,behavior:'smooth'});
-}
+function backToHome(){closeCourse();window.scrollTo({top:0,behavior:'smooth'});}
 </script>
 </body></html>
