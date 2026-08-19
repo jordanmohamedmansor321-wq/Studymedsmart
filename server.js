@@ -78,6 +78,8 @@ function publicUser(row) {
 ========================================================= */
 
 async function initDatabase() {
+  await db("ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_image TEXT NOT NULL DEFAULT ''");
+  await db("ALTER TABLE lesson_progress ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW()").catch(()=>{});
   await db(`
     CREATE TABLE IF NOT EXISTS site_settings (
       id INTEGER PRIMARY KEY DEFAULT 1,
@@ -86,6 +88,7 @@ async function initDatabase() {
       subscription_price NUMERIC(12,2) NOT NULL DEFAULT 100,
       hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة',
       hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.',
+      hero_image TEXT NOT NULL DEFAULT '',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
@@ -470,7 +473,7 @@ app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
     await db(`
       INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at)
       VALUES($1,$2,true,NULL,0,NOW())
-      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true, updated_at=NOW()
+      ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=true
     `, [req.user.id, lessonId]);
     res.json({ ok:true, completed:true });
   } catch(e) {
@@ -617,7 +620,7 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
       Number(b.subscription_price) || 0,
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
       b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
-      String(b.hero_image ?? "")
+      String(b.hero_image ?? "").trim()
     ]);
     res.json(r.rows[0]);
   } catch(e) {
