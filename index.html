@@ -1,1 +1,219 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudyMedSmart</title><link rel="stylesheet" href="/style.css"></head><body><header><a class="brand" href="/">StudyMedSmart</a><nav><a href="#courses">الكورسات</a><a href="#dashboard">لوحة الطالب</a><button id="authBtn" class="outline">تسجيل الدخول</button></nav></header><main><section class="hero"><div><span class="badge">منصة تعليمية طبية</span><h1 id="heroTitle">ابدأ رحلتك الطبية بثقة</h1><p id="heroText">تعلم أساسيات المجال الطبي في مكان واحد.</p><div><a class="btn" href="#courses">استعرض الكورسات</a> <button class="btn secondary" id="heroAuth">إنشاء حساب</button></div></div><div class="heroCard"><div class="orb">🩺</div><h3>تعلّم • اختبر • تابع تقدمك</h3><p>فيديو + PDF + Quiz لكل درس، مع حفظ تقدمك تلقائياً.</p></div></section><section id="courses" class="section"><div class="sectionHead"><div><span class="eyebrow">المحتوى</span><h2>الكورسات</h2></div><div class="priceBox">اشتراك شامل: <strong id="price">0</strong> دينار</div></div><div id="coursesGrid" class="grid"></div></section><section id="courseView" class="section hidden"></section><section id="dashboard" class="section"><div class="sectionHead"><div><span class="eyebrow">متابعتك</span><h2>لوحة الطالب</h2></div></div><div id="dashboardBox" class="panel loggedOut">سجّل الدخول لعرض تقدمك الدراسي.</div></section></main><div id="modal" class="modal hidden"><div class="modalCard"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div><script src="/app.js"></script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyMedSmart</title>
+<style>
+:root{--p:#2563eb;--pd:#1d4ed8;--bg:#f5f8fc;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--danger:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Tahoma,sans-serif;background:var(--bg);color:var(--text)}
+a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}button{cursor:pointer}
+header{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:20}
+.brand{font-weight:900;font-size:22px;color:var(--p)}nav{display:flex;align-items:center;gap:18px}nav a{color:#334155}
+.container{width:min(1120px,92%);margin:auto}.hero{padding:70px 0;display:grid;grid-template-columns:1.3fr .7fr;gap:30px;align-items:center}.badge,.eyebrow{display:inline-block;color:var(--p);font-weight:700}.hero h1{font-size:clamp(34px,5vw,58px);margin:12px 0}.hero p{font-size:19px;color:var(--muted);line-height:1.8}.heroCard,.card,.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 30px #0f172a0a}.heroCard{padding:35px;text-align:center}.orb{font-size:70px}.section{padding:35px 0 70px}.sectionHead{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:20px}.section h2{font-size:30px;margin:7px 0}.priceBox{background:#eff6ff;padding:12px 16px;border-radius:14px;color:#1e40af}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}.card{overflow:hidden}.courseImage{height:145px;background:linear-gradient(135deg,#dbeafe,#e0f2fe);display:flex;align-items:center;justify-content:center;font-size:45px}.cardBody{padding:20px}.card h3{margin:0 0 8px}.muted{color:var(--muted);line-height:1.7}.btn{display:inline-flex;border:0;background:var(--p);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;align-items:center;justify-content:center}.btn:hover{background:var(--pd)}.secondary{background:#0f172a}.outline{border:1px solid var(--p);background:#fff;color:var(--p);padding:9px 14px;border-radius:10px}.hidden{display:none!important}.lesson{border:1px solid var(--line);padding:16px;border-radius:15px;background:#fff;margin:10px 0;display:flex;justify-content:space-between;gap:15px;align-items:center}.locked{opacity:.75}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}.modalCard{background:#fff;border-radius:20px;width:min(560px,100%);max-height:90vh;overflow:auto;padding:25px;position:relative}.close{position:absolute;left:15px;top:10px;border:0;background:none;font-size:28px}.field{margin:12px 0}.field label{display:block;font-weight:700;margin-bottom:6px}.field input,.field textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px}.field textarea{min-height:90px}.quizQ{padding:15px;border:1px solid var(--line);border-radius:14px;margin:12px 0}.option{display:block;padding:8px}.stat{padding:18px;border-radius:16px;background:#eff6ff}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.notice{padding:12px;border-radius:12px;background:#f1f5f9;margin:10px 0}.success{color:var(--ok)}.danger{color:var(--danger)}
+@media(max-width:760px){header{padding:0 3%}nav a{display:none}.hero{grid-template-columns:1fr;padding-top:40px}.sectionHead{align-items:flex-start;flex-direction:column}.lesson{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="/">StudyMedSmart</a>
+<nav>
+<a href="#courses">الكورسات</a>
+<a href="#dashboard">لوحة الطالب</a>
+<button id="authBtn" class="outline">تسجيل الدخول</button>
+</nav>
+</header>
+
+<main class="container">
+<section class="hero">
+<div>
+<span class="badge">منصة تعليمية طبية</span>
+<h1 id="heroTitle">ابدأ رحلتك الطبية بثقة</h1>
+<p id="heroText">تعلم أساسيات المجال الطبي في مكان واحد.</p>
+<a class="btn" href="#courses">استعرض الكورسات</a>
+<button class="btn secondary" id="heroAuth">إنشاء حساب</button>
+</div>
+<div class="heroCard"><div class="orb">🩺</div><h3>تعلّم • اختبر • تابع تقدمك</h3><p>فيديو + PDF + Quiz لكل درس، مع حفظ تقدمك تلقائياً.</p></div>
+</section>
+
+<section id="courses" class="section">
+<div class="sectionHead"><div><span class="eyebrow">المحتوى</span><h2>الكورسات</h2></div><div class="priceBox">الاشتراك الشامل: <strong id="price">0</strong> دينار</div></div>
+<div id="coursesGrid" class="grid"></div>
+</section>
+
+<section id="courseView" class="section hidden"></section>
+
+<section id="dashboard" class="section">
+<div class="sectionHead"><div><span class="eyebrow">متابعتك</span><h2>لوحة الطالب</h2></div></div>
+<div id="dashboardBox" class="panel" style="padding:22px">سجّل الدخول لعرض تقدمك الدراسي.</div>
+</section>
+</main>
+
+<div id="modal" class="modal hidden">
+<div class="modalCard"><button class="close" id="closeModal">×</button><div id="modalBody"></div></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+let token=localStorage.getItem("sms_token")||"";
+let me=null;
+let settings={};
+
+async function api(url,opt={}){
+  const headers={"Content-Type":"application/json",...(opt.headers||{})};
+  if(token) headers.Authorization="Bearer "+token;
+  const r=await fetch(url,{...opt,headers});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(data.error||"حدث خطأ");
+  return data;
+}
+function openModal(html){$("#modalBody").innerHTML=html;$("#modal").classList.remove("hidden")}
+function closeModal(){$("#modal").classList.add("hidden")}
+$("#closeModal").onclick=closeModal;
+$("#modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+
+function authModal(){
+ openModal(`
+ <h2>تسجيل الدخول</h2>
+ <div class="field"><label>البريد الإلكتروني</label><input id="email" type="email"></div>
+ <div class="field"><label>كلمة المرور</label><input id="password" type="password"></div>
+ <button class="btn" onclick="login()">دخول</button>
+ <button class="outline" style="margin-right:8px" onclick="registerModal()">إنشاء حساب</button>
+ <div id="authMsg" class="notice"></div>`);
+}
+function registerModal(){
+ openModal(`
+ <h2>إنشاء حساب طالب</h2>
+ <div class="field"><label>الاسم</label><input id="name"></div>
+ <div class="field"><label>البريد الإلكتروني</label><input id="email" type="email"></div>
+ <div class="field"><label>كلمة المرور</label><input id="password" type="password"></div>
+ <button class="btn" onclick="register()">إنشاء الحساب</button>
+ <div id="authMsg" class="notice"></div>`);
+}
+async function login(){
+ try{
+  const d=await api("/api/auth/login",{method:"POST",body:JSON.stringify({email:$("#email").value,password:$("#password").value})});
+  token=d.token;localStorage.setItem("sms_token",token);me=d.user;closeModal();renderAuth();loadDashboard();
+ }catch(e){$("#authMsg").textContent=e.message}
+}
+async function register(){
+ try{
+  const d=await api("/api/auth/register",{method:"POST",body:JSON.stringify({name:$("#name").value,email:$("#email").value,password:$("#password").value})});
+  token=d.token;localStorage.setItem("sms_token",token);me=d.user;closeModal();renderAuth();loadDashboard();
+ }catch(e){$("#authMsg").textContent=e.message}
+}
+function logout(){token="";me=null;localStorage.removeItem("sms_token");renderAuth();loadDashboard()}
+function renderAuth(){
+ $("#authBtn").textContent=me?`خروج (${me.name})`:"تسجيل الدخول";
+ $("#heroAuth").textContent=me?"حسابي":"إنشاء حساب";
+}
+$("#authBtn").onclick=()=>me?logout():authModal();
+$("#heroAuth").onclick=()=>me?location.hash="#dashboard":registerModal();
+
+async function loadSettings(){
+ try{
+  settings=await api("/api/settings");
+  $("#heroTitle").textContent=settings.hero_title||"ابدأ رحلتك الطبية بثقة";
+  $("#heroText").textContent=settings.hero_text||"تعلم أساسيات المجال الطبي في مكان واحد.";
+  $("#price").textContent=Number(settings.subscription_price||0).toFixed(2);
+  document.title=settings.site_name||"StudyMedSmart";
+ }catch(e){console.error(e)}
+}
+async function loadCourses(){
+ const box=$("#coursesGrid");
+ box.innerHTML="<div class='notice'>جاري تحميل الكورسات...</div>";
+ try{
+  const courses=await api("/api/courses");
+  if(!courses.length){box.innerHTML="<div class='notice'>لا توجد كورسات منشورة حالياً.</div>";return}
+  box.innerHTML=courses.map(c=>`
+   <article class="card">
+    <div class="courseImage">${c.image_url?`<img src="${escapeHtml(c.image_url)}" style="width:100%;height:100%;object-fit:cover">`:"🩺"}</div>
+    <div class="cardBody">
+     <h3>${escapeHtml(c.title)}</h3>
+     <p class="muted">${escapeHtml(c.description||"")}</p>
+     <button class="btn" onclick="openCourse('${escapeAttr(c.slug)}')">عرض الكورس</button>
+    </div>
+   </article>`).join("");
+ }catch(e){box.innerHTML=`<div class="notice danger">${escapeHtml(e.message)}</div>`}
+}
+async function openCourse(slug){
+ try{
+  const c=await api("/api/courses/"+encodeURIComponent(slug));
+  const locked=!me?.subscribed;
+  $("#courseView").classList.remove("hidden");
+  $("#courseView").innerHTML=`
+   <div class="sectionHead"><div><span class="eyebrow">الكورس</span><h2>${escapeHtml(c.title)}</h2></div>
+   ${locked?`<button class="btn" onclick="subscribe()">اشترك الآن</button>`:`<span class="success">مشترك ✓</span>`}</div>
+   <p class="muted">${escapeHtml(c.description||"")}</p>
+   ${c.lessons.length?c.lessons.map((l,i)=>`
+    <div class="lesson ${locked?"locked":""}">
+     <div><b>${i+1}. ${escapeHtml(l.title)}</b><div class="muted">${escapeHtml(l.description||"")}</div></div>
+     <div>
+      ${locked?`<button class="outline" onclick="subscribe()">🔒 مغلق</button>`:
+      `<button class="btn" onclick="openLesson('${escapeAttr(c.slug)}',${l.id},${l.quiz_id||0})">فتح الدرس</button>`}
+     </div>
+    </div>`).join(""):`<div class="notice">لا توجد دروس في هذا الكورس.</div>`}`;
+  location.hash="#courseView";
+ }catch(e){alert(e.message)}
+}
+async function openLesson(slug,id,quizId){
+ try{
+  const l=await api(`/api/courses/${encodeURIComponent(slug)}/lessons/${id}`);
+  openModal(`
+   <h2>${escapeHtml(l.title)}</h2>
+   <p class="muted">${escapeHtml(l.description||"")}</p>
+   ${l.video_url?`<p><a class="btn" target="_blank" rel="noopener" href="${escapeAttr(l.video_url)}">🎥 فتح الفيديو</a></p>`:""}
+   ${l.pdf_url?`<p><a class="btn secondary" target="_blank" rel="noopener" href="${escapeAttr(l.pdf_url)}">📄 فتح PDF</a></p>`:""}
+   ${quizId?`<button class="outline" onclick="openQuiz(${id})">📝 حل الاختبار</button>`:"<div class='notice'>لا يوجد اختبار لهذا الدرس.</div>"}`);
+ }catch(e){alert(e.message)}
+}
+async function openQuiz(lessonId){
+ try{
+  const q=await api(`/api/lessons/${lessonId}/quiz`);
+  if(!q.questions.length){alert("لا توجد أسئلة");return}
+  openModal(`<h2>اختبار الدرس</h2><p>نسبة النجاح: ${q.passing_score}%</p>
+  <form id="quizForm">${q.questions.map((x,i)=>`
+   <div class="quizQ"><b>${i+1}. ${escapeHtml(x.question)}</b>
+   ${["a","b","c","d"].map(k=>`<label class="option"><input required type="radio" name="q${x.id}" value="${k.toUpperCase()}"> ${escapeHtml(x["option_"+k])}</label>`).join("")}
+   </div>`).join("")}<button class="btn" type="submit">تصحيح الاختبار</button></form>`);
+  $("#quizForm").onsubmit=async e=>{
+   e.preventDefault();const answers={};new FormData(e.target).forEach((v,k)=>answers[k.slice(1)]=v);
+   try{const r=await api(`/api/lessons/${lessonId}/quiz/submit`,{method:"POST",body:JSON.stringify({answers})});
+    openModal(`<h2>النتيجة: ${r.score}%</h2><div class="${r.passed?"success":"danger"}">${r.passed?"نجحت في الاختبار ✓":"لم تصل لنسبة النجاح بعد."}</div><p>الإجابات الصحيحة: ${r.correct} من ${r.total}</p><button class="btn" onclick="closeModal();loadDashboard()">حسناً</button>`);
+   }catch(err){alert(err.message)}
+  };
+ }catch(e){alert(e.message)}
+}
+async function subscribe(){
+ if(!me){registerModal();return}
+ if(!confirm(`سعر الاشتراك ${Number(settings.subscription_price||0)} دينار. هل تريد المتابعة؟`))return;
+ try{
+  const r=await api("/api/subscribe",{method:"POST"});
+  me.subscribed=r.subscribed;me.wallet_balance=r.wallet_balance??me.wallet_balance;
+  alert("تم الاشتراك بنجاح.");
+  renderAuth();loadDashboard();loadCourses();
+ }catch(e){alert(e.message)}
+}
+async function loadDashboard(){
+ const box=$("#dashboardBox");
+ if(!token){box.innerHTML="سجّل الدخول لعرض تقدمك الدراسي.";return}
+ try{
+  const d=await api("/api/dashboard");me=d.user;
+  box.innerHTML=`
+   <div class="stats">
+    <div class="stat"><b>الرصيد</b><h2>${Number(me.wallet_balance||0).toFixed(2)}</h2> دينار</div>
+    <div class="stat"><b>الاشتراك</b><h2>${me.subscribed?"مشترك ✓":"غير مشترك"}</h2></div>
+    <div class="stat"><b>التقدم</b><h2>${d.progress.percent}%</h2></div>
+    <div class="stat"><b>متوسط الاختبارات</b><h2>${d.progress.averageScore}%</h2></div>
+   </div>
+   <h3>الدروس</h3>
+   ${d.progress.lessons.map(l=>`<div class="lesson"><div><b>${escapeHtml(l.title)}</b><div class="muted">${escapeHtml(l.course_title)}</div></div><span>${l.completed?"✅ مكتمل":"⏳ لم يكتمل"}</span></div>`).join("")||"<div class='notice'>لا توجد دروس بعد.</div>"}`;
+  renderAuth();
+ }catch(e){logout()}
+}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function escapeAttr(v){return escapeHtml(v).replace(/`/g,"&#096;")}
+(async()=>{await loadSettings();await loadCourses();if(token){try{me=await api("/api/me")}catch{logout()}}renderAuth();loadDashboard()})();
+</script>
+</body>
+</html>

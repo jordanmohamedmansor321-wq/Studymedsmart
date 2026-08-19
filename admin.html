@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>StudyMedSmart — الإدارة</title>
+<style>
+:root{--p:#2563eb;--bg:#f4f7fb;--card:#fff;--line:#e2e8f0;--text:#0f172a;--muted:#64748b;--danger:#dc2626;--ok:#16a34a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Tahoma,sans-serif;color:var(--text)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:18px 4%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}.brand{font-size:22px;font-weight:900;color:var(--p)}button{font:inherit;cursor:pointer;border:0}.btn{background:var(--p);color:#fff;padding:10px 15px;border-radius:10px;font-weight:700}.btn.danger{background:var(--danger)}.outline{background:#fff;color:var(--p);border:1px solid var(--p);padding:9px 13px;border-radius:10px}.container{width:min(1200px,94%);margin:25px auto}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:20px}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{padding:10px 15px;background:#eaf2ff;border-radius:10px}.tab.active{background:var(--p);color:#fff}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px}.field{margin:10px 0}.field label{display:block;font-weight:700;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff}.field textarea{min-height:85px}.row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.course,.lesson,.user{border:1px solid var(--line);padding:15px;border-radius:14px;margin:10px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.muted{color:var(--muted)}.dangerText{color:var(--danger)}.success{color:var(--ok)}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px;z-index:30}.modalCard{background:#fff;border-radius:18px;padding:22px;width:min(800px,100%);max-height:92vh;overflow:auto;position:relative}.close{position:absolute;left:12px;top:8px;background:none;font-size:28px}.question{border:1px solid var(--line);padding:14px;border-radius:12px;margin:12px 0}.stat{background:#eff6ff;border-radius:13px;padding:15px}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+@media(max-width:650px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand">StudyMedSmart — لوحة الإدارة</div><div><a class="outline" href="/" target="_blank">الموقع</a> <button class="btn danger" onclick="logout()">خروج</button></div></header>
+<main class="container">
+<div id="loginPanel" class="panel">
+<h2>دخول الإدارة</h2>
+<div class="row"><div class="field"><label>البريد</label><input id="loginEmail" type="email"></div><div class="field"><label>كلمة المرور</label><input id="loginPassword" type="password"></div></div>
+<button class="btn" onclick="login()">دخول</button><p id="loginMsg" class="dangerText"></p>
+</div>
+
+<div id="appPanel" class="hidden">
+<div class="tabs">
+<button class="tab active" data-tab="home">الرئيسية</button>
+<button class="tab" data-tab="settings">إعدادات الموقع</button>
+<button class="tab" data-tab="courses">الكورسات والدروس</button>
+<button class="tab" data-tab="users">الطلاب والرصيد</button>
+</div>
+
+<section id="tab-home" class="tabContent"></section>
+<section id="tab-settings" class="tabContent hidden"></section>
+<section id="tab-courses" class="tabContent hidden"></section>
+<section id="tab-users" class="tabContent hidden"></section>
+</div>
+</main>
+
+<div id="modal" class="modal hidden"><div class="modalCard"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div>
+
+<script>
+let token=localStorage.getItem("sms_admin_token")||"";
+const $=s=>document.querySelector(s);
+async function api(url,opt={}){
+ const headers={"Content-Type":"application/json",...(opt.headers||{})};
+ if(token)headers.Authorization="Bearer "+token;
+ const r=await fetch(url,{...opt,headers});const d=await r.json().catch(()=>({}));
+ if(!r.ok)throw new Error(d.error||"حدث خطأ");return d;
+}
+function openModal(x){$("#modalBody").innerHTML=x;$("#modal").classList.remove("hidden")}
+function closeModal(){$("#modal").classList.add("hidden")}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+async function login(){
+ try{
+  const d=await api("/api/auth/login",{method:"POST",body:JSON.stringify({email:$("#loginEmail").value,password:$("#loginPassword").value})});
+  if(d.user.role!=="admin")throw new Error("هذا الحساب ليس حساب إدارة");
+  token=d.token;localStorage.setItem("sms_admin_token",token);showApp();
+ }catch(e){$("#loginMsg").textContent=e.message}
+}
+function logout(){token="";localStorage.removeItem("sms_admin_token");location.reload()}
+function showApp(){$("#loginPanel").classList.add("hidden");$("#appPanel").classList.remove("hidden");loadHome();loadSettings();loadCourses();loadUsers()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".tabContent").forEach(x=>x.classList.add("hidden"));$("#tab-"+b.dataset.tab).classList.remove("hidden")});
+
+async function loadHome(){
+ try{
+  const [s,c,u]=await Promise.all([api("/api/admin/settings"),api("/api/admin/courses"),api("/api/admin/users")]);
+  $("#tab-home").innerHTML=`<div class="stats"><div class="stat"><b>الكورسات</b><h2>${c.length}</h2></div><div class="stat"><b>الطلاب</b><h2>${u.filter(x=>x.role!=="admin").length}</h2></div><div class="stat"><b>سعر الاشتراك</b><h2>${Number(s.subscription_price||0)} دينار</h2></div></div>`;
+ }catch(e){if(e.message.includes("جلسة"))logout();else $("#tab-home").innerHTML=`<p class="dangerText">${esc(e.message)}</p>`}
+}
+async function loadSettings(){
+ try{
+  const s=await api("/api/admin/settings");
+  $("#tab-settings").innerHTML=`
+  <div class="panel"><h2>إعدادات الموقع</h2>
+  <div class="row">
+   <div class="field"><label>اسم الموقع</label><input id="s_name" value="${esc(s.site_name)}"></div>
+   <div class="field"><label>الوصف القصير</label><input id="s_tag" value="${esc(s.tagline)}"></div>
+   <div class="field"><label>سعر الاشتراك</label><input id="s_price" type="number" min="0" step="0.01" value="${Number(s.subscription_price||0)}"></div>
+   <div class="field"><label>عنوان الواجهة</label><input id="s_title" value="${esc(s.hero_title)}"></div>
+  </div>
+  <div class="field"><label>نص الواجهة</label><textarea id="s_text">${esc(s.hero_text)}</textarea></div>
+  <button class="btn" onclick="saveSettings()">حفظ الإعدادات</button><span id="s_msg"></span></div>`;
+ }catch(e){$("#tab-settings").innerHTML=`<p class="dangerText">${esc(e.message)}</p>`}
+}
+async function saveSettings(){
+ try{
+  await api("/api/admin/settings",{method:"PUT",body:JSON.stringify({
+   site_name:$("#s_name").value,tagline:$("#s_tag").value,subscription_price:Number($("#s_price").value),
+   hero_title:$("#s_title").value,hero_text:$("#s_text").value
+  })});
+  $("#s_msg").textContent=" تم الحفظ ✓";$("#s_msg").className="success";loadHome();
+ }catch(e){$("#s_msg").textContent=" "+e.message;$("#s_msg").className="dangerText"}
+}
+
+async function loadCourses(){
+ try{
+  const courses=await api("/api/admin/courses");
+  $("#tab-courses").innerHTML=`
+   <div class="panel"><h2>إضافة كورس</h2>${courseForm()}</div>
+   <div class="panel"><h2>الكورسات</h2><div id="courseList">${courses.map(courseCard).join("")||"<p>لا توجد كورسات.</p>"}</div></div>`;
+ }catch(e){$("#tab-courses").innerHTML=`<p class="dangerText">${esc(e.message)}</p>`}
+}
+function courseForm(c={}){
+ return `<div class="row">
+ <div class="field"><label>اسم الكورس</label><input id="cf_title" value="${esc(c.title||"")}"></div>
+ <div class="field"><label>Slug</label><input id="cf_slug" value="${esc(c.slug||"")}"></div>
+ <div class="field"><label>ترتيب</label><input id="cf_order" type="number" value="${Number(c.sort_order||0)}"></div>
+ <div class="field"><label>رابط الصورة</label><input id="cf_img" value="${esc(c.image_url||"")}"></div></div>
+ <div class="field"><label>الوصف</label><textarea id="cf_desc">${esc(c.description||"")}</textarea></div>
+ <label><input id="cf_pub" type="checkbox" ${c.is_published!==false?"checked":""}> منشور</label>
+ <button class="btn" style="margin-top:10px" onclick="${c.id?`saveCourse(${c.id})`:"createCourse()"}">${c.id?"حفظ التعديل":"إضافة الكورس"}</button>`;
+}
+function courseCard(c){
+ return `<div class="course"><h3>${esc(c.title)}</h3><div class="muted">${esc(c.description||"")}</div><small>slug: ${esc(c.slug)} — ${c.is_published?"منشور":"مخفي"}</small>
+ <div class="actions"><button class="outline" onclick="lessons(${c.id},'${esc(c.title)}')">الدروس</button><button class="outline" onclick="editCourse(${c.id})">تعديل</button><button class="btn danger" onclick="deleteCourse(${c.id})">حذف</button></div></div>`;
+}
+async function createCourse(){
+ try{await api("/api/admin/courses",{method:"POST",body:JSON.stringify({title:$("#cf_title").value,slug:$("#cf_slug").value,description:$("#cf_desc").value,image_url:$("#cf_img").value,sort_order:Number($("#cf_order").value),is_published:$("#cf_pub").checked})});alert("تم إنشاء الكورس");loadCourses();loadHome()}catch(e){alert(e.message)}
+}
+async function editCourse(id){
+ const cs=await api("/api/admin/courses");const c=cs.find(x=>x.id==id);if(!c)return;
+ openModal(`<h2>تعديل الكورس</h2><div id="editCourseForm">${courseForm(c)}</div>`);
+}
+async function saveCourse(id){
+ try{await api("/api/admin/courses/"+id,{method:"PUT",body:JSON.stringify({title:$("#cf_title").value,slug:$("#cf_slug").value,description:$("#cf_desc").value,image_url:$("#cf_img").value,sort_order:Number($("#cf_order").value),is_published:$("#cf_pub").checked})});closeModal();loadCourses()}catch(e){alert(e.message)}
+}
+async function deleteCourse(id){if(!confirm("حذف الكورس سيحذف دروسه واختباراته. متأكد؟"))return;try{await api("/api/admin/courses/"+id,{method:"DELETE"});loadCourses();loadHome()}catch(e){alert(e.message)}}
+
+async function lessons(courseId,title){
+ try{
+  const ls=await api("/api/admin/courses/"+courseId+"/lessons");
+  openModal(`<h2>دروس: ${esc(title)}</h2><button class="btn" onclick="lessonForm(${courseId})">+ إضافة درس</button><div id="lessonList">${ls.map(l=>lessonCard(l,courseId)).join("")||"<p>لا توجد دروس.</p>"}</div>`);
+ }catch(e){alert(e.message)}
+}
+function lessonCard(l,cid){
+ return `<div class="lesson"><b>${esc(l.title)}</b><div class="muted">${esc(l.description||"")}</div><small>${l.is_published?"منشور":"مخفي"} ${l.quiz_id?"• يوجد اختبار":"• بدون اختبار"}</small><div class="actions"><button class="outline" onclick="lessonForm(${cid},${l.id})">تعديل</button><button class="outline" onclick="quizForm(${l.id})">الاختبار</button><button class="btn danger" onclick="deleteLesson(${l.id},${cid})">حذف</button></div></div>`;
+}
+async function lessonForm(courseId,id=null){
+ let l={course_id:courseId};
+ if(id){const ls=await api("/api/admin/courses/"+courseId+"/lessons");l=ls.find(x=>x.id==id)||l}
+ openModal(`<h2>${id?"تعديل درس":"إضافة درس"}</h2>
+ <div class="field"><label>العنوان</label><input id="l_title" value="${esc(l.title||"")}"></div>
+ <div class="field"><label>الوصف</label><textarea id="l_desc">${esc(l.description||"")}</textarea></div>
+ <div class="row"><div class="field"><label>رابط الفيديو</label><input id="l_video" value="${esc(l.video_url||"")}"></div><div class="field"><label>رابط PDF</label><input id="l_pdf" value="${esc(l.pdf_url||"")}"></div><div class="field"><label>الترتيب</label><input id="l_order" type="number" value="${Number(l.sort_order||0)}"></div></div>
+ <label><input id="l_pub" type="checkbox" ${l.is_published!==false?"checked":""}> منشور</label><br><br>
+ <button class="btn" onclick="${id?`saveLesson(${id},${courseId})`:`createLesson(${courseId})`}">حفظ</button>`);
+}
+async function createLesson(courseId){
+ try{await api("/api/admin/lessons",{method:"POST",body:JSON.stringify({course_id:courseId,title:$("#l_title").value,description:$("#l_desc").value,video_url:$("#l_video").value,pdf_url:$("#l_pdf").value,sort_order:Number($("#l_order").value),is_published:$("#l_pub").checked})});closeModal();lessons(courseId,"");}catch(e){alert(e.message)}
+}
+async function saveLesson(id,cid){
+ try{await api("/api/admin/lessons/"+id,{method:"PUT",body:JSON.stringify({title:$("#l_title").value,description:$("#l_desc").value,video_url:$("#l_video").value,pdf_url:$("#l_pdf").value,sort_order:Number($("#l_order").value),is_published:$("#l_pub").checked})});closeModal();lessons(cid,"");}catch(e){alert(e.message)}
+}
+async function deleteLesson(id,cid){if(!confirm("حذف الدرس؟"))return;try{await api("/api/admin/lessons/"+id,{method:"DELETE"});lessons(cid,"")}catch(e){alert(e.message)}}
+
+async function quizForm(lessonId){
+ let q=await api("/api/admin/lessons/"+lessonId+"/quiz");q=q||{passing_score:50,questions:[]};
+ const questions=q.questions||[];
+ openModal(`<h2>اختبار الدرس</h2><div class="field"><label>نسبة النجاح</label><input id="q_pass" type="number" min="0" max="100" value="${Number(q.passing_score||50)}"></div>
+ <div id="questions">${questions.map((x,i)=>questionHtml(x,i)).join("")}</div>
+ <div class="actions"><button class="outline" onclick="addQuestion()">+ سؤال</button><button class="btn" onclick="saveQuiz(${lessonId})">حفظ الاختبار</button><button class="btn danger" onclick="deleteQuiz(${lessonId})">حذف الاختبار</button></div>`);
+}
+function questionHtml(x={},i=0){
+ return `<div class="question"><b>السؤال ${i+1}</b>
+ <div class="field"><input class="qq" data-k="question" placeholder="السؤال" value="${esc(x.question||"")}"></div>
+ <div class="row">${["a","b","c","d"].map(k=>`<div class="field"><input class="qq" data-k="option_${k}" placeholder="الخيار ${k.toUpperCase()}" value="${esc(x["option_"+k]||"")}"></div>`).join("")}</div>
+ <div class="row"><div class="field"><label>الإجابة الصحيحة</label><select class="qq" data-k="correct_option"><option ${x.correct_option==="A"?"selected":""}>A</option><option ${x.correct_option==="B"?"selected":""}>B</option><option ${x.correct_option==="C"?"selected":""}>C</option><option ${x.correct_option==="D"?"selected":""}>D</option></select></div><div class="field"><label>شرح الإجابة</label><input class="qq" data-k="explanation" value="${esc(x.explanation||"")}"></div></div></div>`;
+}
+function addQuestion(){const n=$("#questions").children.length;$("#questions").insertAdjacentHTML("beforeend",questionHtml({},n))}
+function collectQuestions(){return [...document.querySelectorAll("#questions .question")].map(q=>{const o={};q.querySelectorAll(".qq").forEach(x=>o[x.dataset.k]=x.value);return o})}
+async function saveQuiz(lessonId){
+ try{await api("/api/admin/quizzes",{method:"POST",body:JSON.stringify({lesson_id:lessonId,passing_score:Number($("#q_pass").value),questions:collectQuestions()})});alert("تم حفظ الاختبار");closeModal()}catch(e){alert(e.message)}
+}
+async function deleteQuiz(id){if(!confirm("حذف الاختبار؟"))return;try{await api("/api/admin/lessons/"+id+"/quiz",{method:"DELETE"});alert("تم الحذف");closeModal()}catch(e){alert(e.message)}}
+
+async function loadUsers(){
+ try{
+  const users=await api("/api/admin/users");
+  $("#tab-users").innerHTML=`<div class="panel"><h2>الطلاب</h2><div class="tableWrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الرصيد</th><th>الاشتراك</th><th>إضافة رصيد</th></tr></thead><tbody>${users.filter(u=>u.role!=="admin").map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td>${Number(u.wallet_balance||0).toFixed(2)}</td><td>${u.subscribed?"نعم":"لا"}</td><td><button class="outline" onclick="credit(${u.id},'${esc(u.name)}')">إضافة</button></td></tr>`).join("")}</tbody></table></div></div>`;
+ }catch(e){$("#tab-users").innerHTML=`<p class="dangerText">${esc(e.message)}</p>`}
+}
+function credit(id,name){
+ openModal(`<h2>إضافة رصيد: ${esc(name)}</h2><div class="field"><label>المبلغ</label><input id="creditAmount" type="number" min="0.01" step="0.01"></div><div class="field"><label>ملاحظة</label><input id="creditNote" value="إضافة رصيد من الإدارة"></div><button class="btn" onclick="doCredit(${id})">إضافة الرصيد</button>`);
+}
+async function doCredit(id){
+ try{await api("/api/admin/users/"+id+"/credit",{method:"POST",body:JSON.stringify({amount:Number($("#creditAmount").value),note:$("#creditNote").value})});alert("تمت إضافة الرصيد");closeModal();loadUsers()}catch(e){alert(e.message)}
+}
+
+(async()=>{if(token){try{const me=await api("/api/me");if(me.role!=="admin")throw new Error("ليس حساب إدارة");showApp()}catch{logout()}}})();
+</script>
+</body>
+</html>
