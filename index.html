@@ -95,13 +95,6 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdr
 
 /* Course-only learning screen */
 body.course-mode{background:#f3f7fb}body.course-mode>header,body.course-mode .hero,body.course-mode .accountBar,body.course-mode #courses,body.course-mode #dashboard,body.course-mode>footer{display:none!important}body.course-mode main.container{max-width:1400px;padding-top:18px}body.course-mode #courseScreen{margin-top:0;min-height:calc(100vh - 36px)}body.course-mode .courseScreenTop{position:sticky;top:12px;z-index:10;backdrop-filter:blur(10px)}
-
-.courseHeroImage{width:150px;height:100px;border-radius:18px;object-fit:cover;display:block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.courseTopImage{width:100%;height:150px;object-fit:cover;display:block}
-.courseTop.hasImage{padding:0;overflow:hidden;position:relative}
-.courseTop.hasImage .courseNo{position:absolute;top:14px;right:14px;z-index:2}
-.courseTop.hasImage .courseGlow{display:none}
-@media(max-width:620px){.courseHeroImage{width:120px;height:82px}}
 </style>
 </head>
 <body>
@@ -118,7 +111,7 @@ body.course-mode{background:#f3f7fb}body.course-mode>header,body.course-mode .he
 <section id="courseScreen" class="courseScreen hidden">
   <div class="courseScreenTop">
     <button class="btn outline" onclick="backToHome()">← الكورسات</button>
-    <div style="flex:1;width:100%"><div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap"><div id="courseScreenImageWrap"></div><div style="flex:1;min-width:220px"><div class="eyebrow">StudyMedSmart</div><h2 id="courseScreenTitle">الكورس</h2><p id="courseScreenDesc" class="muted"></p></div></div>
+    <div style="flex:1;width:100%"><div class="eyebrow">StudyMedSmart</div><h2 id="courseScreenTitle">الكورس</h2><p id="courseScreenDesc" class="muted"></p>
       <div id="courseProgressBox" class="courseProgressBox hidden"></div>
     </div>
   </div>
@@ -147,7 +140,7 @@ $('#loginBtn')?.addEventListener('click',authLogin);$('#registerBtn')?.addEventL
 async function loadSettings(){try{settings=await api('/api/settings');$('#heroTitle').textContent=settings.hero_title||'ابدأ رحلتك الطبية بثقة';$('#heroText').textContent=settings.hero_text||'';const heroImage=String(settings.hero_image||'').trim();if(heroImage){$('#heroVisual').style.backgroundImage='linear-gradient(rgba(15,59,102,.25),rgba(15,59,102,.25)),url('+JSON.stringify(heroImage)+')';$('#heroVisual').style.backgroundSize='cover';$('#heroVisual').style.backgroundPosition='center';$('#heroVisual').querySelector('.heroIcon').style.opacity='.15';}const p=Number(settings.subscription_price||100).toFixed(2);$('#price').textContent=p;$('#subPrice').textContent=p;document.title=settings.site_name||'StudyMedSmart';}catch(e){console.error(e)}}
 async function loadAccount(){if(!token){$('#wallet').textContent='0.00';$('#subState').textContent='سجّل الدخول لاستخدام الاشتراك';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=authLogin;return}try{me=await api('/api/me');$('#wallet').textContent=Number(me.wallet_balance||0).toFixed(2);if(me.subscribed){$('#subState').innerHTML='<span class="openTag">✓ أنت مشترك — الكورسات الستة مفتوحة</span>';$('#subscribeBtn').textContent='✓ مشترك في جميع الكورسات';$('#subscribeBtn').disabled=true;$('#subscribeBtn').style.opacity='.7'}else{$('#subState').textContent='اشتراك واحد يفتح الكورسات الستة';$('#subscribeBtn').disabled=false;$('#subscribeBtn').style.opacity='1';$('#subscribeBtn').textContent='⭐ اشترك في جميع الكورسات';$('#subscribeBtn').onclick=subscribe}renderAuth()}catch(e){console.error(e)}}
 async function subscribe(){if(!me)return authLogin();if(me.subscribed)return;try{if(!confirm(`سيتم خصم ${Number(settings.subscription_price||0).toFixed(2)} جنيه من محفظتك وفتح الكورسات الستة. متابعة؟`))return;const d=await api('/api/subscribe',{method:'POST',body:'{}'});me.subscribed=true;me.wallet_balance=d.wallet_balance;await loadAccount();await loadCourses();if(window.currentSlug)openCourse(window.currentSlug);alert('تم الاشتراك بنجاح 🎉 الكورسات الستة أصبحت متاحة لك.')}catch(e){alert(e.message)}}
-async function loadCourses(){const box=$('#coursesGrid');box.innerHTML='<div class="notice">جاري تحميل الكورسات...</div>';try{const cs=await api('/api/courses');box.innerHTML=cs.map((c,i)=>`<article class="course" tabindex="0" onclick="openCourse('${attr(c.slug)}')" onkeydown="if(event.key==='Enter'||event.key===' ')openCourse('${attr(c.slug)}')"><div class="courseTop ${String(c.image_url||'').trim().match(/^https?:\/\//)?'hasImage':''}">${String(c.image_url||'').trim().match(/^https?:\/\//)?`<img class="courseTopImage" src="${esc(c.image_url)}" alt="${esc(c.title)}" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.remove('hasImage');">`:`<span class="courseGlow"></span><span class="courseIcon">${esc(c.image_url||'🩺')}</span>`}<span class="courseNo">0${i+1}</span></div><div class="courseBody"><h3>${esc(c.title)}</h3><p class="muted courseDesc">${esc(c.description)}</p><div class="courseFooter"><span class="${me?.subscribed?'openTag':'lockedTag'}">${me?.subscribed?'✓ متاح لك':'🔒 بعد الاشتراك'}</span><span class="btn">دخول الكورس ←</span></div></div></article>`).join('')||'<div class="notice">لا توجد كورسات منشورة.</div>'}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
+async function loadCourses(){const box=$('#coursesGrid');box.innerHTML='<div class="notice">جاري تحميل الكورسات...</div>';try{const cs=await api('/api/courses');box.innerHTML=cs.map((c,i)=>`<article class="course" tabindex="0" onclick="openCourse('${attr(c.slug)}')" onkeydown="if(event.key==='Enter'||event.key===' ')openCourse('${attr(c.slug)}')"><div class="courseTop"><span class="courseGlow"></span><span class="courseIcon">${esc(c.image_url||'🩺')}</span><span class="courseNo">0${i+1}</span></div><div class="courseBody"><h3>${esc(c.title)}</h3><p class="muted courseDesc">${esc(c.description)}</p><div class="courseFooter"><span class="${me?.subscribed?'openTag':'lockedTag'}">${me?.subscribed?'✓ متاح لك':'🔒 بعد الاشتراك'}</span><span class="btn">دخول الكورس ←</span></div></div></article>`).join('')||'<div class="notice">لا توجد كورسات منشورة.</div>'}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
 window.currentSlug='';
 async function openCourse(slug){
   try{
@@ -157,7 +150,7 @@ async function openCourse(slug){
     document.body.classList.add('course-mode');
     $('#courseScreen').classList.remove('hidden');
     $('#courseScreenTitle').textContent=c.title||'الكورس';
-    $('#courseScreenDesc').textContent=c.description||'';const ci=String(c.image_url||'').trim();$('#courseScreenImageWrap').innerHTML=ci.match(/^https?:\/\//)?`<img class="courseHeroImage" src="${esc(ci)}" alt="${esc(c.title||'الكورس')}" onerror="this.style.display='none'">`:'';
+    $('#courseScreenDesc').textContent=c.description||'';
     if(token){
       try{
         const p=await api('/api/courses/'+encodeURIComponent(slug)+'/progress');
