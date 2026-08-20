@@ -1,47 +1,2734 @@
-<!doctype html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudyMedSmart — الإدارة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>StudyMedSmart — لوحة الإدارة</title>
+
 <style>
-:root{--p:#2563eb;--p2:#06b6d4;--navy:#102a43;--bg:#f3f7fb;--card:#fff;--text:#172033;--muted:#64748b;--line:#e2e8f0;--ok:#16a34a;--danger:#dc2626;--purple:#7c3aed;--shadow:0 12px 34px rgba(16,42,67,.08)}*{box-sizing:border-box}body{margin:0;font-family:Cairo,Tahoma,Arial;background:var(--bg);color:var(--text)}button,input,textarea,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}.layout{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.side{background:#0e2f4f;color:#fff;padding:20px 14px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:10px;align-items:center;padding:10px}.brandIcon{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:grid;place-items:center}.brand b{font-size:18px}.brand small{display:block;color:#b9d4e9}.sideNav{margin-top:25px;display:grid;gap:7px}.sideNav button{border:0;background:transparent;color:#dcecf8;text-align:right;padding:12px 14px;border-radius:12px;font-weight:800}.sideNav button.active,.sideNav button:hover{background:rgba(255,255,255,.1);color:#fff}.sideFoot{position:absolute;bottom:18px;left:14px;right:14px}.back{display:block;text-align:center;padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:11px;margin-bottom:8px}.logout{width:100%;border:0;background:#fff0f1;color:#991b1b;padding:10px;border-radius:11px;font-weight:900}.main{min-width:0}.top{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.top h1{font-size:20px;margin:0}.user{display:flex;align-items:center;gap:10px}.pill{background:#eff6ff;color:#1d4ed8;border-radius:12px;padding:8px 12px;font-weight:800}.content{padding:26px;max-width:1400px;margin:auto}.section{display:none}.section.active{display:block}.heroAdmin{background:linear-gradient(135deg,#123f68,#126e92);color:#fff;border-radius:24px;padding:25px;box-shadow:var(--shadow);margin-bottom:20px}.heroAdmin h2{margin:0 0 5px;font-size:27px}.muted{color:var(--muted)}.heroAdmin .muted{color:#d7edf8}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.stat span{color:var(--muted);font-size:13px}.stat b{display:block;font-size:27px;margin-top:3px}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-top:18px}.panelHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:15px}.btn{border:0;border-radius:11px;padding:10px 14px;background:var(--p);color:#fff;font-weight:800}.btn.secondary{background:#0f172a}.btn.green{background:var(--ok)}.btn.red{background:var(--danger)}.btn.light{background:#fff;color:var(--p);border:1px solid #bfdbfe}.btn.small{padding:7px 10px;font-size:12px}.formGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.field label{display:block;font-weight:800;margin-bottom:5px}.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;background:#fff}.field textarea{min-height:90px}.full{grid-column:1/-1}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.tableWrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:12px;border-bottom:1px solid var(--line);text-align:right;vertical-align:middle}th{background:#f8fafc;color:#475569}.badge{padding:5px 8px;border-radius:8px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:800}.badge.green{background:#ecfdf5;color:#166534}.badge.orange{background:#fff7ed;color:#9a3412}.courseCard{border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0;background:#fbfdff}.courseHead{display:flex;justify-content:space-between;gap:12px;align-items:center}.lessonRow{padding:12px;border:1px solid var(--line);border-radius:13px;margin-top:8px;background:#fff}.modal{position:fixed;inset:0;background:#0008;display:flex;align-items:center;justify-content:center;padding:15px;z-index:100}.modal.hidden{display:none}.modalCard{width:min(820px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:24px;position:relative}.close{position:absolute;left:13px;top:8px;border:0;background:transparent;font-size:28px}.toast{position:fixed;left:20px;bottom:20px;background:#102a43;color:#fff;padding:12px 17px;border-radius:12px;z-index:300;box-shadow:var(--shadow)}.loginPage{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#eef6ff,#e9fbfb)}.loginCard{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:25px;padding:30px;box-shadow:var(--shadow)}.loginLogo{text-align:center;font-size:48px}.dangerText{color:#b91c1c}.successText{color:#166534}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.side{position:fixed;inset:0 auto 0 0;width:260px;transform:translateX(-105%);z-index:50;transition:.2s}.side.open{transform:translateX(0)}.mobileMenu{display:block!important}.stats{grid-template-columns:repeat(2,1fr)}.content{padding:17px}.top{padding:0 17px}.formGrid{grid-template-columns:1fr}}@media(max-width:560px){.stats{grid-template-columns:1fr 1fr}.top h1{font-size:16px}}
-.mobileMenu{display:none;border:0;background:#eff6ff;color:#1d4ed8;border-radius:10px;padding:8px 11px}
-</style></head><body>
-<div id="loginPage" class="loginPage"><div class="loginCard"><div class="loginLogo">🩺</div><h2 style="text-align:center;margin:5px 0">StudyMedSmart</h2><p class="muted" style="text-align:center">دخول لوحة الإدارة</p><div class="field"><label>البريد الإلكتروني</label><input id="loginEmail" type="email" autocomplete="username"></div><div class="field"><label>كلمة المرور</label><input id="loginPassword" type="password" autocomplete="current-password"></div><button class="btn" style="width:100%" onclick="adminLogin()">دخول الإدارة</button><div id="loginMsg"></div><a href="/" style="display:block;text-align:center;margin-top:15px;color:#2563eb">← العودة للموقع</a></div></div>
-<div id="app" class="layout" style="display:none"><aside class="side" id="side"><div class="brand"><span class="brandIcon">🩺</span><span><b>StudyMedSmart</b><small>لوحة الإدارة</small></span></div><div class="sideNav"><button class="active" data-section="overview">📊 الرئيسية</button><button data-section="settings">⚙️ إعدادات الموقع</button><button data-section="users">👥 الطلاب والمحفظة</button><button data-section="courses">📚 الكورسات والدروس</button></div><div class="sideFoot"><a class="back" href="/">↩ الموقع</a><button class="logout" onclick="logout()">تسجيل الخروج</button></div></aside>
-<main class="main"><header class="top"><div style="display:flex;gap:10px;align-items:center"><button class="mobileMenu" onclick="toggleSide()">☰</button><h1 id="pageTitle">لوحة التحكم</h1></div><div class="user"><span class="pill">👤 <span id="adminName">الإدارة</span></span></div></header><div class="content">
-<section id="overview" class="section active"><div class="heroAdmin"><h2>مرحبًا بك في لوحة StudyMedSmart</h2><div class="muted">من هنا تتحكم في الاشتراك، الطلاب، الرصيد، الكورسات والدروس والاختبارات.</div></div><div class="stats"><div class="stat"><span>الطلاب</span><b id="sUsers">0</b></div><div class="stat"><span>الكورسات</span><b id="sCourses">0</b></div><div class="stat"><span>الدروس</span><b id="sLessons">0</b></div><div class="stat"><span>المشتركين</span><b id="sSubs">0</b></div></div><div class="panel"><div class="panelHead"><div><h3 style="margin:0">اشتراك جميع الكورسات</h3><span class="muted">السعر الحالي للطالب</span></div><b style="font-size:25px;color:#7c3aed"><span id="overviewPrice">100</span> جنيه</b></div><div class="muted">اشتراك واحد يفتح الكورسات الستة بالكامل.</div></div></section>
-<section id="settings" class="section"><div class="panel"><div class="panelHead"><h2>⚙️ إعدادات الموقع</h2></div><div class="formGrid"><div class="field"><label>اسم الموقع</label><input id="siteName"></div><div class="field"><label>الوصف المختصر</label><input id="tagline"></div><div class="field"><label>سعر الاشتراك — جنيه</label><input id="subPrice" type="number" min="0" step="0.01"></div><div class="field"><label>Hero Title</label><input id="heroTitle"></div><div class="field full"><label>Hero Text</label><textarea id="heroText"></textarea></div><div class="field full"><label>رابط صورة الواجهة (Hero)</label><input id="heroImage" type="url" placeholder="https://example.com/image.jpg"></div></div><div class="actions"><button class="btn" onclick="saveSettings()">حفظ الإعدادات</button></div></div></section>
-<section id="users" class="section"><div class="panel"><div class="panelHead"><h2>👥 الطلاب والمحفظة</h2><button class="btn light" onclick="loadUsers()">تحديث</button></div><div class="tableWrap"><table><thead><tr><th>الاسم</th><th>البريد</th><th>الرصيد</th><th>الاشتراك</th><th>إجراء</th></tr></thead><tbody id="usersTable"></tbody></table></div></div></section>
-<section id="courses" class="section"><div class="panel"><div class="panelHead"><div><h2>📚 الكورسات الستة</h2><div class="muted">يمكنك إدارة الدروس والاختبارات لكل كورس.</div></div><button class="btn" onclick="openCourseForm()">+ إضافة كورس</button></div><div id="coursesList"></div></div></section>
-</div></main></div>
-<div id="modal" class="modal hidden"><div class="modalCard"><button class="close" onclick="closeModal()">×</button><div id="modalBody"></div></div></div><div id="toast" class="toast" style="display:none"></div>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:
+    Tahoma,
+    Arial,
+    sans-serif;
+  background:#f5f7fb;
+  color:#172033;
+}
+
+button,
+input,
+textarea,
+select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at top right,#dbeafe,transparent 35%),
+    radial-gradient(circle at bottom left,#cffafe,transparent 35%),
+    #f8fafc;
+}
+
+.login-card{
+  width:100%;
+  max-width:430px;
+  background:white;
+  border-radius:24px;
+  padding:32px;
+  box-shadow:0 20px 60px rgba(15,23,42,.12);
+}
+
+.logo{
+  width:68px;
+  height:68px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  margin:0 auto 18px;
+}
+
+.login-card h1{
+  text-align:center;
+  font-size:25px;
+  margin-bottom:8px;
+}
+
+.login-card p{
+  text-align:center;
+  color:#64748b;
+  margin-bottom:25px;
+}
+
+.field{
+  margin-bottom:16px;
+}
+
+.field label{
+  display:block;
+  font-weight:bold;
+  margin-bottom:7px;
+  font-size:14px;
+}
+
+.field input,
+.field textarea,
+.field select{
+  width:100%;
+  border:1px solid #dbe2ea;
+  background:#fff;
+  border-radius:12px;
+  padding:12px 14px;
+  outline:none;
+  transition:.2s;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+.field textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+.btn{
+  border:0;
+  border-radius:11px;
+  padding:11px 16px;
+  font-weight:bold;
+  transition:.2s;
+}
+
+.btn:hover{
+  transform:translateY(-1px);
+}
+
+.btn-primary{
+  background:#2563eb;
+  color:white;
+}
+
+.btn-primary:hover{
+  background:#1d4ed8;
+}
+
+.btn-success{
+  background:#16a34a;
+  color:white;
+}
+
+.btn-danger{
+  background:#dc2626;
+  color:white;
+}
+
+.btn-warning{
+  background:#f59e0b;
+  color:white;
+}
+
+.btn-secondary{
+  background:#e2e8f0;
+  color:#172033;
+}
+
+.btn-small{
+  padding:8px 11px;
+  font-size:13px;
+}
+
+.error{
+  background:#fee2e2;
+  color:#991b1b;
+  padding:11px;
+  border-radius:10px;
+  margin-bottom:15px;
+  font-size:14px;
+}
+
+.success{
+  background:#dcfce7;
+  color:#166534;
+  padding:11px;
+  border-radius:10px;
+  margin-bottom:15px;
+  font-size:14px;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
+  min-height:100vh;
+  display:flex;
+}
+
+.sidebar{
+  width:260px;
+  background:#0f172a;
+  color:white;
+  min-height:100vh;
+  position:fixed;
+  right:0;
+  top:0;
+  bottom:0;
+  z-index:100;
+  padding:20px 14px;
+  overflow-y:auto;
+}
+
+.sidebar-logo{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:10px;
+  margin-bottom:20px;
+}
+
+.sidebar-logo .logo-small{
+  width:45px;
+  height:45px;
+  border-radius:14px;
+  background:linear-gradient(135deg,#2563eb,#06b6d4);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+}
+
+.sidebar-logo strong{
+  font-size:18px;
+}
+
+.sidebar-logo span{
+  display:block;
+  color:#94a3b8;
+  font-size:11px;
+  margin-top:2px;
+}
+
+.nav-btn{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#cbd5e1;
+  text-align:right;
+  padding:13px 14px;
+  border-radius:11px;
+  margin-bottom:5px;
+  font-size:14px;
+}
+
+.nav-btn:hover,
+.nav-btn.active{
+  background:#1e293b;
+  color:white;
+}
+
+.logout{
+  margin-top:20px;
+  border-top:1px solid #334155;
+  padding-top:15px;
+}
+
+.main{
+  width:calc(100% - 260px);
+  margin-right:260px;
+  min-height:100vh;
+}
+
+.topbar{
+  height:70px;
+  background:white;
+  border-bottom:1px solid #e5e7eb;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 28px;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+.topbar h2{
+  font-size:20px;
+}
+
+.admin-info{
+  color:#64748b;
+  font-size:13px;
+}
+
+.content{
+  padding:25px;
+  max-width:1500px;
+  margin:auto;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.stat-card{
+  background:white;
+  border-radius:17px;
+  padding:20px;
+  box-shadow:0 5px 20px rgba(15,23,42,.05);
+  border:1px solid #eef2f7;
+}
+
+.stat-card .icon{
+  font-size:25px;
+  margin-bottom:10px;
+}
+
+.stat-card strong{
+  display:block;
+  font-size:25px;
+  margin-bottom:4px;
+}
+
+.stat-card span{
+  color:#64748b;
+  font-size:13px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:20px;
+  box-shadow:0 5px 20px rgba(15,23,42,.05);
+  border:1px solid #eef2f7;
+}
+
+.card-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+
+.card-header h3{
+  font-size:18px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-wrap{
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:750px;
+}
+
+th,
+td{
+  padding:13px 10px;
+  border-bottom:1px solid #edf1f5;
+  text-align:right;
+  font-size:13px;
+}
+
+th{
+  color:#475569;
+  background:#f8fafc;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:bold;
+}
+
+.badge-green{
+  background:#dcfce7;
+  color:#166534;
+}
+
+.badge-red{
+  background:#fee2e2;
+  color:#991b1b;
+}
+
+.badge-blue{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+/* =========================
+   COURSE GRID
+========================= */
+
+.course-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.course-card{
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:18px;
+  background:#fff;
+}
+
+.course-icon{
+  width:55px;
+  height:55px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  background:#eff6ff;
+  font-size:27px;
+  margin-bottom:12px;
+}
+
+.course-card h4{
+  font-size:17px;
+  margin-bottom:8px;
+}
+
+.course-card p{
+  color:#64748b;
+  font-size:13px;
+  line-height:1.7;
+  min-height:48px;
+}
+
+.course-actions{
+  display:flex;
+  gap:7px;
+  margin-top:15px;
+  flex-wrap:wrap;
+}
+
+/* =========================
+   LESSONS
+========================= */
+
+.lesson-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.lesson-item{
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:15px;
+  background:#fff;
+}
+
+.lesson-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.lesson-title{
+  font-weight:bold;
+}
+
+.lesson-meta{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:8px;
+}
+
+.lesson-actions{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:13px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:500;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:800px;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:20px;
+  padding:24px;
+}
+
+.modal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.close{
+  width:35px;
+  height:35px;
+  border:0;
+  background:#f1f5f9;
+  border-radius:10px;
+  font-size:20px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+.modal-actions{
+  display:flex;
+  justify-content:flex-start;
+  gap:8px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+
+.question-box{
+  border:1px solid #e2e8f0;
+  border-radius:15px;
+  padding:16px;
+  margin-bottom:14px;
+  background:#f8fafc;
+}
+
+.question-title{
+  font-weight:bold;
+  margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.checkbox{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+}
+
+.checkbox input{
+  width:18px;
+  height:18px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+.mobile-menu{
+  display:none;
+  border:0;
+  background:#f1f5f9;
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  font-size:20px;
+}
+
+@media(max-width:1100px){
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .course-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:750px){
+  .sidebar{
+    transform:translateX(100%);
+    transition:.25s;
+  }
+
+  .sidebar.open{
+    transform:translateX(0);
+  }
+
+  .main{
+    width:100%;
+    margin-right:0;
+  }
+
+  .mobile-menu{
+    display:block;
+  }
+
+  .topbar{
+    padding:0 15px;
+  }
+
+  .content{
+    padding:15px;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .course-grid{
+    grid-template-columns:1fr;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  .topbar h2{
+    font-size:16px;
+  }
+}
+
+@media(max-width:450px){
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .login-card{
+    padding:22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     LOGIN
+========================= -->
+
+<section id="loginPage" class="login-page">
+
+  <div class="login-card">
+
+    <div class="logo">🩺</div>
+
+    <h1>StudyMedSmart</h1>
+    <p>تسجيل دخول لوحة الإدارة</p>
+
+    <div id="loginError" class="error hidden"></div>
+
+    <div class="field">
+      <label>البريد الإلكتروني</label>
+      <input id="loginEmail" type="email" placeholder="admin@example.com">
+    </div>
+
+    <div class="field">
+      <label>كلمة المرور</label>
+      <input id="loginPassword" type="password" placeholder="كلمة المرور">
+    </div>
+
+    <button class="btn btn-primary" style="width:100%" onclick="login()">
+      دخول لوحة الإدارة
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     APP
+========================= -->
+
+<section id="app" class="app hidden">
+
+  <aside id="sidebar" class="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-small">🩺</div>
+      <div>
+        <strong>StudyMedSmart</strong>
+        <span>لوحة الإدارة</span>
+      </div>
+    </div>
+
+    <button class="nav-btn active" onclick="showPage('dashboard',this)">
+      📊 الرئيسية
+    </button>
+
+    <button class="nav-btn" onclick="showPage('settings',this)">
+      ⚙️ إعدادات الموقع
+    </button>
+
+    <button class="nav-btn" onclick="showPage('users',this)">
+      👨‍🎓 الطلاب
+    </button>
+
+    <button class="nav-btn" onclick="showPage('courses',this)">
+      📚 الكورسات
+    </button>
+
+    <button class="nav-btn" onclick="showPage('lessons',this)">
+      📝 الدروس والاختبارات
+    </button>
+
+    <div class="logout">
+      <button class="nav-btn" onclick="logout()">
+        🚪 تسجيل الخروج
+      </button>
+    </div>
+
+  </aside>
+
+
+  <main class="main">
+
+    <header class="topbar">
+
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="mobile-menu" onclick="toggleSidebar()">☰</button>
+        <h2 id="pageTitle">لوحة التحكم</h2>
+      </div>
+
+      <div class="admin-info">
+        <span id="adminEmail"></span>
+      </div>
+
+    </header>
+
+
+    <div class="content">
+
+      <!-- =========================
+           DASHBOARD
+      ========================= -->
+
+      <section id="page-dashboard" class="page active">
+
+        <div class="stats">
+
+          <div class="stat-card">
+            <div class="icon">👨‍🎓</div>
+            <strong id="statUsers">0</strong>
+            <span>إجمالي المستخدمين</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon">📚</div>
+            <strong id="statCourses">0</strong>
+            <span>الكورسات</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon">📝</div>
+            <strong id="statLessons">0</strong>
+            <span>الدروس</span>
+          </div>
+
+          <div class="stat-card">
+            <div class="icon">💳</div>
+            <strong id="statSubscribed">0</strong>
+            <span>المشتركين</span>
+          </div>
+
+        </div>
+
+        <div class="card">
+
+          <div class="card-header">
+            <h3>مرحباً بك في لوحة الإدارة 👋</h3>
+          </div>
+
+          <p style="color:#64748b;line-height:2">
+            من هنا يمكنك التحكم في منصة StudyMedSmart بالكامل:
+            الطلاب، أرصدة المحافظ، الكورسات، الدروس، روابط الفيديو وملفات PDF والاختبارات.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           SETTINGS
+      ========================= -->
+
+      <section id="page-settings" class="page">
+
+        <div class="card">
+
+          <div class="card-header">
+            <h3>إعدادات الموقع</h3>
+
+            <button class="btn btn-primary" onclick="saveSettings()">
+              💾 حفظ التغييرات
+            </button>
+          </div>
+
+          <div id="settingsMessage"></div>
+
+          <div class="form-grid">
+
+            <div class="field">
+              <label>اسم الموقع</label>
+              <input id="siteName">
+            </div>
+
+            <div class="field">
+              <label>الوصف المختصر</label>
+              <input id="tagline">
+            </div>
+
+            <div class="field">
+              <label>سعر الاشتراك</label>
+              <input id="subscriptionPrice" type="number" min="0" step="0.01">
+            </div>
+
+            <div class="field">
+              <label>رابط صورة الواجهة</label>
+              <input id="heroImage" placeholder="https://...">
+            </div>
+
+            <div class="field full">
+              <label>عنوان الواجهة الرئيسية</label>
+              <input id="heroTitle">
+            </div>
+
+            <div class="field full">
+              <label>نص الواجهة الرئيسية</label>
+              <textarea id="heroText"></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           USERS
+      ========================= -->
+
+      <section id="page-users" class="page">
+
+        <div class="card">
+
+          <div class="card-header">
+            <h3>الطلاب والمستخدمون</h3>
+
+            <button class="btn btn-secondary" onclick="loadUsers()">
+              🔄 تحديث
+            </button>
+          </div>
+
+          <div class="table-wrap">
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>الاسم</th>
+                  <th>البريد</th>
+                  <th>الدور</th>
+                  <th>الرصيد</th>
+                  <th>الاشتراك</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+
+              <tbody id="usersTable"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           COURSES
+      ========================= -->
+
+      <section id="page-courses" class="page">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h3>الكورسات</h3>
+
+            <button class="btn btn-primary" onclick="openCourseModal()">
+              + إضافة كورس
+            </button>
+
+          </div>
+
+          <div id="coursesGrid" class="course-grid"></div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================
+           LESSONS
+      ========================= -->
+
+      <section id="page-lessons" class="page">
+
+        <div class="card">
+
+          <div class="card-header">
+
+            <h3>الدروس والاختبارات</h3>
+
+            <button class="btn btn-primary" onclick="openLessonModal()">
+              + إضافة درس
+            </button>
+
+          </div>
+
+          <div class="field">
+
+            <label>اختر الكورس</label>
+
+            <select id="lessonCourseSelect" onchange="loadLessons()">
+              <option value="">اختر الكورس</option>
+            </select>
+
+          </div>
+
+          <div id="lessonsContainer" class="lesson-list"></div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- =========================
+     COURSE MODAL
+========================= -->
+
+<div id="courseModal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3 id="courseModalTitle">إضافة كورس</h3>
+      <button class="close" onclick="closeModal('courseModal')">×</button>
+    </div>
+
+    <div id="courseMessage"></div>
+
+    <input type="hidden" id="courseId">
+
+    <div class="form-grid">
+
+      <div class="field">
+        <label>اسم الكورس</label>
+        <input id="courseTitle">
+      </div>
+
+      <div class="field">
+        <label>Slug</label>
+        <input id="courseSlug" placeholder="medical-terminology">
+      </div>
+
+      <div class="field full">
+        <label>الوصف</label>
+        <textarea id="courseDescription"></textarea>
+      </div>
+
+      <div class="field">
+        <label>الأيقونة / الصورة</label>
+        <input id="courseImage" placeholder="🩺 أو رابط صورة">
+      </div>
+
+      <div class="field">
+        <label>الترتيب</label>
+        <input id="courseOrder" type="number" value="0">
+      </div>
+
+      <div class="field full">
+
+        <label class="checkbox">
+          <input id="coursePublished" type="checkbox" checked>
+          الكورس منشور للطلاب
+        </label>
+
+      </div>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button class="btn btn-primary" onclick="saveCourse()">
+        💾 حفظ
+      </button>
+
+      <button class="btn btn-secondary" onclick="closeModal('courseModal')">
+        إلغاء
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     LESSON MODAL
+========================= -->
+
+<div id="lessonModal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h3 id="lessonModalTitle">إضافة درس</h3>
+
+      <button class="close" onclick="closeModal('lessonModal')">
+        ×
+      </button>
+
+    </div>
+
+    <div id="lessonMessage"></div>
+
+    <input type="hidden" id="lessonId">
+
+    <div class="form-grid">
+
+      <div class="field full">
+
+        <label>الكورس</label>
+
+        <select id="lessonCourse">
+          <option value="">اختر الكورس</option>
+        </select>
+
+      </div>
+
+      <div class="field full">
+
+        <label>اسم الدرس</label>
+
+        <input id="lessonTitle">
+
+      </div>
+
+      <div class="field full">
+
+        <label>وصف الدرس</label>
+
+        <textarea id="lessonDescription"></textarea>
+
+      </div>
+
+      <div class="field full">
+
+        <label>رابط الفيديو</label>
+
+        <input id="lessonVideo" placeholder="https://youtube.com/...">
+
+      </div>
+
+      <div class="field full">
+
+        <label>رابط PDF</label>
+
+        <input id="lessonPdf" placeholder="https://...">
+
+      </div>
+
+      <div class="field">
+
+        <label>الترتيب</label>
+
+        <input id="lessonOrder" type="number" value="0">
+
+      </div>
+
+      <div class="field">
+
+        <label class="checkbox" style="margin-top:28px">
+
+          <input id="lessonPublished" type="checkbox" checked>
+
+          الدرس منشور
+
+        </label>
+
+      </div>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button class="btn btn-primary" onclick="saveLesson()">
+        💾 حفظ الدرس
+      </button>
+
+      <button class="btn btn-secondary" onclick="closeModal('lessonModal')">
+        إلغاء
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     QUIZ MODAL
+========================= -->
+
+<div id="quizModal" class="modal">
+
+  <div class="modal-box">
+
+    <div class="modal-header">
+
+      <h3>إدارة اختبار الدرس</h3>
+
+      <button class="close" onclick="closeModal('quizModal')">
+        ×
+      </button>
+
+    </div>
+
+    <input type="hidden" id="quizLessonId">
+
+    <div class="field">
+
+      <label>نسبة النجاح</label>
+
+      <input id="passingScore" type="number" min="0" max="100" value="50">
+
+    </div>
+
+    <div class="card" style="background:#f8fafc;margin-top:15px">
+
+      <div class="card-header">
+
+        <h3>الأسئلة</h3>
+
+        <button class="btn btn-primary btn-small" onclick="addQuestion()">
+          + إضافة سؤال
+        </button>
+
+      </div>
+
+      <div id="questionsContainer"></div>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button class="btn btn-success" onclick="saveQuiz()">
+        💾 حفظ الاختبار
+      </button>
+
+      <button class="btn btn-danger" onclick="deleteQuiz()">
+        🗑️ حذف الاختبار
+      </button>
+
+      <button class="btn btn-secondary" onclick="closeModal('quizModal')">
+        إلغاء
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     CREDIT MODAL
+========================= -->
+
+<div id="creditModal" class="modal">
+
+  <div class="modal-box" style="max-width:500px">
+
+    <div class="modal-header">
+
+      <h3>إضافة رصيد للطالب</h3>
+
+      <button class="close" onclick="closeModal('creditModal')">
+        ×
+      </button>
+
+    </div>
+
+    <input type="hidden" id="creditUserId">
+
+    <div id="creditMessage"></div>
+
+    <div class="field">
+
+      <label>المبلغ</label>
+
+      <input id="creditAmount" type="number" min="0" step="0.01">
+
+    </div>
+
+    <div class="field">
+
+      <label>ملاحظة</label>
+
+      <textarea id="creditNote" placeholder="مثلاً: تحويل من الطالب"></textarea>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button class="btn btn-success" onclick="creditUser()">
+        إضافة الرصيد
+      </button>
+
+      <button class="btn btn-secondary" onclick="closeModal('creditModal')">
+        إلغاء
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 <script>
-const $=s=>document.querySelector(s);let token=localStorage.getItem('sms_admin_token')||'',me=null,users=[],courses=[],currentCourse=null;
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-async function api(url,opt={}){const h={'Content-Type':'application/json',...(opt.headers||{})};if(token)h.Authorization='Bearer '+token;const r=await fetch(url,{...opt,headers:h});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||d.message||'حدث خطأ');return d}
-function toast(x){$('#toast').textContent=x;$('#toast').style.display='block';clearTimeout(window.tt);window.tt=setTimeout(()=>$('#toast').style.display='none',2600)}function openModal(h){$('#modalBody').innerHTML=h;$('#modal').classList.remove('hidden')}function closeModal(){$('#modal').classList.add('hidden')}
-function nav(name){document.querySelectorAll('.sideNav button').forEach(b=>b.classList.toggle('active',b.dataset.section===name));document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===name));const titles={overview:'لوحة التحكم',settings:'إعدادات الموقع',users:'الطلاب والمحفظة',courses:'الكورسات والدروس'};$('#pageTitle').textContent=titles[name]||'الإدارة';$('#side').classList.remove('open')}
-document.querySelectorAll('.sideNav button').forEach(b=>b.onclick=()=>nav(b.dataset.section));function toggleSide(){$('#side').classList.toggle('open')}
-async function adminLogin(){try{const d=await api('/api/auth/login',{method:'POST',body:JSON.stringify({email:$('#loginEmail').value,password:$('#loginPassword').value})});if(d.user.role!=='admin')throw Error('هذا الحساب ليس حساب إدارة.');token=d.token;localStorage.setItem('sms_admin_token',token);await boot()}catch(e){$('#loginMsg').innerHTML=`<div class="panel dangerText">${esc(e.message)}</div>`}}
-function logout(){token='';me=null;localStorage.removeItem('sms_admin_token');location.reload()}
-async function boot(){try{me=await api('/api/me');if(me.role!=='admin')throw Error('غير مصرح بالوصول');$('#loginPage').style.display='none';$('#app').style.display='grid';$('#adminName').textContent=me.name||me.email;await Promise.all([loadSettings(),loadUsers(),loadCourses()]);}catch(e){localStorage.removeItem('sms_admin_token');token='';$('#loginMsg').innerHTML=`<div class="panel dangerText">${esc(e.message)}</div>`;$('#loginPage').style.display='grid';$('#app').style.display='none'}}
-async function loadSettings(){const s=await api('/api/admin/settings');$('#siteName').value=s.site_name||'';$('#tagline').value=s.tagline||'';$('#subPrice').value=Number(s.subscription_price||0);$('#heroTitle').value=s.hero_title||'';$('#heroText').value=s.hero_text||'';$('#heroImage').value=s.hero_image||'';$('#overviewPrice').textContent=Number(s.subscription_price||0).toFixed(2)}
-async function saveSettings(){try{await api('/api/admin/settings',{method:'PUT',body:JSON.stringify({site_name:$('#siteName').value.trim(),tagline:$('#tagline').value.trim(),subscription_price:Number($('#subPrice').value)||0,hero_title:$('#heroTitle').value.trim(),hero_text:$('#heroText').value.trim(),hero_image:$('#heroImage').value.trim()})});toast('تم حفظ إعدادات الموقع.')}catch(e){toast(e.message)}}
-async function loadUsers(){users=await api('/api/admin/users');const students=users.filter(x=>x.role!=='admin');$('#usersTable').innerHTML=students.map(u=>`<tr><td><b>${esc(u.name)}</b></td><td>${esc(u.email)}</td><td><b>${Number(u.wallet_balance||0).toFixed(2)}</b> جنيه</td><td>${u.subscribed?'<span class="badge green">مشترك</span>':'<span class="badge orange">غير مشترك</span>'}</td><td><button class="btn small" onclick="wallet(${u.id})">💰 إدارة الرصيد</button></td></tr>`).join('')||'<tr><td colspan="5">لا يوجد طلاب.</td></tr>';$('#sUsers').textContent=students.length;$('#sSubs').textContent=students.filter(x=>x.subscribed).length}
-async function wallet(id){const u=users.find(x=>Number(x.id)===Number(id));openModal(`<h2>💰 محفظة الطالب</h2><p><b>${esc(u.name)}</b><br>${esc(u.email)}<br>الرصيد الحالي: <b>${Number(u.wallet_balance||0).toFixed(2)} جنيه</b></p><div class="field"><label>المبلغ بالجنيه</label><input id="creditAmount" type="number" min="1" step="0.01"></div><div class="field"><label>ملاحظة</label><input id="creditNote" value="إضافة رصيد من الإدارة"></div><button class="btn green" onclick="credit(${id})">➕ إضافة الرصيد</button>`)}
-async function credit(id){try{const a=Number($('#creditAmount').value);if(!a||a<=0)throw Error('أدخل مبلغًا صحيحًا.');await api('/api/admin/users/'+id+'/credit',{method:'POST',body:JSON.stringify({amount:a,note:$('#creditNote').value})});closeModal();await loadUsers();toast('تم إضافة الرصيد بنجاح.')}catch(e){toast(e.message)}}
-async function loadCourses(){courses=await api('/api/admin/courses');$('#sCourses').textContent=courses.filter(c=>['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)).length;$('#coursesList').innerHTML=courses.filter(c=>['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)).map((c,i)=>`<div class="courseCard"><div class="courseHead"><div><b>0${i+1}. ${esc(c.title)}</b><div class="muted">${esc(c.description||'')}</div></div><div class="actions"><button class="btn small" onclick="openCourseForm(${c.id})">تعديل</button><button class="btn secondary small" onclick="manageLessons(${c.id})">الدروس والاختبارات</button></div></div><div id="lessons-${c.id}"></div></div>`).join('');let total=0;for(const c of courses){if(['medical-terminology','body-systems','first-aid','medical-foundations','study-skills','medical-future'].includes(c.slug)){try{const l=await api('/api/admin/courses/'+c.id+'/lessons');total+=l.length}catch{}}}$('#sLessons').textContent=total}
-function openCourseForm(id){const c=id?courses.find(x=>Number(x.id)===Number(id)):{};openModal(`<h2>${id?'تعديل الكورس':'إضافة كورس'}</h2><div class="formGrid"><div class="field"><label>اسم الكورس</label><input id="cTitle" value="${esc(c?.title||'')}"></div><div class="field"><label>Slug</label><input id="cSlug" value="${esc(c?.slug||'')}"></div><div class="field full"><label>الوصف</label><textarea id="cDesc">${esc(c?.description||'')}</textarea></div><div class="field"><label>أيقونة/رابط صورة</label><input id="cImage" value="${esc(c?.image_url||'🩺')}"></div><div class="field"><label>الترتيب</label><input id="cOrder" type="number" value="${Number(c?.sort_order||0)}"></div></div><div class="actions"><button class="btn" onclick="saveCourse(${id||0})">حفظ</button>${id?`<button class="btn red" onclick="deleteCourse(${id})">حذف</button>`:''}</div>`)}
-async function saveCourse(id){try{const body={title:$('#cTitle').value.trim(),slug:$('#cSlug').value.trim(),description:$('#cDesc').value.trim(),image_url:$('#cImage').value.trim(),sort_order:Number($('#cOrder').value)||0,is_published:true};if(!body.title||!body.slug)throw Error('اسم الكورس والـ slug مطلوبان.');await api(id?'/api/admin/courses/'+id:'/api/admin/courses',{method:id?'PUT':'POST',body:JSON.stringify(body)});closeModal();await loadCourses();toast('تم حفظ الكورس.')}catch(e){toast(e.message)}}
-async function deleteCourse(id){if(!confirm('حذف الكورس وكل دروسه واختباراته؟'))return;try{await api('/api/admin/courses/'+id,{method:'DELETE'});closeModal();await loadCourses();toast('تم حذف الكورس.')}catch(e){toast(e.message)}}
-async function manageLessons(courseId){const box=$('#lessons-'+courseId);if(!box)return;box.innerHTML='<div class="notice">جاري تحميل الدروس...</div>';try{const ls=await api('/api/admin/courses/'+courseId+'/lessons');box.innerHTML=`<div class="actions"><button class="btn small" onclick="lessonForm(${courseId})">+ إضافة درس</button></div>`+(ls.map((l,i)=>`<div class="lessonRow"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><div><b>الدرس ${String(i+1).padStart(2,'0')} — ${esc(l.title)}</b><div class="muted">${esc(l.description||'')}</div><span class="badge">${l.quiz_id?'📝 اختبار موجود':'بدون اختبار'}</span></div><div class="actions"><button class="btn small" onclick="lessonForm(${courseId},${l.id})">تعديل</button><button class="btn secondary small" onclick="quizForm(${l.id})">📝 الاختبار</button><button class="btn red small" onclick="deleteLesson(${l.id},${courseId})">حذف</button></div></div></div>`).join('')||'<div class="notice">لا توجد دروس.</div>') }catch(e){box.innerHTML=`<div class="notice dangerText">${esc(e.message)}</div>`}}
-async function lessonForm(courseId,id){let l={};if(id){const ls=await api('/api/admin/courses/'+courseId+'/lessons');l=ls.find(x=>Number(x.id)===Number(id))||{}}openModal(`<h2>${id?'تعديل الدرس':'إضافة درس'}</h2><div class="formGrid"><div class="field full"><label>اسم الدرس</label><input id="lTitle" value="${esc(l.title||'')}"></div><div class="field full"><label>الوصف</label><textarea id="lDesc">${esc(l.description||'')}</textarea></div><div class="field"><label>رابط الفيديو</label><input id="lVideo" value="${esc(l.video_url||'')}"></div><div class="field"><label>رابط PDF</label><input id="lPdf" value="${esc(l.pdf_url||'')}"></div><div class="field"><label>الترتيب</label><input id="lOrder" type="number" value="${Number(l.sort_order||0)}"></div></div><div class="actions"><button class="btn" onclick="saveLesson(${courseId},${id||0})">حفظ الدرس</button></div>`)}
-async function saveLesson(courseId,id){try{const b={course_id:courseId,title:$('#lTitle').value.trim(),description:$('#lDesc').value.trim(),video_url:$('#lVideo').value.trim(),pdf_url:$('#lPdf').value.trim(),sort_order:Number($('#lOrder').value)||0,is_published:true};if(!b.title)throw Error('اكتب اسم الدرس.');await api(id?'/api/admin/lessons/'+id:'/api/admin/lessons',{method:id?'PUT':'POST',body:JSON.stringify(b)});closeModal();await loadCourses();manageLessons(courseId);toast('تم حفظ الدرس.')}catch(e){toast(e.message)}}
-async function deleteLesson(id,courseId){if(!confirm('حذف الدرس والاختبار الخاص به؟'))return;try{await api('/api/admin/lessons/'+id,{method:'DELETE'});await loadCourses();manageLessons(courseId);toast('تم حذف الدرس.')}catch(e){toast(e.message)}}
-async function quizForm(lessonId){let q=await api('/api/admin/lessons/'+lessonId+'/quiz');const questions=q?.questions||[];let html=`<h2>📝 إدارة اختبار الدرس</h2><div class="field"><label>نسبة النجاح</label><input id="passScore" type="number" min="0" max="100" value="${Number(q?.passing_score||50)}"></div><div id="questions">${questions.map((x,i)=>questionHtml(i,x)).join('')}</div><div class="actions"><button class="btn light" onclick="addQuestion()">+ إضافة سؤال</button><button class="btn" onclick="saveQuiz(${lessonId})">حفظ الاختبار</button>${q?`<button class="btn red" onclick="deleteQuiz(${lessonId})">حذف الاختبار</button>`:''}</div>`;openModal(html)}
-function questionHtml(i,x={}){return `<div class="courseCard question" data-index="${i}"><div class="panelHead"><b>السؤال ${i+1}</b><button class="btn red small" onclick="this.closest('.question').remove()">حذف</button></div><div class="field"><label>السؤال</label><textarea class="qText">${esc(x.question||'')}</textarea></div><div class="formGrid"><div class="field"><label>A</label><input class="qA" value="${esc(x.option_a||'')}"></div><div class="field"><label>B</label><input class="qB" value="${esc(x.option_b||'')}"></div><div class="field"><label>C</label><input class="qC" value="${esc(x.option_c||'')}"></div><div class="field"><label>D</label><input class="qD" value="${esc(x.option_d||'')}"></div></div><div class="formGrid"><div class="field"><label>الإجابة الصحيحة</label><select class="qCorrect"><option ${x.correct_option==='A'?'selected':''}>A</option><option ${x.correct_option==='B'?'selected':''}>B</option><option ${x.correct_option==='C'?'selected':''}>C</option><option ${x.correct_option==='D'?'selected':''}>D</option></select></div><div class="field"><label>شرح الإجابة</label><input class="qExp" value="${esc(x.explanation||'')}"></div></div></div>`}
-function addQuestion(){const c=$('#questions');c.insertAdjacentHTML('beforeend',questionHtml(c.querySelectorAll('.question').length,{}))}
-async function saveQuiz(lessonId){try{const questions=[...document.querySelectorAll('#questions .question')].map(x=>({question:x.querySelector('.qText').value.trim(),option_a:x.querySelector('.qA').value.trim(),option_b:x.querySelector('.qB').value.trim(),option_c:x.querySelector('.qC').value.trim(),option_d:x.querySelector('.qD').value.trim(),correct_option:x.querySelector('.qCorrect').value,explanation:x.querySelector('.qExp').value.trim()}));if(!questions.length)throw Error('أضف سؤالًا واحدًا على الأقل.');for(const q of questions)if(!q.question||!q.option_a||!q.option_b||!q.option_c||!q.option_d)throw Error('أكمل بيانات كل سؤال والاختيارات الأربعة.');await api('/api/admin/quizzes',{method:'POST',body:JSON.stringify({lesson_id:lessonId,passing_score:Number($('#passScore').value)||50,questions})});closeModal();toast('تم حفظ الاختبار بنجاح.')}catch(e){toast(e.message)}}
-async function deleteQuiz(lessonId){if(!confirm('حذف اختبار هذا الدرس؟'))return;try{await api('/api/admin/lessons/'+lessonId+'/quiz',{method:'DELETE'});closeModal();toast('تم حذف الاختبار.')}catch(e){toast(e.message)}}
-(async()=>{if(token)await boot()})();
-</script></body></html>
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const API = "/api";
+
+let token = localStorage.getItem("studymedsmart_admin_token") || "";
+let currentAdmin = null;
+
+let courses = [];
+let users = [];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+async function api(url, options = {}){
+
+  const headers = {
+    ...(options.body ? {"Content-Type":"application/json"} : {}),
+    ...(token ? {"Authorization":"Bearer " + token} : {}),
+    ...(options.headers || {})
+  };
+
+  const response = await fetch(API + url,{
+    ...options,
+    headers
+  });
+
+  let data = {};
+
+  try{
+    data = await response.json();
+  }catch{}
+
+  if(!response.ok){
+
+    if(response.status === 401){
+
+      logout();
+
+    }
+
+    throw new Error(data.error || "حدث خطأ في الطلب");
+
+  }
+
+  return data;
+
+}
+
+
+function showMessage(id,text,type="error"){
+
+  const el = document.getElementById(id);
+
+  if(!el) return;
+
+  el.innerHTML =
+    `<div class="${type}">${escapeHtml(text)}</div>`;
+
+}
+
+
+function closeModal(id){
+
+  document.getElementById(id).classList.remove("show");
+
+}
+
+
+function openModal(id){
+
+  document.getElementById(id).classList.add("show");
+
+}
+
+
+function toggleSidebar(){
+
+  document.getElementById("sidebar").classList.toggle("open");
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(){
+
+  const email =
+    document.getElementById("loginEmail").value.trim();
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  document.getElementById("loginError")
+    .classList.add("hidden");
+
+  try{
+
+    const data = await api("/auth/login",{
+      method:"POST",
+      body:JSON.stringify({
+        email,
+        password
+      })
+    });
+
+    if(data.user.role !== "admin"){
+
+      throw new Error("هذا الحساب ليس حساب مدير");
+
+    }
+
+    token = data.token;
+
+    localStorage.setItem(
+      "studymedsmart_admin_token",
+      token
+    );
+
+    currentAdmin = data.user;
+
+    openApp();
+
+  }catch(e){
+
+    const el = document.getElementById("loginError");
+
+    el.textContent = e.message;
+
+    el.classList.remove("hidden");
+
+  }
+
+}
+
+
+async function checkLogin(){
+
+  if(!token) return;
+
+  try{
+
+    const user = await api("/me");
+
+    if(user.role !== "admin"){
+
+      logout();
+      return;
+
+    }
+
+    currentAdmin = user;
+
+    openApp();
+
+  }catch{
+
+    logout();
+
+  }
+
+}
+
+
+function openApp(){
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+  document.getElementById("adminEmail").textContent =
+    currentAdmin?.email || "";
+
+  loadAll();
+
+}
+
+
+function logout(){
+
+  token = "";
+
+  currentAdmin = null;
+
+  localStorage.removeItem(
+    "studymedsmart_admin_token"
+  );
+
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page,button){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(x=>x.classList.remove("active"));
+
+  document
+    .getElementById("page-" + page)
+    .classList.add("active");
+
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(x=>x.classList.remove("active"));
+
+  if(button){
+    button.classList.add("active");
+  }
+
+  const titles = {
+    dashboard:"لوحة التحكم",
+    settings:"إعدادات الموقع",
+    users:"الطلاب",
+    courses:"الكورسات",
+    lessons:"الدروس والاختبارات"
+  };
+
+  document.getElementById("pageTitle").textContent =
+    titles[page] || "لوحة الإدارة";
+
+  document.getElementById("sidebar").classList.remove("open");
+
+  if(page === "settings") loadSettings();
+  if(page === "users") loadUsers();
+  if(page === "courses") loadCourses();
+  if(page === "lessons"){
+    loadCourses();
+  }
+
+}
+
+
+/* =========================================================
+   LOAD ALL
+========================================================= */
+
+async function loadAll(){
+
+  await Promise.allSettled([
+    loadUsers(),
+    loadCourses(),
+    loadSettings()
+  ]);
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+async function loadSettings(){
+
+  try{
+
+    const data = await api("/admin/settings");
+
+    document.getElementById("siteName").value =
+      data.site_name || "";
+
+    document.getElementById("tagline").value =
+      data.tagline || "";
+
+    document.getElementById("subscriptionPrice").value =
+      data.subscription_price ?? 100;
+
+    document.getElementById("heroTitle").value =
+      data.hero_title || "";
+
+    document.getElementById("heroText").value =
+      data.hero_text || "";
+
+    document.getElementById("heroImage").value =
+      data.hero_image || "";
+
+  }catch(e){
+
+    showMessage(
+      "settingsMessage",
+      e.message
+    );
+
+  }
+
+}
+
+
+async function saveSettings(){
+
+  try{
+
+    const data = await api("/admin/settings",{
+      method:"PUT",
+      body:JSON.stringify({
+
+        site_name:
+          document.getElementById("siteName").value,
+
+        tagline:
+          document.getElementById("tagline").value,
+
+        subscription_price:
+          Number(document.getElementById("subscriptionPrice").value),
+
+        hero_title:
+          document.getElementById("heroTitle").value,
+
+        hero_text:
+          document.getElementById("heroText").value,
+
+        hero_image:
+          document.getElementById("heroImage").value
+
+      })
+    });
+
+    showMessage(
+      "settingsMessage",
+      "تم حفظ الإعدادات بنجاح",
+      "success"
+    );
+
+  }catch(e){
+
+    showMessage(
+      "settingsMessage",
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   USERS
+========================================================= */
+
+async function loadUsers(){
+
+  try{
+
+    users = await api("/admin/users");
+
+    renderUsers();
+
+    document.getElementById("statUsers").textContent =
+      users.length;
+
+    document.getElementById("statSubscribed").textContent =
+      users.filter(x=>x.subscribed).length;
+
+  }catch(e){
+
+    document.getElementById("usersTable").innerHTML =
+      `<tr><td colspan="7">${escapeHtml(e.message)}</td></tr>`;
+
+  }
+
+}
+
+
+function renderUsers(){
+
+  const table =
+    document.getElementById("usersTable");
+
+  if(!users.length){
+
+    table.innerHTML =
+      `<tr><td colspan="7">لا يوجد مستخدمون</td></tr>`;
+
+    return;
+
+  }
+
+  table.innerHTML = users.map(user=>`
+
+    <tr>
+
+      <td>${user.id}</td>
+
+      <td>
+        <strong>${escapeHtml(user.name)}</strong>
+      </td>
+
+      <td>${escapeHtml(user.email)}</td>
+
+      <td>
+        ${
+          user.role === "admin"
+          ? `<span class="badge badge-blue">مدير</span>`
+          : `<span class="badge">طالب</span>`
+        }
+      </td>
+
+      <td>
+        ${Number(user.wallet_balance || 0).toFixed(2)}
+      </td>
+
+      <td>
+        ${
+          user.subscribed
+          ? `<span class="badge badge-green">مشترك</span>`
+          : `<span class="badge badge-red">غير مشترك</span>`
+        }
+      </td>
+
+      <td>
+
+        ${
+          user.role !== "admin"
+          ? `
+          <button
+            class="btn btn-success btn-small"
+            onclick="openCreditModal(${user.id})">
+            💰 إضافة رصيد
+          </button>
+          `
+          : ""
+        }
+
+      </td>
+
+    </tr>
+
+  `).join("");
+
+}
+
+
+/* =========================================================
+   CREDIT
+========================================================= */
+
+function openCreditModal(userId){
+
+  document.getElementById("creditUserId").value =
+    userId;
+
+  document.getElementById("creditAmount").value =
+    "";
+
+  document.getElementById("creditNote").value =
+    "";
+
+  document.getElementById("creditMessage").innerHTML =
+    "";
+
+  openModal("creditModal");
+
+}
+
+
+async function creditUser(){
+
+  const userId =
+    document.getElementById("creditUserId").value;
+
+  const amount =
+    Number(document.getElementById("creditAmount").value);
+
+  const note =
+    document.getElementById("creditNote").value;
+
+  try{
+
+    await api(`/admin/users/${userId}/credit`,{
+      method:"POST",
+      body:JSON.stringify({
+        amount,
+        note
+      })
+    });
+
+    showMessage(
+      "creditMessage",
+      "تمت إضافة الرصيد بنجاح",
+      "success"
+    );
+
+    await loadUsers();
+
+    setTimeout(()=>{
+      closeModal("creditModal");
+    },700);
+
+  }catch(e){
+
+    showMessage(
+      "creditMessage",
+      e.message
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   COURSES
+========================================================= */
+
+async function loadCourses(){
+
+  try{
+
+    courses =
+      await api("/admin/courses");
+
+    renderCourses();
+
+    populateCourseSelects();
+
+    document.getElementById("statCourses").textContent =
+      courses.length;
+
+  }catch(e){
+
+    document.getElementById("coursesGrid").innerHTML =
+      `<div class="error">${escapeHtml(e.message)}</div>`;
+
+  }
+
+}
+
+
+function renderCourses(){
+
+  const grid =
+    document.getElementById("coursesGrid");
+
+  if(!courses.length){
+
+    grid.innerHTML =
+      `<div class="card">لا توجد كورسات.</div>`;
+
+    return;
+
+  }
+
+  grid.innerHTML = courses.map(course=>`
+
+    <div class="course-card">
+
+      <div class="course-icon">
+        ${escapeHtml(course.image_url || "📚")}
+      </div>
+
+      <h4>
+        ${escapeHtml(course.title)}
+      </h4>
+
+      <p>
+        ${escapeHtml(course.description || "بدون وصف")}
+      </p>
+
+      <div style="margin-top:10px">
+
+        ${
+          course.is_published
+          ? `<span class="badge badge-green">منشور</span>`
+          : `<span class="badge badge-red">مخفي</span>`
+        }
+
+      </div>
+
+      <div class="course-actions">
+
+        <button
+          class="btn btn-primary btn-small"
+          onclick="editCourse(${course.id})">
+          ✏️ تعديل
+        </button>
+
+        <button
+          class="btn btn-secondary btn-small"
+          onclick="openCourseLessons(${course.id})">
+          📝 الدروس
+        </button>
+
+        <button
+          class="btn btn-danger btn-small"
+          onclick="deleteCourse(${course.id})">
+          🗑️ حذف
+        </button>
+
+      </div>
+
+    </div>
+
+  `).join("");
+
+}
+
+
+function populateCourseSelects(){
+
+  const selects = [
+    document.getElementById("lessonCourseSelect"),
+    document.getElementById("lessonCourse")
+  ];
+
+  selects.forEach(select=>{
+
+    if(!select) return;
+
+    const current = select.value;
+
+    select.innerHTML =
+      `<option value="">اختر الكورس</option>`;
+
+    courses.forEach(course=>{
+
+      select.innerHTML += `
+        <option value="${course.id}">
+          ${escapeHtml(course.title)}
+        </option>
+      `;
+
+    });
+
+    if(current){
+      select.value = current;
+    }
+
+  });
+
+}
+
+
+function openCourseModal(){
+
+  document.getElementById("courseModalTitle").textContent =
+    "إضافة كورس";
+
+  document.getElementById("courseId").value = "";
+
+  document.getElementById("courseTitle").value = "";
+
+  document.getElementById("courseSlug").value = "";
+
+  document.getElementById("courseDescription").value = "";
+
+  document.getElementById("courseImage").value = "📚";
+
+  document.getElementById("courseOrder").value = courses.length + 1;
+
+  document.getElementById("coursePublished").checked = true;
+
+  document.getElementById("courseMessage").innerHTML = "";
+
+  openModal("courseModal");
+
+}
+
+
+function editCourse(id){
+
+  const course =
+    courses.find(x=>Number(x.id) === Number(id));
+
+  if(!course) return;
+
+  document.getElementById("courseModalTitle").textContent =
+    "تعديل الكورس";
+
+  document.getElementById("courseId").value =
+    course.id;
+
+  document.getElementById("courseTitle").value =
+    course.title || "";
+
+  document.getElementById("courseSlug").value =
+    course.slug || "";
+
+  document.getElementById("courseDescription").value =
+    course.description || "";
+
+  document.getElementById("courseImage").value =
+    course.image_url || "";
+
+  document.getElementById("courseOrder").value =
+    course.sort_order || 0;
+
+  document.getElementById("coursePublished").checked =
+    course.is_published !== false;
+
+  document.getElementById("courseMessage").innerHTML = "";
+
+  openModal("courseModal");
+
+}
+
+
+async function saveCourse(){
+
+  const id =
+    document.getElementById("courseId").value;
+
+  const body = {
+
+    title:
+      document.getElementById("courseTitle").value.trim(),
+
+    slug:
+      document.getElementById("courseSlug").value.trim(),
+
+    description:
+      document.getElementById("courseDescription").value,
+
+    image_url:
+      document.getElementById("courseImage").value,
+
+    sort_order:
+      Number(document.getElementById("courseOrder").value) || 0,
+
+    is_published:
+      document.getElementById("coursePublished").checked
+
+  };
+
+  try{
+
+    if(id){
+
+      await api(`/admin/courses/${id}`,{
+        method:"PUT",
+        body:JSON.stringify(body)
+      });
+
+    }else{
+
+      await api("/admin/courses",{
+        method:"POST",
+        body:JSON.stringify(body)
+      });
+
+    }
+
+    closeModal("courseModal");
+
+    await loadCourses();
+
+  }catch(e){
+
+    showMessage(
+      "courseMessage",
+      e.message
+    );
+
+  }
+
+}
+
+
+async function deleteCourse(id){
+
+  const course =
+    courses.find(x=>Number(x.id) === Number(id));
+
+  if(!course) return;
+
+  if(!confirm(
+    `هل أنت متأكد من حذف الكورس "${course.title}"؟\nسيتم حذف دروسه واختباراته أيضاً.`
+  )) return;
+
+  try{
+
+    await api(`/admin/courses/${id}`,{
+      method:"DELETE"
+    });
+
+    await loadCourses();
+
+    alert("تم حذف الكورس");
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+async function openCourseLessons(id){
+
+  showPage(
+    "lessons",
+    document.querySelectorAll(".nav-btn")[4]
+  );
+
+  await loadCourses();
+
+  document.getElementById("lessonCourseSelect").value =
+    id;
+
+  await loadLessons();
+
+}
+
+
+/* =========================================================
+   LESSONS
+========================================================= */
+
+async function loadLessons(){
+
+  const courseId =
+    document.getElementById("lessonCourseSelect").value;
+
+  const container =
+    document.getElementById("lessonsContainer");
+
+  if(!courseId){
+
+    container.innerHTML =
+      `<div class="card">اختر كورس لعرض الدروس.</div>`;
+
+    document.getElementById("statLessons").textContent =
+      "0";
+
+    return;
+
+  }
+
+  try{
+
+    const lessons =
+      await api(`/admin/courses/${courseId}/lessons`);
+
+    document.getElementById("statLessons").textContent =
+      lessons.length;
+
+    if(!lessons.length){
+
+      container.innerHTML =
+        `<div class="card">لا توجد دروس لهذا الكورس حتى الآن.</div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      lessons.map(lesson=>`
+
+        <div class="lesson-item">
+
+          <div class="lesson-top">
+
+            <div class="lesson-title">
+              ${escapeHtml(lesson.title)}
+            </div>
+
+            ${
+              lesson.is_published
+              ? `<span class="badge badge-green">منشور</span>`
+              : `<span class="badge badge-red">مخفي</span>`
+            }
+
+          </div>
+
+          <div class="lesson-meta">
+
+            ${
+              lesson.video_url
+              ? `<span class="badge badge-blue">🎥 فيديو</span>`
+              : `<span class="badge">بدون فيديو</span>`
+            }
+
+            ${
+              lesson.pdf_url
+              ? `<span class="badge badge-blue">📄 PDF</span>`
+              : `<span class="badge">بدون PDF</span>`
+            }
+
+            ${
+              lesson.quiz_id
+              ? `<span class="badge badge-green">📝 اختبار</span>`
+              : `<span class="badge">بدون اختبار</span>`
+            }
+
+          </div>
+
+          <div class="lesson-actions">
+
+            <button
+              class="btn btn-primary btn-small"
+              onclick='editLesson(${JSON.stringify(lesson)})'>
+              ✏️ تعديل
+            </button>
+
+            <button
+              class="btn btn-warning btn-small"
+              onclick="openQuizModal(${lesson.id})">
+              📝 الاختبار
+            </button>
+
+            <button
+              class="btn btn-danger btn-small"
+              onclick="deleteLesson(${lesson.id})">
+              🗑️ حذف
+            </button>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+  }catch(e){
+
+    container.innerHTML =
+      `<div class="error">${escapeHtml(e.message)}</div>`;
+
+  }
+
+}
+
+
+function openLessonModal(){
+
+  const courseId =
+    document.getElementById("lessonCourseSelect").value;
+
+  document.getElementById("lessonModalTitle").textContent =
+    "إضافة درس";
+
+  document.getElementById("lessonId").value = "";
+
+  document.getElementById("lessonCourse").value =
+    courseId || "";
+
+  document.getElementById("lessonTitle").value = "";
+
+  document.getElementById("lessonDescription").value = "";
+
+  document.getElementById("lessonVideo").value = "";
+
+  document.getElementById("lessonPdf").value = "";
+
+  document.getElementById("lessonOrder").value = 0;
+
+  document.getElementById("lessonPublished").checked = true;
+
+  document.getElementById("lessonMessage").innerHTML = "";
+
+  openModal("lessonModal");
+
+}
+
+
+function editLesson(lesson){
+
+  document.getElementById("lessonModalTitle").textContent =
+    "تعديل الدرس";
+
+  document.getElementById("lessonId").value =
+    lesson.id;
+
+  document.getElementById("lessonCourse").value =
+    lesson.course_id;
+
+  document.getElementById("lessonTitle").value =
+    lesson.title || "";
+
+  document.getElementById("lessonDescription").value =
+    lesson.description || "";
+
+  document.getElementById("lessonVideo").value =
+    lesson.video_url || "";
+
+  document.getElementById("lessonPdf").value =
+    lesson.pdf_url || "";
+
+  document.getElementById("lessonOrder").value =
+    lesson.sort_order || 0;
+
+  document.getElementById("lessonPublished").checked =
+    lesson.is_published !== false;
+
+  document.getElementById("lessonMessage").innerHTML = "";
+
+  openModal("lessonModal");
+
+}
+
+
+async function saveLesson(){
+
+  const id =
+    document.getElementById("lessonId").value;
+
+  const body = {
+
+    course_id:
+      Number(document.getElementById("lessonCourse").value),
+
+    title:
+      document.getElementById("lessonTitle").value.trim(),
+
+    description:
+      document.getElementById("lessonDescription").value,
+
+    video_url:
+      document.getElementById("lessonVideo").value.trim(),
+
+    pdf_url:
+      document.getElementById("lessonPdf").value.trim(),
+
+    sort_order:
+      Number(document.getElementById("lessonOrder").value) || 0,
+
+    is_published:
+      document.getElementById("lessonPublished").checked
+
+  };
+
+  try{
+
+    if(!body.course_id){
+
+      throw new Error("اختر الكورس أولاً");
+
+    }
+
+    if(!body.title){
+
+      throw new Error("اسم الدرس مطلوب");
+
+    }
+
+    if(id){
+
+      await api(`/admin/lessons/${id}`,{
+        method:"PUT",
+        body:JSON.stringify(body)
+      });
+
+    }else{
+
+      await api("/admin/lessons",{
+        method:"POST",
+        body:JSON.stringify(body)
+      });
+
+    }
+
+    closeModal("lessonModal");
+
+    await loadLessons();
+
+  }catch(e){
+
+    showMessage(
+      "lessonMessage",
+      e.message
+    );
+
+  }
+
+}
+
+
+async function deleteLesson(id){
+
+  if(!confirm(
+    "هل أنت متأكد من حذف هذا الدرس؟ سيتم حذف الاختبار المرتبط به أيضاً."
+  )) return;
+
+  try{
+
+    await api(`/admin/lessons/${id}`,{
+      method:"DELETE"
+    });
+
+    await loadLessons();
+
+    alert("تم حذف الدرس");
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+/* =========================================================
+   QUIZ
+========================================================= */
+
+async function openQuizModal(lessonId){
+
+  document.getElementById("quizLessonId").value =
+    lessonId;
+
+  document.getElementById("questionsContainer").innerHTML =
+    "<p style='color:#64748b'>جاري تحميل الاختبار...</p>";
+
+  openModal("quizModal");
+
+  try{
+
+    const data =
+      await api(`/admin/lessons/${lessonId}/quiz`);
+
+    if(!data){
+
+      document.getElementById("passingScore").value =
+        50;
+
+      document.getElementById("questionsContainer").innerHTML =
+        "";
+
+      addQuestion();
+
+      return;
+
+    }
+
+    document.getElementById("passingScore").value =
+      data.passing_score ?? 50;
+
+    document.getElementById("questionsContainer").innerHTML =
+      "";
+
+    if(data.questions?.length){
+
+      data.questions.forEach(q=>addQuestion(q));
+
+    }else{
+
+      addQuestion();
+
+    }
+
+  }catch(e){
+
+    document.getElementById("questionsContainer").innerHTML =
+      `<div class="error">${escapeHtml(e.message)}</div>`;
+
+  }
+
+}
+
+
+function addQuestion(data = null){
+
+  const container =
+    document.getElementById("questionsContainer");
+
+  const index =
+    container.children.length + 1;
+
+  const box =
+    document.createElement("div");
+
+  box.className = "question-box";
+
+  box.innerHTML = `
+
+    <div class="question-title">
+
+      <span>السؤال ${index}</span>
+
+      <button
+        type="button"
+        class="btn btn-danger btn-small"
+        onclick="this.closest('.question-box').remove();renumberQuestions()">
+        حذف
+      </button>
+
+    </div>
+
+    <div class="field">
+
+      <label>السؤال</label>
+
+      <textarea class="q-question">${escapeHtml(data?.question || "")}</textarea>
+
+    </div>
+
+    <div class="form-grid">
+
+      <div class="field">
+
+        <label>الإجابة A</label>
+
+        <input
+          class="q-a"
+          value="${escapeHtml(data?.option_a || "")}">
+
+      </div>
+
+      <div class="field">
+
+        <label>الإجابة B</label>
+
+        <input
+          class="q-b"
+          value="${escapeHtml(data?.option_b || "")}">
+
+      </div>
+
+      <div class="field">
+
+        <label>الإجابة C</label>
+
+        <input
+          class="q-c"
+          value="${escapeHtml(data?.option_c || "")}">
+
+      </div>
+
+      <div class="field">
+
+        <label>الإجابة D</label>
+
+        <input
+          class="q-d"
+          value="${escapeHtml(data?.option_d || "")}">
+
+      </div>
+
+      <div class="field">
+
+        <label>الإجابة الصحيحة</label>
+
+        <select class="q-correct">
+
+          <option value="A" ${data?.correct_option === "A" ? "selected":""}>A</option>
+          <option value="B" ${data?.correct_option === "B" ? "selected":""}>B</option>
+          <option value="C" ${data?.correct_option === "C" ? "selected":""}>C</option>
+          <option value="D" ${data?.correct_option === "D" ? "selected":""}>D</option>
+
+        </select>
+
+      </div>
+
+      <div class="field">
+
+        <label>الترتيب</label>
+
+        <input
+          class="q-order"
+          type="number"
+          value="${data?.sort_order ?? index-1}">
+
+      </div>
+
+      <div class="field full">
+
+        <label>شرح الإجابة</label>
+
+        <textarea class="q-explanation">${escapeHtml(data?.explanation || "")}</textarea>
+
+      </div>
+
+    </div>
+
+  `;
+
+  container.appendChild(box);
+
+}
+
+
+function renumberQuestions(){
+
+  document
+    .querySelectorAll(".question-box")
+    .forEach((box,index)=>{
+
+      const title =
+        box.querySelector(".question-title span");
+
+      if(title){
+
+        title.textContent =
+          "السؤال " + (index + 1);
+
+      }
+
+    });
+
+}
+
+
+async function saveQuiz(){
+
+  const lessonId =
+    Number(document.getElementById("quizLessonId").value);
+
+  const passingScore =
+    Number(document.getElementById("passingScore").value);
+
+  const questions =
+    [...document.querySelectorAll(".question-box")]
+      .map((box,index)=>({
+
+        question:
+          box.querySelector(".q-question").value,
+
+        option_a:
+          box.querySelector(".q-a").value,
+
+        option_b:
+          box.querySelector(".q-b").value,
+
+        option_c:
+          box.querySelector(".q-c").value,
+
+        option_d:
+          box.querySelector(".q-d").value,
+
+        correct_option:
+          box.querySelector(".q-correct").value,
+
+        explanation:
+          box.querySelector(".q-explanation").value,
+
+        sort_order:
+          Number(box.querySelector(".q-order").value) || index
+
+      }));
+
+  try{
+
+    await api("/admin/quizzes",{
+      method:"POST",
+      body:JSON.stringify({
+        lesson_id:lessonId,
+        passing_score:passingScore,
+        questions
+      })
+    });
+
+    closeModal("quizModal");
+
+    await loadLessons();
+
+    alert("تم حفظ الاختبار بنجاح");
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+async function deleteQuiz(){
+
+  const lessonId =
+    Number(document.getElementById("quizLessonId").value);
+
+  if(!confirm("هل تريد حذف اختبار هذا الدرس؟")) return;
+
+  try{
+
+    await api(`/admin/lessons/${lessonId}/quiz`,{
+      method:"DELETE"
+    });
+
+    closeModal("quizModal");
+
+    await loadLessons();
+
+    alert("تم حذف الاختبار");
+
+  }catch(e){
+
+    alert(e.message);
+
+  }
+
+}
+
+
+/* =========================================================
+   ENTER KEY LOGIN
+========================================================= */
+
+document
+  .getElementById("loginPassword")
+  .addEventListener("keydown",e=>{
+
+    if(e.key === "Enter"){
+      login();
+    }
+
+  });
+
+
+/* =========================================================
+   START
+========================================================= */
+
+checkLogin();
+
+</script>
+
+</body>
+  </html>
