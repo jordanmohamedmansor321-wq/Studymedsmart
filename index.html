@@ -17,7 +17,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdr
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.heroGrid{grid-template-columns:1fr}.accountBar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:620px){.nav{min-height:66px}.brandSub{display:none}.navLinks{display:none}.navBtn{padding:8px 10px;font-size:12px}.userPill{max-width:130px;overflow:hidden}.hero{padding:35px 22px}.hero h1{font-size:32px}.grid{grid-template-columns:1fr}.courseDesc{min-height:auto}.sectionHead{align-items:flex-start;flex-direction:column}.wallet,.subscription{align-items:flex-start;flex-direction:column}.lesson{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:1fr 1fr}}
 
 /* StudyMedSmart polished course + lesson experience */
-.course{cursor:pointer;position:relative}
+.course{cursor:pointer;position:relative}.courseTop.hasImage{height:auto;min-height:150px;padding:0;background:#fff}.courseTop.hasImage .courseTopImage{min-height:150px}
 .course:focus-within,.course:focus{outline:3px solid rgba(37,99,235,.18)}
 .courseTop{position:relative}
 .courseGlow{position:absolute;inset:auto -30px -65px auto;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.42)}
@@ -97,8 +97,8 @@ header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.92);backdr
 body.course-mode{background:#f3f7fb}body.course-mode>header,body.course-mode .hero,body.course-mode .accountBar,body.course-mode #courses,body.course-mode #dashboard,body.course-mode>footer{display:none!important}body.course-mode main.container{max-width:1400px;padding-top:18px}body.course-mode #courseScreen{margin-top:0;min-height:calc(100vh - 36px)}body.course-mode .courseScreenTop{position:relative;z-index:1}
 
 .courseHeroImage{width:150px;height:100px;border-radius:18px;object-fit:cover;display:block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 24px rgba(0,0,0,.12)}
-.courseTopImage{width:100%;height:150px;object-fit:cover;display:block}
-.courseTop.hasImage{padding:0;overflow:hidden;position:relative}
+.courseTopImage{width:100%;height:auto;max-height:300px;object-fit:contain;display:block;background:#fff}
+.courseTop.hasImage{height:auto;min-height:150px;padding:0;overflow:hidden;position:relative;background:#fff}
 .courseTop.hasImage .courseNo{position:absolute;top:14px;right:14px;z-index:2}
 .courseTop.hasImage .courseGlow{display:none}
 @media(max-width:620px){.courseHeroImage{width:120px;height:82px}}
@@ -283,13 +283,42 @@ async function openLesson(slugEnc,id){
   }
 }
 async function markComplete(id){try{await api('/api/lessons/'+id+'/complete',{method:'POST',body:'{}'});await loadDashboard();if(window.currentSlug) await openCourse(window.currentSlug);else alert('تم حفظ الدرس كمكتمل ✓')}catch(e){alert(e.message)}}
-async function openQuiz(lessonId){try{const q=await api('/api/lessons/'+lessonId+'/quiz');if(q.attempted){renderQuizResult(q);return}window.quizState={lessonId,quiz:q,index:0,answers:{}};renderQuizQuestion()}catch(e){alert(e.message)}}
+async function openQuiz(lessonId){
+ try{
+  const q=await api('/api/lessons/'+lessonId+'/quiz');
+  if(!q || !Array.isArray(q.questions) || !q.questions.length){throw Error('الاختبار غير جاهز بعد أو لا يحتوي على أسئلة.');}
+  if(q.attempted){
+   renderQuizResult(q.previous_result||q);
+   return;
+  }
+  window.quizState={lessonId,quiz:q,index:0,answers:{}};
+  renderQuizQuestion();
+ }catch(e){alert(e.message||'تعذر فتح الاختبار');}
+}
 function renderQuizQuestion(){const st=window.quizState;if(!st)return;const q=st.quiz.questions[st.index];const total=st.quiz.questions.length;const selected=st.answers[q.id]||'';let html=`<h2>📝 اختبار الدرس</h2><div class="quizCount">السؤال ${st.index+1} من ${total} — نسبة النجاح ${st.quiz.passing_score}%</div><div class="quizQuestionCard" style="margin-top:14px"><h3>${esc(q.question)}</h3>${[['A',q.option_a],['B',q.option_b],['C',q.option_c],['D',q.option_d]].map(([k,v])=>`<label class="quizChoice"><input type="radio" name="currentQuiz" value="${k}" ${selected===k?'checked':''} onchange="quizChoose('${k}')"> ${k}) ${esc(v)}</label>`).join('')}</div><div class="quizPager">${st.index>0?'<button class="btn outline" onclick="quizPrev()">السابق</button>':'<span></span>'}${st.index<total-1?'<button class="btn" onclick="quizNext()">التالي</button>':'<button class="btn green" onclick="submitQuiz('+st.lessonId+')">إرسال الاختبار</button>'}</div>`;openModal(html)}
 function quizChoose(v){const st=window.quizState;if(st)st.answers[st.quiz.questions[st.index].id]=v}
 function quizPrev(){if(window.quizState.index>0){window.quizState.index--;renderQuizQuestion()}}
 function quizNext(){if(!window.quizState.answers[window.quizState.quiz.questions[window.quizState.index].id]){alert('اختر إجابة قبل الانتقال للسؤال التالي.');return}if(window.quizState.index<window.quizState.quiz.questions.length-1){window.quizState.index++;renderQuizQuestion()}}
 async function submitQuiz(lessonId){const st=window.quizState;if(!st)return;const missing=st.quiz.questions.some(q=>!st.answers[q.id]);if(missing){alert('أجب عن جميع الأسئلة قبل إرسال الاختبار.');return}try{const r=await api('/api/lessons/'+lessonId+'/quiz/submit',{method:'POST',body:JSON.stringify({answers:st.answers})});renderQuizResult(r);await loadDashboard()}catch(e){alert(e.message)}}
-function renderQuizResult(r){const questions=window.quizState?.quiz?.questions||[];let html=`<h2>📊 نتيجة الاختبار</h2><div class="notice ${r.passed?'success':'danger'}"><b>${r.passed?'✅ ناجح':'❌ لم تصل لنسبة النجاح'}</b><br>درجتك: ${r.score}% — الصحيح: ${r.correct}/${r.total}<br>نسبة النجاح: ${r.passing_score}%</div>`;(r.results||[]).forEach((x,i)=>{const q=questions.find(z=>Number(z.id)===Number(x.id));const chosen=q&&x.selected?q['option_'+x.selected.toLowerCase()]:'لم يتم اختيار إجابة';const correct=q?q['option_'+String(x.correct_option).toLowerCase()]||'':'';html+=`<div class="${x.correct?'resultGood':'resultBad'}" style="margin:8px 0"><b>${x.correct?'✅ إجابة صحيحة':'❌ إجابة خاطئة'} — السؤال ${i+1}</b><br>إجابتك: ${esc(chosen)}<br>الإجابة الصحيحة: ${esc(correct)}<br><span>الشرح: ${esc(x.explanation||'لا يوجد شرح مضاف.')}</span></div>`});html+=`<div class="notice">تم تسجيل هذه المحاولة. لا يمكن إعادة الاختبار مرة أخرى.</div>`;openModal(html)}
+function renderQuizResult(r){
+ const resultData=r?.previous_result||r||{};
+ const questions=resultData.questions||r?.questions||window.quizState?.quiz?.questions||[];
+ const score=Number(resultData.score??r?.attempt?.score);
+ const passing=Number(resultData.passing_score??r?.passing_score??50);
+ const passed=typeof resultData.passed==='boolean'?resultData.passed:(Number.isFinite(score)&&score>=passing);
+ const correct=Number(resultData.correct);
+ const total=Number(resultData.total??questions.length);
+ const hasDetails=Array.isArray(resultData.results);
+ let html=`<h2>📊 نتيجة الاختبار</h2><div class="notice ${passed?'success':'danger'}"><b>${passed?'✅ ناجح':'❌ لم تصل لنسبة النجاح'}</b><br>درجتك: ${Number.isFinite(score)?score+'%':'غير متاحة'}${Number.isFinite(correct)&&Number.isFinite(total)&&total>0?` — الصحيح: ${correct}/${total}`:''}<br>نسبة النجاح: ${passing}%</div>`;
+ (hasDetails?resultData.results:[]).forEach((x,i)=>{
+  const q=questions.find(z=>Number(z.id)===Number(x.id));
+  const chosen=q&&x.selected?q['option_'+String(x.selected).toLowerCase()]:'لم يتم اختيار إجابة';
+  const correctText=q?q['option_'+String(x.correct_option).toLowerCase()]||'':'';
+  html+=`<div class="${x.correct?'resultGood':'resultBad'}" style="margin:8px 0"><b>${x.correct?'✅ إجابة صحيحة':'❌ إجابة خاطئة'} — السؤال ${i+1}</b><br>إجابتك: ${esc(chosen)}<br>الإجابة الصحيحة: ${esc(correctText)}<br><span>الشرح: ${esc(x.explanation||'لا يوجد شرح مضاف.')}</span></div>`;
+ });
+ html+=`<div class="notice">تم تسجيل هذه المحاولة. لا يمكن إعادة الاختبار مرة أخرى.</div>`;
+ openModal(html);
+}
 async function loadDashboard(){const box=$('#dashboardBox');if(!token){box.textContent='سجّل الدخول لعرض تقدمك الدراسي.';return}try{const d=await api('/api/dashboard');me=d.user;const p=d.progress;box.innerHTML=`<div class="dashboardCards"><div class="dashboardCard"><div><span class="muted">نسبة الإنجاز</span><h3 style="margin:4px 0">إجمالي التقدم</h3></div><div class="circleProgress" style="--p:${p.percent}"><b>${p.percent}%</b></div></div><div class="dashboardCard"><div><span class="muted">الدروس</span><h3 style="margin:4px 0">مكتملة</h3></div><strong style="font-size:24px">${p.completedLessons}/${p.totalLessons}</strong></div><div class="dashboardCard"><div><span class="muted">الاختبارات</span><h3 style="margin:4px 0">متوسط النتيجة</h3></div><div class="circleProgress" style="--p:${p.averageScore}"><b>${p.averageScore}%</b></div></div><div class="dashboardCard"><div><span class="muted">الاشتراك</span><h3 style="margin:4px 0">الحالة</h3></div><strong>${d.user.subscribed?'✓ مشترك':'غير مشترك'}</strong></div></div><h3 style="margin-top:24px">تقدم كل كورس</h3>${p.courses.map(c=>`<div class="courseProgress"><div><b>${esc(c.title)}</b><div class="muted" style="margin-top:5px">${c.completed} من ${c.total} دروس مكتملة</div></div><div class="circleProgress" style="--p:${c.percent}"><b>${c.percent}%</b></div></div>`).join('')||'<div class="notice">ابدأ أول درس ليظهر تقدمك.</div>'}${p.lastLesson?`<div class="last">📌 آخر درس مكتمل: <b>${esc(p.lastLesson.title)}</b> — ${esc(p.lastLesson.course_title)}</div>`:''}`;renderAuth();loadAccount()}catch(e){box.innerHTML=`<div class="notice danger">${esc(e.message)}</div>`}}
 (async function(){await loadSettings();try{if(token)me=await api('/api/me')}catch{token='';localStorage.removeItem('sms_token');me=null}renderAuth();await loadAccount();await loadCourses();await loadDashboard()})();
 
