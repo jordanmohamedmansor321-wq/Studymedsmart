@@ -412,20 +412,6 @@ app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req,res)=>{const cli
    LESSON COMPLETION
 ========================================================= */
 
-app.post("/api/lessons/:lessonId/view", auth, async (req,res) => {
-  try {
-    const u = (await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id])).rows[0];
-    if (!u) return res.status(404).json({error:"المستخدم غير موجود"});
-    if (!u.subscribed) return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس."});
-    const lesson = (await db("SELECT id FROM lessons WHERE id=$1 AND is_published=true", [req.params.lessonId])).rows[0];
-    if (!lesson) return res.status(404).json({error:"الدرس غير موجود"});
-    await db(`INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at,updated_at)
-      VALUES($1,$2,false,NULL,0,NULL,NOW())
-      ON CONFLICT(user_id,lesson_id) DO UPDATE SET updated_at=NOW()`,[req.user.id,req.params.lessonId]);
-    res.json({ok:true});
-  } catch(e) { console.error(e); res.status(500).json({error:"تعذر حفظ آخر درس تم فتحه"}); }
-});
-
 app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
   try {
     const lessonId = Number(req.params.lessonId);
@@ -461,9 +447,8 @@ app.get("/api/dashboard", auth, async (req, res) => {
     if (!u.rows[0]) return res.status(404).json({ error: "المستخدم غير موجود" });
 
     const p = await db(`
-      SELECT l.id,l.title,c.title AS course_title,c.slug AS course_slug,
-             l.sort_order AS lesson_sort_order,
-             lp.completed,lp.score,lp.last_attempt_at,lp.updated_at
+      SELECT l.id,l.title,c.title AS course_title,
+             lp.completed,lp.score,lp.last_attempt_at
       FROM lessons l
       JOIN courses c ON c.id=l.course_id
       LEFT JOIN lesson_progress lp
@@ -475,17 +460,6 @@ app.get("/api/dashboard", auth, async (req, res) => {
     const lessons = p.rows;
     const completed = lessons.filter(x => x.completed);
     const scores = lessons.filter(x => x.score !== null).map(x => Number(x.score));
-    const touched = lessons.filter(x => x.updated_at);
-    touched.sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
-    const lastLesson = touched[0] || null;
-    let resumeLesson = lastLesson;
-    if (lastLesson?.completed) {
-      const sameCourse = lessons
-        .filter(x => x.course_slug === lastLesson.course_slug)
-        .sort((a,b) => Number(a.lesson_sort_order||0)-Number(b.lesson_sort_order||0) || Number(a.id)-Number(b.id));
-      const idx = sameCourse.findIndex(x => Number(x.id) === Number(lastLesson.id));
-      resumeLesson = sameCourse[idx + 1] || lastLesson;
-    }
     const average = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
     const courses = {};
     for (const row of lessons) {
@@ -503,8 +477,7 @@ app.get("/api/dashboard", auth, async (req, res) => {
         completedLessons: completed.length,
         percent: lessons.length ? Math.round(completed.length / lessons.length * 100) : 0,
         averageScore: average,
-        lastLesson,
-        resumeLesson,
+        lastLesson: completed.length ? completed[completed.length - 1] : null,
         lessons,
         courses: Object.values(courses)
       }
