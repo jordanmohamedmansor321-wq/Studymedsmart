@@ -73,14 +73,22 @@ function adminOnly(req, res, next) {
 }
 
 function publicUser(row) {
+  const expires = row.subscription_expires_at ? new Date(row.subscription_expires_at) : null;
+  const active = !!row.subscribed && (!expires || expires.getTime() > Date.now());
   return {
     id: row.id,
     name: row.name,
     email: row.email,
     role: row.role,
     wallet_balance: Number(row.wallet_balance || 0),
-    subscribed: !!row.subscribed
+    subscribed: active,
+    subscription_started_at: row.subscription_started_at || null,
+    subscription_expires_at: row.subscription_expires_at || null
   };
+}
+
+function subscriptionActive(row) {
+  return !!row?.subscribed && (!row.subscription_expires_at || new Date(row.subscription_expires_at).getTime() > Date.now());
 }
 
 /* =========================================================
@@ -95,6 +103,7 @@ async function initDatabase() {
       site_name TEXT NOT NULL DEFAULT 'StudyMedSmart',
       tagline TEXT NOT NULL DEFAULT 'منصة تعليمية طبية',
       subscription_price NUMERIC(12,2) NOT NULL DEFAULT 100,
+      subscription_weeks INTEGER NOT NULL DEFAULT 25,
       hero_title TEXT NOT NULL DEFAULT 'ابدأ رحلتك الطبية بثقة',
       hero_text TEXT NOT NULL DEFAULT 'تعلم أساسيات المجال الطبي في مكان واحد.',
       hero_image TEXT NOT NULL DEFAULT '',
@@ -111,6 +120,8 @@ async function initDatabase() {
       role TEXT NOT NULL DEFAULT 'student',
       wallet_balance NUMERIC(12,2) NOT NULL DEFAULT 0,
       subscribed BOOLEAN NOT NULL DEFAULT FALSE,
+      subscription_started_at TIMESTAMPTZ,
+      subscription_expires_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
@@ -189,6 +200,11 @@ async function initDatabase() {
 
   await db(`UPDATE site_settings SET subscription_price=100 WHERE id=1 AND COALESCE(subscription_price,0)=0`);
   await db(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS hero_image TEXT NOT NULL DEFAULT ''`);
+  await db(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS subscription_weeks INTEGER NOT NULL DEFAULT 25`);
+  await db(`ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_started_at TIMESTAMPTZ`);
+  await db(`ALTER TABLE users ADD COLUMN IF NOT EXISTS subscription_expires_at TIMESTAMPTZ`);
+  await db(`UPDATE site_settings SET subscription_weeks=25 WHERE id=1 AND (subscription_weeks IS NULL OR subscription_weeks<=0)`);
+  await db(`UPDATE users SET subscription_started_at=COALESCE(subscription_started_at,NOW()), subscription_expires_at=COALESCE(subscription_expires_at,NOW()+INTERVAL '25 weeks') WHERE subscribed=true AND subscription_expires_at IS NULL`);
   await db(`ALTER TABLE lesson_progress ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`);
   await db(`ALTER TABLE lesson_progress ADD COLUMN IF NOT EXISTS quiz_result JSONB`);
 
@@ -387,8 +403,8 @@ app.get("/api/courses/:slug/lessons/:lessonId", auth, async (req, res) => {
 
     if (!r.rows[0]) return res.status(404).json({ error: "الدرس غير موجود" });
 
-    const user = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
-    const subscribed = !!user.rows[0]?.subscribed;
+    const user = await db("SELECT subscribed,subscription_expires_at FROM users WHERE id=$1", [req.user.id]);
+    const subscribed = subscriptionActive(user.rows[0]);
     if (!subscribed) {
       return res.status(402).json({
         subscribed: false,
@@ -404,9 +420,9 @@ app.get("/api/courses/:slug/lessons/:lessonId", auth, async (req, res) => {
   }
 });
 
-app.get("/api/lessons/:lessonId/quiz", auth, async (req,res)=>{try{const u=(await db("SELECT subscribed FROM users WHERE id=$1",[req.user.id])).rows[0];if(!u?.subscribed)return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار."});const qr=(await db("SELECT * FROM quizzes WHERE lesson_id=$1",[req.params.lessonId])).rows[0];if(!qr)return res.status(404).json({error:"لا يوجد اختبار لهذا الدرس"});const attempted=(await db("SELECT completed,score,attempts,quiz_result FROM lesson_progress WHERE user_id=$1 AND lesson_id=$2 AND attempts>0",[req.user.id,req.params.lessonId])).rows[0];const qs=(await db("SELECT id,question,option_a,option_b,option_c,option_d,sort_order FROM quiz_questions WHERE quiz_id=$1 ORDER BY sort_order,id",[qr.id])).rows;res.json({...qr,questions:qs,attempted:!!attempted,attempt:attempted?{completed:attempted.completed,score:attempted.score,attempts:attempted.attempts}:null,previous_result:attempted?.quiz_result||null});}catch(e){res.status(500).json({error:"تعذر تحميل الاختبار"});}});
+app.get("/api/lessons/:lessonId/quiz", auth, async (req,res)=>{try{const u=(await db("SELECT subscribed,subscription_expires_at FROM users WHERE id=$1",[req.user.id])).rows[0];if(!subscriptionActive(u))return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار."});const qr=(await db("SELECT * FROM quizzes WHERE lesson_id=$1",[req.params.lessonId])).rows[0];if(!qr)return res.status(404).json({error:"لا يوجد اختبار لهذا الدرس"});const attempted=(await db("SELECT completed,score,attempts,quiz_result FROM lesson_progress WHERE user_id=$1 AND lesson_id=$2 AND attempts>0",[req.user.id,req.params.lessonId])).rows[0];const qs=(await db("SELECT id,question,option_a,option_b,option_c,option_d,sort_order FROM quiz_questions WHERE quiz_id=$1 ORDER BY sort_order,id",[qr.id])).rows;res.json({...qr,questions:qs,attempted:!!attempted,attempt:attempted?{completed:attempted.completed,score:attempted.score,attempts:attempted.attempts}:null,previous_result:attempted?.quiz_result||null});}catch(e){res.status(500).json({error:"تعذر تحميل الاختبار"});}});
 
-app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req,res)=>{const client=await pool.connect();try{await client.query("BEGIN");const u=(await client.query("SELECT subscribed FROM users WHERE id=$1",[req.user.id])).rows[0];if(!u?.subscribed){await client.query("ROLLBACK");return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار."})}const prev=(await client.query("SELECT attempts FROM lesson_progress WHERE user_id=$1 AND lesson_id=$2 FOR UPDATE",[req.user.id,req.params.lessonId])).rows[0];if(prev?.attempts>0){await client.query("ROLLBACK");return res.status(409).json({error:"لقد أكملت محاولة هذا الاختبار بالفعل ولا يمكن إعادته.",attempted:true})}const qr=(await client.query("SELECT * FROM quizzes WHERE lesson_id=$1",[req.params.lessonId])).rows[0];if(!qr){await client.query("ROLLBACK");return res.status(404).json({error:"لا يوجد اختبار لهذا الدرس"})}const questions=(await client.query("SELECT * FROM quiz_questions WHERE quiz_id=$1 ORDER BY sort_order,id",[qr.id])).rows,answers=req.body.answers||{};let correct=0;const results=questions.map(q=>{const selected=String(answers[q.id]||"").toUpperCase(),co=String(q.correct_option||"").toUpperCase(),ok=selected===co;if(ok)correct++;return{id:q.id,selected,correct_option:co,explanation:q.explanation,correct:ok}});const total=questions.length,score=total?Math.round(correct/total*100):0,passed=score>=Number(qr.passing_score);const result={score,passed,passing_score:Number(qr.passing_score),total,correct,results};await client.query("INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at,updated_at,quiz_result) VALUES($1,$2,$3,$4,1,NOW(),NOW(),$5::jsonb) ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=EXCLUDED.completed,score=EXCLUDED.score,attempts=1,last_attempt_at=NOW(),updated_at=NOW(),quiz_result=EXCLUDED.quiz_result",[req.user.id,req.params.lessonId,passed,score,JSON.stringify(result)]);await client.query("COMMIT");res.json({...result,attempted:true});}catch(e){try{await client.query("ROLLBACK")}catch{}res.status(500).json({error:"تعذر تصحيح الاختبار"})}finally{client.release()}});
+app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req,res)=>{const client=await pool.connect();try{await client.query("BEGIN");const u=(await client.query("SELECT subscribed,subscription_expires_at FROM users WHERE id=$1",[req.user.id])).rows[0];if(!u?.subscribed){await client.query("ROLLBACK");return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى الاختبار."})}const prev=(await client.query("SELECT attempts FROM lesson_progress WHERE user_id=$1 AND lesson_id=$2 FOR UPDATE",[req.user.id,req.params.lessonId])).rows[0];if(prev?.attempts>0){await client.query("ROLLBACK");return res.status(409).json({error:"لقد أكملت محاولة هذا الاختبار بالفعل ولا يمكن إعادته.",attempted:true})}const qr=(await client.query("SELECT * FROM quizzes WHERE lesson_id=$1",[req.params.lessonId])).rows[0];if(!qr){await client.query("ROLLBACK");return res.status(404).json({error:"لا يوجد اختبار لهذا الدرس"})}const questions=(await client.query("SELECT * FROM quiz_questions WHERE quiz_id=$1 ORDER BY sort_order,id",[qr.id])).rows,answers=req.body.answers||{};let correct=0;const results=questions.map(q=>{const selected=String(answers[q.id]||"").toUpperCase(),co=String(q.correct_option||"").toUpperCase(),ok=selected===co;if(ok)correct++;return{id:q.id,selected,correct_option:co,explanation:q.explanation,correct:ok}});const total=questions.length,score=total?Math.round(correct/total*100):0,passed=score>=Number(qr.passing_score);const result={score,passed,passing_score:Number(qr.passing_score),total,correct,results};await client.query("INSERT INTO lesson_progress(user_id,lesson_id,completed,score,attempts,last_attempt_at,updated_at,quiz_result) VALUES($1,$2,$3,$4,1,NOW(),NOW(),$5::jsonb) ON CONFLICT(user_id,lesson_id) DO UPDATE SET completed=EXCLUDED.completed,score=EXCLUDED.score,attempts=1,last_attempt_at=NOW(),updated_at=NOW(),quiz_result=EXCLUDED.quiz_result",[req.user.id,req.params.lessonId,passed,score,JSON.stringify(result)]);await client.query("COMMIT");res.json({...result,attempted:true});}catch(e){try{await client.query("ROLLBACK")}catch{}res.status(500).json({error:"تعذر تصحيح الاختبار"})}finally{client.release()}});
 
 /* =========================================================
    LESSON COMPLETION
@@ -414,7 +430,7 @@ app.post("/api/lessons/:lessonId/quiz/submit", auth, async (req,res)=>{const cli
 
 app.post("/api/lessons/:lessonId/view", auth, async (req,res) => {
   try {
-    const u = (await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id])).rows[0];
+    const u = (await db("SELECT subscribed,subscription_expires_at FROM users WHERE id=$1", [req.user.id])).rows[0];
     if (!u) return res.status(404).json({error:"المستخدم غير موجود"});
     if (!u.subscribed) return res.status(402).json({locked:true,subscribed:false,message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس."});
     const lesson = (await db("SELECT id FROM lessons WHERE id=$1 AND is_published=true", [req.params.lessonId])).rows[0];
@@ -430,9 +446,9 @@ app.post("/api/lessons/:lessonId/complete", auth, async (req, res) => {
   try {
     const lessonId = Number(req.params.lessonId);
     if (!Number.isInteger(lessonId) || lessonId <= 0) return res.status(400).json({ error: "معرف الدرس غير صحيح" });
-    const u = await db("SELECT subscribed FROM users WHERE id=$1", [req.user.id]);
+    const u = await db("SELECT subscribed,subscription_expires_at FROM users WHERE id=$1", [req.user.id]);
     if (!u.rows[0]) return res.status(404).json({ error: "المستخدم غير موجود" });
-    if (!u.rows[0].subscribed) return res.status(402).json({ locked:true, subscribed:false, message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس." });
+    if (!subscriptionActive(u.rows[0])) return res.status(402).json({ locked:true, subscribed:false, message:"يجب عليك الاشتراك في StudyMedSmart للوصول إلى محتوى هذا الكورس." });
     const lesson = await db("SELECT id FROM lessons WHERE id=$1 AND is_published=true", [lessonId]);
     if (!lesson.rows[0]) return res.status(404).json({ error:"الدرس غير موجود" });
     await db(`
@@ -524,11 +540,12 @@ app.post("/api/subscribe", auth, async (req, res) => {
   try {
     await client.query("BEGIN");
 
-    const s = await client.query("SELECT subscription_price FROM site_settings WHERE id=1");
+    const s = await client.query("SELECT subscription_price,subscription_weeks FROM site_settings WHERE id=1");
     const price = Number(s.rows[0]?.subscription_price || 0);
+    const weeks = Math.max(1, Number(s.rows[0]?.subscription_weeks || 25));
 
     const u = await client.query(`
-      SELECT wallet_balance,subscribed
+      SELECT wallet_balance,subscribed,subscription_expires_at
       FROM users WHERE id=$1 FOR UPDATE
     `, [req.user.id]);
 
@@ -537,9 +554,9 @@ app.post("/api/subscribe", auth, async (req, res) => {
       return res.status(404).json({ error: "المستخدم غير موجود" });
     }
 
-    if (u.rows[0].subscribed) {
+    if (subscriptionActive(u.rows[0])) {
       await client.query("COMMIT");
-      return res.json({ subscribed: true, wallet_balance: Number(u.rows[0].wallet_balance) });
+      return res.json({ subscribed: true, wallet_balance: Number(u.rows[0].wallet_balance), subscription_expires_at:u.rows[0].subscription_expires_at });
     }
 
     if (Number(u.rows[0].wallet_balance) < price) {
@@ -548,9 +565,9 @@ app.post("/api/subscribe", auth, async (req, res) => {
     }
 
     await client.query(`
-      UPDATE users SET wallet_balance=wallet_balance-$1,subscribed=true
-      WHERE id=$2
-    `, [price, req.user.id]);
+      UPDATE users SET wallet_balance=wallet_balance-$1,subscribed=true,subscription_started_at=NOW(),subscription_expires_at=NOW()+($2 * INTERVAL '1 week')
+      WHERE id=$3
+    `, [price, weeks, req.user.id]);
 
     await client.query(`
       INSERT INTO wallet_transactions(user_id,amount,type,note)
@@ -559,8 +576,8 @@ app.post("/api/subscribe", auth, async (req, res) => {
 
     await client.query("COMMIT");
 
-    const updated = await db("SELECT wallet_balance,subscribed FROM users WHERE id=$1", [req.user.id]);
-    res.json({ subscribed: true, wallet_balance: Number(updated.rows[0].wallet_balance) });
+    const updated = await db("SELECT wallet_balance,subscribed,subscription_started_at,subscription_expires_at FROM users WHERE id=$1", [req.user.id]);
+    res.json({ subscribed: true, wallet_balance: Number(updated.rows[0].wallet_balance), subscription_started_at:updated.rows[0].subscription_started_at, subscription_expires_at:updated.rows[0].subscription_expires_at });
   } catch (e) {
     try { await client.query("ROLLBACK"); } catch {}
     console.error(e);
@@ -589,13 +606,14 @@ app.put("/api/admin/settings", auth, adminOnly, async (req,res) => {
     const b = req.body;
     const r = await db(`
       UPDATE site_settings SET
-        site_name=$1,tagline=$2,subscription_price=$3,
-        hero_title=$4,hero_text=$5,hero_image=$6,updated_at=NOW()
+        site_name=$1,tagline=$2,subscription_price=$3,subscription_weeks=$4,
+        hero_title=$5,hero_text=$6,hero_image=$7,updated_at=NOW()
       WHERE id=1 RETURNING *
     `, [
       b.site_name ?? "StudyMedSmart",
       b.tagline ?? "منصة تعليمية طبية",
       Number(b.subscription_price) || 0,
+      Math.max(1, Math.floor(Number(b.subscription_weeks) || 25)),
       b.hero_title ?? "ابدأ رحلتك الطبية بثقة",
       b.hero_text ?? "تعلم أساسيات المجال الطبي في مكان واحد.",
       String(b.hero_image ?? "")
@@ -616,7 +634,7 @@ app.post("/api/auth/logout", auth, async(req,res)=>{try{await invalidateSession(
 app.get("/api/admin/users", auth, adminOnly, async (req,res) => {
   try {
     const r = await db(`
-      SELECT id,name,email,role,wallet_balance,subscribed,created_at
+      SELECT id,name,email,role,wallet_balance,subscribed,subscription_started_at,subscription_expires_at,created_at
       FROM users ORDER BY id DESC
     `);
     res.json(r.rows.map(x => ({...x,wallet_balance:Number(x.wallet_balance||0)})));
@@ -661,6 +679,27 @@ app.post("/api/admin/users/:id/credit", auth, adminOnly, async (req,res) => {
 /* =========================================================
    ADMIN: COURSES / LESSONS
 ========================================================= */
+
+app.delete("/api/admin/users/:id", auth, adminOnly, async (req,res)=>{
+  try{
+    const id=Number(req.params.id);
+    const r=await db("DELETE FROM users WHERE id=$1 AND role<>\'admin\' RETURNING id",[id]);
+    if(!r.rows[0]) return res.status(404).json({error:"الطالب غير موجود أو لا يمكن حذف حساب الإدارة."});
+    res.json({ok:true});
+  }catch(e){console.error(e);res.status(500).json({error:"تعذر حذف الطالب"});}
+});
+app.post("/api/admin/users/:id/unsubscribe", auth, adminOnly, async (req,res)=>{
+  try{const r=await db("UPDATE users SET subscribed=false,subscription_started_at=NULL,subscription_expires_at=NULL WHERE id=$1 AND role<>\'admin\' RETURNING id",[req.params.id]);if(!r.rows[0])return res.status(404).json({error:"الطالب غير موجود"});res.json({ok:true});}
+  catch(e){console.error(e);res.status(500).json({error:"تعذر إلغاء اشتراك الطالب"});}
+});
+app.post("/api/admin/users/unsubscribe-all", auth, adminOnly, async (req,res)=>{
+  try{const r=await db("UPDATE users SET subscribed=false,subscription_started_at=NULL,subscription_expires_at=NULL WHERE role<>\'admin\' RETURNING id");res.json({ok:true,count:r.rowCount});}
+  catch(e){console.error(e);res.status(500).json({error:"تعذر إلغاء جميع الاشتراكات"});}
+});
+app.delete("/api/admin/users", auth, adminOnly, async (req,res)=>{
+  try{const r=await db("DELETE FROM users WHERE role<>\'admin\' RETURNING id");res.json({ok:true,count:r.rowCount});}
+  catch(e){console.error(e);res.status(500).json({error:"تعذر حذف جميع الطلاب"});}
+});
 
 app.get("/api/admin/courses", auth, adminOnly, async (req,res) => {
   try {
